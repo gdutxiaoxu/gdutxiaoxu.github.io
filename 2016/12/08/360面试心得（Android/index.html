@@ -1,0 +1,931 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="徐俊个人博客" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="360面试心得（Android）
+这次360面试，总共面试了两轮，都是视频面试。
+时间:2016-08-23
+转载请注明原博客地址： 
+闲谈：
+从大二暑假的时候开始，一直想进腾讯或者阿里，在招实习生的时候，最终遗憾落选。暑假的时候为了好好准备校招，我放弃了去步步高实习的机会，继续在原来的一家公司实习。在暑假的时候找师兄师姐内推了腾讯，阿里，最终都没有通过简历筛选，没有面试。说实话，刚开始内心是挺失">
+<meta property="og:type" content="article">
+<meta property="og:title" content="360面试心得（Android)">
+<meta property="og:url" content="http://yoursite.com/2016/12/08/360面试心得（Android/index.html">
+<meta property="og:site_name" content="徐俊个人博客">
+<meta property="og:description" content="360面试心得（Android）
+这次360面试，总共面试了两轮，都是视频面试。
+时间:2016-08-23
+转载请注明原博客地址： 
+闲谈：
+从大二暑假的时候开始，一直想进腾讯或者阿里，在招实习生的时候，最终遗憾落选。暑假的时候为了好好准备校招，我放弃了去步步高实习的机会，继续在原来的一家公司实习。在暑假的时候找师兄师姐内推了腾讯，阿里，最终都没有通过简历筛选，没有面试。说实话，刚开始内心是挺失">
+<meta property="og:image" content="https://isux.tencent.com/wp-content/uploads/2013/08/20130808100935745.png">
+<meta property="og:image" content="https://isux.tencent.com/wp-content/uploads/2013/08/20130808105705727-590x223.png">
+<meta property="og:image" content="https://isux.tencent.com/wp-content/uploads/2013/08/20130808105728711-590x200.png">
+<meta property="og:updated_time" content="2016-12-08T12:03:24.866Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="360面试心得（Android)">
+<meta name="twitter:description" content="360面试心得（Android）
+这次360面试，总共面试了两轮，都是视频面试。
+时间:2016-08-23
+转载请注明原博客地址： 
+闲谈：
+从大二暑假的时候开始，一直想进腾讯或者阿里，在招实习生的时候，最终遗憾落选。暑假的时候为了好好准备校招，我放弃了去步步高实习的机会，继续在原来的一家公司实习。在暑假的时候找师兄师姐内推了腾讯，阿里，最终都没有通过简历筛选，没有面试。说实话，刚开始内心是挺失">
+<meta name="twitter:image" content="https://isux.tencent.com/wp-content/uploads/2013/08/20130808100935745.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/12/08/360面试心得（Android/"/>
+
+
+
+
+
+  <title> 360面试心得（Android) | 徐俊个人博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-88752307-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?4c07021d4e615e143c687345e17eb0ae";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">徐俊个人博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle">徐俊</p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/08/360面试心得（Android/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="xujun">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.gif">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="徐俊个人博客">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="徐俊个人博客" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                360面试心得（Android)
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-08T13:05:55+08:00">
+                2016-12-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/12/08/360面试心得（Android/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/12/08/360面试心得（Android/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="360面试心得（Android）"><a href="#360面试心得（Android）" class="headerlink" title="360面试心得（Android）"></a>360面试心得（Android）</h1><hr>
+<p>这次360面试，总共面试了两轮，都是视频面试。</p>
+<p>时间:2016-08-23</p>
+<p><strong>转载请注明<a href="http://blog.csdn.net/gdutxiaoxu/article/details/52371834" target="_blank" rel="external">原博客地址：</a></strong> </p>
+<p><strong>闲谈：</strong></p>
+<p>从大二暑假的时候开始，一直想进腾讯或者阿里，在招实习生的时候，最终遗憾落选。暑假的时候为了好好准备校招，我放弃了去步步高实习的机会，继续在原来的一家公司实习。在暑假的时候找师兄师姐内推了腾讯，阿里，最终都没有通过简历筛选，没有面试。说实话，刚开始内心是挺失落的，挺难受的，但经过一两天的调整，我也意识到自己的错误，以前那种强烈想进bat的欲望渐渐淡了下来，当然并不是说不想进bat，只是不再那么注重结果，更注重这奋斗过程中个人的成长。</p>
+<h2 id="360一面"><a href="#360一面" class="headerlink" title="360一面"></a>360一面</h2><p>差不多三十五分钟</p>
+<ul>
+<li>介绍你做过的项目</li>
+<li>手写单例模式</li>
+<li>布局优化</li>
+<li>有没有用过什么开源框架？</li>
+<li>ImagLoader的实现原理</li>
+<li>OnTouchEvent事件中 down事件 和up事件的传递</li>
+<li>hashMap的实现 原理</li>
+<li>LinkedHashMap的实现原理</li>
+<li>内存管理及优化</li>
+<li>点九图</li>
+</ul>
+<h3 id="点九图"><a href="#点九图" class="headerlink" title="点九图"></a>点九图</h3><p><a href="https://isux.tencent.com/android-ui-9-png.html" target="_blank" rel="external">https://isux.tencent.com/android-ui-9-png.html</a></p>
+<p><img src="https://isux.tencent.com/wp-content/uploads/2013/08/20130808100935745.png" alt=""></p>
+<p>放大后可以比较明显的看到上下左右分别有一个像素的黑色线段，这里分别标注了序号。简单来说，</p>
+<p>序号1和2标识了可以拉伸的区域，</p>
+<p>序号3和4标识了内容区域。当设定了按钮实际应用的宽和高之后，横向会拉伸1区域的像素，纵向会拉伸2区域的像素。如下图：</p>
+<p><img src="https://isux.tencent.com/wp-content/uploads/2013/08/20130808105705727-590x223.png" alt=""></p>
+<p>这里程序设置的文字垂直居中，水平居左的对齐方式。对齐方式是没有问题的，但是对于这种大圆角同时又有些不规则边框的的图形来说，错误的标注方式会让排版看起来很混乱。所以我们需要修正内容区域的线段位置和长度。</p>
+<p><img src="https://isux.tencent.com/wp-content/uploads/2013/08/20130808105728711-590x200.png" alt=""></p>
+<h4 id="有两点需要特别注意下："><a href="#有两点需要特别注意下：" class="headerlink" title="有两点需要特别注意下："></a>有两点需要特别注意下：</h4><p>1.最外围的一圈像素必须要么是纯黑色，要么是透明，一点点的半透明的像素都不可以有，比如说99%的黑色或者是1%的投影都不可以有;</p>
+<p>2.文件的后缀名必须是.9.png，不能是.png或者是.9.png.png，这样的命名都会导致编译失败。</p>
+<h3 id="内存管理及优化"><a href="#内存管理及优化" class="headerlink" title="内存管理及优化"></a>内存管理及优化</h3><p>我这里答的是内存泄漏和oom<br>少用static静态变量</p>
+<p>1) 珍惜Services资源</p>
+<p>我们知道service所在的Activity级别相对后台Activity的级别是比较 高的，一般不易被回收。<br>在service不再使用的时候，及时退出。最好的方法是使用IntentService</p>
+<p>2）在UI不可见的时候释放资源</p>
+<p>当用户切换到其它应用并且你的应用 UI不再可见时，你应该释放你的应用UI上所占用的所有内存资源。在这个时候释放UI资源可以显著的增加系统缓存进程的能力，它会对用户体验有着很直接的影响。</p>
+<p>为了能够接收到用户离开你的UI时的通知，你需要实现Activtiy类里面的onTrimMemory()回调方法。你应该使用这个方法来监听到TRIM_MEMORY_UI_HIDDEN级别的回调，此时意味着你的UI已经隐藏，你应该释放那些仅仅被你的UI使用的资源。</p>
+<p>请注意：你的应用仅仅会在所有UI组件的被隐藏的时候接收到onTrimMemory()的回调并带有参数TRIM_MEMORY_UI_HIDDEN。这与onStop()的回调是不同的，onStop会在activity的实例隐藏时会执行，例如当用户从你的app的某个activity跳转到另外一个activity时前面activity的onStop()会被执行。因此你应该实现onStop回调，并且在此回调里面释放activity的资源，例如释放网络连接，注销监听广播接收者。除非接收到onTrimMemory(TRIM_MEMORY_UI_HIDDEN))的回调，否者你不应该释放你的UI资源。这确保了用户从其他activity切回来时，你的UI资源仍然可用，并且可以迅速恢复activity。</p>
+<p>3) 当内存紧张时释放部分内存</p>
+<p><a href="https://developer.android.com/reference/android/content/ComponentCallbacks2.html#TRIM_MEMORY_COMPLETE" target="_blank" rel="external">关于onTrimMemory的介绍</a></p>
+<p>在你的app生命周期的任何阶段，onTrimMemory的回调方法同样可以告诉你整个设备的内存资源已经开始紧张。你应该根据onTrimMemory回调中的内存级别来进一步决定释放哪些资源。</p>
+<p>TRIM_MEMORY_RUNNING_MODERATE：你的app正在运行并且不会被列为可杀死的。但是设备此时正运行于低内存状态下，系统开始触发杀死LRU Cache中的Process的机制。<br>TRIM_MEMORY_RUNNING_LOW：你的app正在运行且没有被列为可杀死的。但是设备正运行于更低内存的状态下，你应该释放不用的资源用来提升系统性能（但是这也会直接影响到你的app的性能）。<br>TRIM_MEMORY_RUNNING_CRITICAL：你的app仍在运行，但是系统已经把LRU Cache中的大多数进程都已经杀死，因此你应该立即释放所有非必须的资源。如果系统不能回收到足够的RAM数量，系统将会清除所有的LRU缓存中的进程，并且开始杀死那些之前被认为不应该杀死的进程，例如那个包含了一个运行态Service的进程。<br>同样，当你的app进程正在被cached时，你可能会接受到从onTrimMemory()中返回的下面的值之一:</p>
+<p>TRIM_MEMORY_BACKGROUND: 系统正运行于低内存状态并且你的进程正处于LRU缓存名单中最不容易杀掉的位置。尽管你的app进程并不是处于被杀掉的高危险状态，系统可能已经开始杀掉LRU缓存中的其他进程了。你应该释放那些容易恢复的资源，以便于你的进程可以保留下来，这样当用户回退到你的app的时候才能够迅速恢复。<br>TRIM_MEMORY_MODERATE: 系统正运行于低内存状态并且你的进程已经已经接近LRU名单的中部位置。如果系统开始变得更加内存紧张，你的进程是有可能被杀死的。<br>TRIM_MEMORY_COMPLETE: 系统正运行与低内存的状态并且你的进程正处于LRU名单中最容易被杀掉的位置。你应该释放任何不影响你的app恢复状态的资源。<br>因为onTrimMemory()的回调是在API 14才被加进来的，对于老的版本，你可以使用onLowMemory)回调来进行兼容。onLowMemory相当与TRIM_MEMORY_COMPLETE。</p>
+<p>Note: 当系统开始清除LRU缓存中的进程时，尽管它首先按照LRU的顺序来操作，但是它同样会考虑进程的内存使用量。因此消耗越少的进程则越容易被留下来。</p>
+<p>4) 避免bitmaps的浪费</p>
+<p>当你加载一个bitmap时，仅仅需要保留适配当前屏幕设备分辨率的数据即可，如果原图高于你的设备分辨率，需要做缩小的动作。请记住，增加bitmap的尺寸会对内存呈现出2次方的增加，因为X与Y都在增加。</p>
+<p>Note:在Android 2.3.x (API level 10)及其以下, bitmap对象的pixel data是存放在native内存中的，它不便于调试。然而，从Android 3.0(API level 11)开始，bitmap pixel data是分配在你的app的Dalvik heap中, 这提升了GC的工作效率并且更加容易Debug。因此如果你的app使用bitmap并在旧的机器上引发了一些内存问题，切换到3.0以上的机器上进行Debug。</p>
+<p>5) 使用优化的数据容器</p>
+<p>利用Android Framework里面优化过的容器类，例如SparseArray, SparseBooleanArray, 与 LongSparseArray。 通常的HashMap的实现方式更加消耗内存，因为它需要一个额外的实例对象来记录Mapping操作。另外，SparseArray更加高效在于他们避免了对key与value的autobox自动装箱，并且避免了装箱后的解箱。</p>
+<p>6) 请注意内存开销</p>
+<p>对你所使用的语言与库的成本与开销有所了解，从开始到结束，在设计你的app时谨记这些信息。通常，表面上看起来无关痛痒(innocuous)的事情也许实际上会导致大量的开销。例如：</p>
+<p>Enums的内存消耗通常是static constants的2倍。你应该尽量避免在Android上使用enums。<br>在Java中的每一个类(包括匿名内部类)都会使用大概500 bytes。<br>每一个类的实例花销是12-16 bytes。<br>往HashMap添加一个entry需要额一个额外占用的32 bytes的entry对象。<br>7) 请注意代码“抽象”</p>
+<p>通常，开发者使用抽象作为”好的编程实践”，因为抽象能够提升代码的灵活性与可维护性。然而，抽象会导致一个显著的开销：通常他们需要同等量的代码用于可执行。那些代码会被map到内存中。因此如果你的抽象没有显著的提升效率，应该尽量避免他们。</p>
+<p>8) 使用ProGuard来剔除不需要的代码</p>
+<p>ProGuard能够通过移除不需要的代码，重命名类，域与方法等方对代码进行压缩，优化与混淆。使用ProGuard可以使得你的代码更加紧凑，这样能够使用更少mapped代码所需要的RAM。</p>
+<p>9) 对最终的APK使用zipalign</p>
+<p>在编写完所有代码，并通过编译系统生成APK之后，你需要使用zipalign对APK进行重新校准。如果你不做这个步骤，会导致你的APK需要更多的RAM，因为一些类似图片资源的东西不能被mapped。</p>
+<p>Notes: Google Play不接受没有经过zipalign的APK。</p>
+<h2 id="360二面"><a href="#360二面" class="headerlink" title="360二面"></a>360二面</h2><p>一面过了十多分钟以后，接着就进行二面，都是视频面试，差不多二十分钟左右</p>
+<ul>
+<li>AsyncTak的原理及常用方法</li>
+<li>APK从安装到启动的过程</li>
+<li>平时是怎样学习的？</li>
+<li>学习和实习是在怎样协调的 ？</li>
+<li>有360手机助手有什么想了解的吗？</li>
+</ul>
+<h3 id="对360手机助手有什么想了解的？"><a href="#对360手机助手有什么想了解的？" class="headerlink" title="对360手机助手有什么想了解的？"></a>对360手机助手有什么想了解的？</h3><p>这里我提问的是省流量升级是怎样实现的？<br>后面追问是不是利用动态加载技术。面试官解释的是不是你，是对比版本之间的二进制文件差异。</p>
+<h2 id="面试总结"><a href="#面试总结" class="headerlink" title="面试总结"></a>面试总结</h2><h3 id="题外话"><a href="#题外话" class="headerlink" title="题外话"></a>题外话</h3><p>两轮面试面试官人都挺好的，都面带笑容个，感觉很好说话，当天晚上我加了面试官的微信，问他多久会出结果，面试官问我说后面有没有接到电话，我说没有，然后面试官说应该被刷了。</p>
+<h3 id="个人心得"><a href="#个人心得" class="headerlink" title="个人心得"></a>个人心得</h3><p>可能是第一次视频面试，感觉个人太紧张了，有好多原理性的东西讲着讲着就忘记讲了，面试的时候真的是太紧张了，发挥不太好，平时一定要多总结，不然面试的时候一下子总结地不太好，发挥不出应有的水平。</p>
+<p><strong>转载请注明<a href="http://blog.csdn.net/gdutxiaoxu/article/details/52371834" target="_blank" rel="external">原博客地址：</a></strong></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/08/自定义Behavior-——-仿知乎，FloatActionButton隐藏与展示/" rel="next" title="自定义Behavior —— 仿知乎，FloatActionButton隐藏与展示">
+                <i class="fa fa-chevron-left"></i> 自定义Behavior —— 仿知乎，FloatActionButton隐藏与展示
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/08/常用的自定义View例子一-FlowLayout/" rel="prev" title="常用的自定义View例子一(FlowLayout)">
+                常用的自定义View例子一(FlowLayout) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2016/12/08/360面试心得（Android/"
+     data-title="360面试心得（Android)"
+     data-content=""
+     data-url="http://yoursite.com/2016/12/08/360面试心得（Android/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/12/08/360面试心得（Android/"
+           data-title="360面试心得（Android)" data-url="http://yoursite.com/2016/12/08/360面试心得（Android/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="xujun" />
+          <p class="site-author-name" itemprop="name">xujun</p>
+          <p class="site-description motion-element" itemprop="description">移动开发技术分享博客</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#360面试心得（Android）"><span class="nav-number">1.</span> <span class="nav-text">360面试心得（Android）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#360一面"><span class="nav-number">1.1.</span> <span class="nav-text">360一面</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#点九图"><span class="nav-number">1.1.1.</span> <span class="nav-text">点九图</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#有两点需要特别注意下："><span class="nav-number">1.1.1.1.</span> <span class="nav-text">有两点需要特别注意下：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内存管理及优化"><span class="nav-number">1.1.2.</span> <span class="nav-text">内存管理及优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#360二面"><span class="nav-number">1.2.</span> <span class="nav-text">360二面</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对360手机助手有什么想了解的？"><span class="nav-number">1.2.1.</span> <span class="nav-text">对360手机助手有什么想了解的？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#面试总结"><span class="nav-number">1.3.</span> <span class="nav-text">面试总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题外话"><span class="nav-number">1.3.1.</span> <span class="nav-text">题外话</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#个人心得"><span class="nav-number">1.3.2.</span> <span class="nav-text">个人心得</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xujun</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xujun"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
