@@ -1,3 +1,4 @@
+	
 <?php
 //从博客根目录加载百度站点地图
 $xmlfile = './baidusitemap.xml';
@@ -9,7 +10,7 @@ foreach ($xml->url as $child) {
 }
 //调用百度主动推送接口，将baidusitemap.xml中所有的站点链接提交
 //site和token请换成你自己的
-$api = 'http://data.zz.baidu.com/urls?site=www.yoursite.com&token=yourtoken';
+$api = 'http://data.zz.baidu.com/urls?site=https://gdutxiaoxu.github.io&token=Ib9Kz97E15LRcmbt';
 $ch = curl_init();
 $options =  array(
     CURLOPT_URL => $api,
