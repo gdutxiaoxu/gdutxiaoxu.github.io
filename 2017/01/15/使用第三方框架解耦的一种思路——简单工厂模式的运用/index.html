@@ -1,0 +1,1116 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="设计模式,简单工厂模式的应用," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="徐俊个人博客" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="CSDN首发地址：
+前言写在前头，这篇博客对于老司机们没什么多大的意义，老司机们就不用看了，对于新手还是有很大实用价值的。
+平时在项目中，你们有没有遇到这样的情况，比如之前项目是使用开源框架ImageLoader，现在想使用Picasso或者Glide，这时候你会怎么办呢？是一行一行代码去改吗？
+当然可以，如果项目使用到ImageLoader相应的方法少的话，那还可以，但是一旦项目比较大型的话，这">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用第三方框架解耦的一种思路——简单工厂模式的运用">
+<meta property="og:url" content="https://gdutxiaoxu.github.io/2017/01/15/使用第三方框架解耦的一种思路——简单工厂模式的运用/index.html">
+<meta property="og:site_name" content="徐俊个人博客">
+<meta property="og:description" content="CSDN首发地址：
+前言写在前头，这篇博客对于老司机们没什么多大的意义，老司机们就不用看了，对于新手还是有很大实用价值的。
+平时在项目中，你们有没有遇到这样的情况，比如之前项目是使用开源框架ImageLoader，现在想使用Picasso或者Glide，这时候你会怎么办呢？是一行一行代码去改吗？
+当然可以，如果项目使用到ImageLoader相应的方法少的话，那还可以，但是一旦项目比较大型的话，这">
+<meta property="og:image" content="http://ww4.sinaimg.cn/large/9fe4afa0gw1fbr3oi9164j20gl0bfwez.jpg">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/9fe4afa0gw1fbr41lv6n4j20l30ckaae.jpg">
+<meta property="og:updated_time" content="2017-01-15T08:24:30.063Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用第三方框架解耦的一种思路——简单工厂模式的运用">
+<meta name="twitter:description" content="CSDN首发地址：
+前言写在前头，这篇博客对于老司机们没什么多大的意义，老司机们就不用看了，对于新手还是有很大实用价值的。
+平时在项目中，你们有没有遇到这样的情况，比如之前项目是使用开源框架ImageLoader，现在想使用Picasso或者Glide，这时候你会怎么办呢？是一行一行代码去改吗？
+当然可以，如果项目使用到ImageLoader相应的方法少的话，那还可以，但是一旦项目比较大型的话，这">
+<meta name="twitter:image" content="http://ww4.sinaimg.cn/large/9fe4afa0gw1fbr3oi9164j20gl0bfwez.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://gdutxiaoxu.github.io/2017/01/15/使用第三方框架解耦的一种思路——简单工厂模式的运用/"/>
+
+
+
+
+
+  <title> 使用第三方框架解耦的一种思路——简单工厂模式的运用 | 徐俊个人博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-88752307-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?4c07021d4e615e143c687345e17eb0ae";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=59860559";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">徐俊个人博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle">徐俊</p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="https://gdutxiaoxu.github.io/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="https://gdutxiaoxu.github.io/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="https://gdutxiaoxu.github.io/2017/01/15/使用第三方框架解耦的一种思路——简单工厂模式的运用/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="xujun">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/uploads/avatar.png">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="徐俊个人博客">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="徐俊个人博客" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                使用第三方框架解耦的一种思路——简单工厂模式的运用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-15T16:22:24+08:00">
+                2017-01-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/01/15/使用第三方框架解耦的一种思路——简单工厂模式的运用/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/15/使用第三方框架解耦的一种思路——简单工厂模式的运用/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/01/15/使用第三方框架解耦的一种思路——简单工厂模式的运用/" class="leancloud_visitors" data-flag-title="使用第三方框架解耦的一种思路——简单工厂模式的运用">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/54554253" target="_blank" rel="external">CSDN首发地址：</a></p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><strong>写在前头，这篇博客对于老司机们没什么多大的意义，老司机们就不用看了，对于新手还是有很大实用价值的。</strong></p>
+<p>平时在项目中，你们有没有遇到这样的情况，比如之前项目是使用开源框架ImageLoader，现在想使用Picasso或者Glide，这时候你会怎么办呢？是一行一行代码去改吗？</p>
+<p>当然可以，如果项目使用到ImageLoader相应的方法少的话，那还可以，但是一旦项目比较大型的话，这会是多大的工作量，估计至少得改个几天，累先不说，至少毫无意义，那怎么办呢？别急，下面就来讲解。</p>
+<h2 id="第一种方法"><a href="#第一种方法" class="headerlink" title="第一种方法"></a>第一种方法</h2><p>这种方法大多数人都会使用，直接封装成为一个工具类，提取公共参数，以后想修改的话，直接修改工具类里面具体的实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">public class ImageLoaderUtils &#123;</div><div class="line"></div><div class="line"></div><div class="line">    public static void loadImageView(Context mContext, String url, ImageView mImageView) &#123;</div><div class="line">        Picasso.with(mContext).load(url).into(mImageView);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这个时候我们的项目中如果不想使用Picasso，这个时候我们想使用Glide，我们只需修改<br>ImageLoaderUtils类中方法的具体实现即可，代码如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">public class ImageLoaderUtils &#123;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 指定大小加载图片</div><div class="line">     *</div><div class="line">     * @param mContext   上下文</div><div class="line">     * @param url       图片路径</div><div class="line">     * @param mImageView 控件</div><div class="line">     */</div><div class="line">    public static void loadImageView(Context mContext, String url, ImageView mImageView) &#123;</div><div class="line">//        Picasso.with(mContext).load(url).into(mImageView);</div><div class="line">        Glide.with(mContext).load(url).into(mImageView);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>看了上面的代码，相信大多数人都知道，如果我们不封装，我们必须查找每个类文件里面使用到Picasso的相应方法的位置，然后再替换，这会是一个很大的工作量。而我们如果进行封装，只需更改工具类里面的方法的具体实现，这样是不是很方便呢？看到这里，你是不是觉得这篇文章结束呢，还没，下面介绍另外一种方法，这种方法将更加优雅。</p>
+<p>那就是使用简单工厂模式。</p>
+<hr>
+<h2 id="简单工厂模式"><a href="#简单工厂模式" class="headerlink" title="简单工厂模式"></a><strong>简单工厂模式</strong></h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>简单工厂模式(Simple Factory Pattern)：又称为静态工厂方法(Static Factory Method)模式，它属于类创建型模式。在简单工厂模式中，可以根据参数的不同返回不同类的实例。简单工厂模式专门定义一个类来负责创建其他类的实例，被创建的实例通常都具有共同的父类。简单点说就是<strong>用来创建具有相同基类的对象</strong></p>
+<h3 id="类UML图"><a href="#类UML图" class="headerlink" title="类UML图"></a>类UML图</h3><p><img src="http://ww4.sinaimg.cn/large/9fe4afa0gw1fbr3oi9164j20gl0bfwez.jpg" alt=""></p>
+<h3 id="角色介绍"><a href="#角色介绍" class="headerlink" title="角色介绍"></a>角色介绍</h3><p>从上面的UML图可以看到，总共有三个角色Factory，Product，ConcreteProuct，其中Factory依赖于Product</p>
+<p>Product：产品的基类，通常有抽象类或者接口来充当，用来统一接口，不关心细节的实现</p>
+<p>ConcreteProduct：Product的具体实现类</p>
+<p>Factory：工厂类，用来创建对象，可以根据参数的不同返回不同的Product对象，实现逻辑封装在其内部</p>
+<h3 id="使用步骤"><a href="#使用步骤" class="headerlink" title="使用步骤"></a>使用步骤</h3><p>从上面的分析，我们知道，采用简单工厂模式，一般需要三个步骤</p>
+<ul>
+<li>抽象Product的共同特点，定义成一个接口或者抽象类</li>
+<li>ConcreteProduct的具体实现</li>
+<li>实现Factory</li>
+</ul>
+<p>下面我们一起来看一下怎样运用于替换图片框架上</p>
+<hr>
+<h2 id="简单工厂模式的运用——几行代码更换图片框架"><a href="#简单工厂模式的运用——几行代码更换图片框架" class="headerlink" title="简单工厂模式的运用——几行代码更换图片框架"></a>简单工厂模式的运用——几行代码更换图片框架</h2><p>首先为了加深理解，我们一起先来看一下类UML图</p>
+<p><img src="http://ww2.sinaimg.cn/large/9fe4afa0gw1fbr41lv6n4j20l30ckaae.jpg" alt=""></p>
+<p>接着按照上面的三部曲，第一步，我们先定义一个接口IimageListener，用来统一参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">public interface IimageListener &#123;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">    void display(Context context, ImageView imageView, String url, int progressId, int errorId,</div><div class="line">                 Object tag);</div><div class="line"></div><div class="line">    void display(Context context, ImageView imageView, String url, int progressId, int errorId);</div><div class="line"></div><div class="line">    void display(Context context, ImageView imageView, String url, int progressId);</div><div class="line"></div><div class="line">    void display(Context context, ImageView imageView, String url);</div><div class="line"></div><div class="line">    void display(Context context, ImageView imageView, Uri uri);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>第二步，我们来写GlideRequest和PicassoRequest的具体实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">public class GlideRequest implements IimageListener &#123;</div><div class="line"></div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void display(Context context, ImageView imageView, String url, int progressId, int</div><div class="line">            errorId, Object tag) &#123;</div><div class="line">        DrawableTypeRequest&lt;String&gt; load = Glide.with(context).load(url);</div><div class="line">        if (progressId != -1) &#123;</div><div class="line">            load.placeholder(progressId).centerCrop();</div><div class="line">        &#125; else &#123;</div><div class="line">            load.placeholder(new ColorDrawable(Color.GRAY));</div><div class="line">        &#125;</div><div class="line">        if (errorId != -1) &#123;</div><div class="line">            load.error(errorId);</div><div class="line">        &#125;else&#123;</div><div class="line">            load.error(R.drawable.ic_error);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        load.into(imageView);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void display(Context context, ImageView imageView, String url, int progressId, int</div><div class="line">            errorId) &#123;</div><div class="line">        display(context, imageView, url, progressId, errorId, null);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void display(Context context, ImageView imageView, String url, int progressId) &#123;</div><div class="line">        display(context, imageView, url, progressId, -1, null);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void display(Context context, ImageView imageView, String url) &#123;</div><div class="line">        display(context, imageView, url, -1, -1, null);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void display(Context context, ImageView imageView, Uri uri) &#123;</div><div class="line">        DrawableTypeRequest&lt;Uri&gt; load = Glide.with(context).load(uri);</div><div class="line">        load.into(imageView);</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>}</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">public class PicassoRequest implements IimageListener &#123;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void display(Context context, ImageView imageView, String url, int progressId, int</div><div class="line">            errorId, Object tag) &#123;</div><div class="line">        Picasso.with(context).load(url).placeholder(progressId).error(errorId).tag(tag).into(imageView);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void display(Context context, ImageView imageView, String url, int progressId, int</div><div class="line">            errorId) &#123;</div><div class="line">        Picasso.with(context).load(url).placeholder(progressId).error(errorId).into(imageView);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void display(Context context, ImageView imageView, String url, int progressId) &#123;</div><div class="line">       Picasso.with(context).load(url).placeholder(progressId).into(imageView);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void display(Context context, ImageView imageView, String url) &#123;</div><div class="line">        Picasso.with(context).load(url).into(imageView);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void display(Context context, ImageView imageView, Uri uri) &#123;</div><div class="line">           Picasso.with(context).load(uri).into(imageView);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>第三步，我们来写工厂类ImageRequestManager的实现,可以看到我们可以根据不同的参数返回不同的实例，进而来决定使用Picasso或者是Glide</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">public class ImageRequestManager &#123;</div><div class="line"></div><div class="line">    public static final String type_Glide=&quot;Glide&quot;;</div><div class="line">    public static final String type_Picasso=&quot;Picasso&quot;;</div><div class="line">    public static final String type_default =type_Glide;</div><div class="line"></div><div class="line">   private ImageRequestManager()&#123;</div><div class="line"></div><div class="line">   &#125;</div><div class="line"></div><div class="line">    public static IimageListener getRequest()&#123;</div><div class="line">      return getRequest(type_default);</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static IimageListener getRequest(String type)&#123;</div><div class="line">        switch (type)&#123;</div><div class="line">            case type_Glide:</div><div class="line">                return new GlideRequest();</div><div class="line"></div><div class="line">            case type_Picasso:</div><div class="line">                return new PicassoRequest();</div><div class="line"></div><div class="line">            default:</div><div class="line">                return new GlideRequest();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>最后，以后我们想加载图片只需简单调用下面的方法就OK了，简单明了，再也不用怕替换框架了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ImageRequestManager.getRequest().display(mContext, imageView, imageUrl);</div></pre></td></tr></table></figure>
+<h3 id="讨论"><a href="#讨论" class="headerlink" title="讨论"></a>讨论</h3><p>情景一：之前我是使用Glide框架，现在想使用Picasso框架，那要怎么办呢？</p>
+<p>只需将 ImageRequestManager 里面的 String type_default=type_Glide 更改为String type_default=type_Picasso 就ok了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">//public static final String type_default =type_Glide;</div><div class="line">public static final String type_default =type_Picasso;</div></pre></td></tr></table></figure>
+<p>情景二：有人会说了，平时在项目中基本只会使用一种图片加载框架，要么使用Picasso，要么使用Glide，你这样做同时使用了两种框架，无疑增加了APK的大小，那要怎么办呢？其实很简单</p>
+<p>如果你只想使用Picasso，去掉Glide的具体实现就OK了，同理你只想使用Glide，去掉Picasso的具体实现就好了，<strong>不过建议保留空方法，以后要修改就不必更改工厂类 ImageRequestManager 里面的逻辑呢</strong>。</p>
+<hr>
+<h2 id="简单工厂模式总结"><a href="#简单工厂模式总结" class="headerlink" title="简单工厂模式总结"></a>简单工厂模式总结</h2><ul>
+<li><p>将对象的创建工作与对象的业务逻辑分析，降低了系统的耦合度</p>
+</li>
+<li><p>简单工厂模式的要点在于：当你需要什么，只需要传入一个正确的参数，就可以获取你所需要的对象，而无须知道其创建细节。<strong>为了调用者的方便，我们可以给工厂类添加一个默认参数，这样调用的时候不必每次传入参数</strong></p>
+</li>
+</ul>
+<ul>
+<li>从上面知道的例子，我们知道，业务逻辑大部分在工厂类里面，如果工厂类需要创建的对象不多的话，简单工厂方法模式还是很有很大的优势的，而如果需要创建很多对象的话，那工厂里面无疑要增加很多case 语句，这样会导致工厂类的职责太重了，破坏了类的单一性。</li>
+</ul>
+<p>综上所述：</p>
+<p><strong>简单工厂模式最大的优点在于实现对象的创建和对象的使用分离，将对象的创建交给专门的工厂类负责，但是其最大的缺点在于工厂类不够灵活，增加新的具体产品需要修改工厂类的判断逻辑代码，而且产品较多时，工厂方法代码将会非常复杂。</strong></p>
+<p><strong>简单工厂模式适用情况包括：工厂类负责创建的对象比较少；客户端只知道传入工厂类的参数，对于如何创建对象不关心。</strong></p>
+<hr>
+<h2 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h2><p>看了上面的文章，对于于Volley，OKhttp等网络框架的简单封装，你是不是也想到了什么，应该懂得怎么封装了吧。</p>
+<p>而对于Retrofit的封装，你有没有想到了什么呢？因为Retrofit的返回对象比较特殊，是  Observable&lt;&gt;,更其他的网络框架不太一样，其实还是可以大概处理一下的，这里暂时就不讨论了，大家有兴趣的可以自己先去尝试，相信你会收获到很多东西的。</p>
+<hr>
+<h2 id="题外话"><a href="#题外话" class="headerlink" title="题外话"></a>题外话</h2><p>万丈高楼平地起，对于程序猿的我们，一定要多动手实践，我相信很多同学看到这里，都基本掌握了，但是很有很多同学不动手去实践一下，就这样，几天过去了，似懂非懂，最后忘记了，而这恰恰是分水岭。哈哈，就扯蛋这么多了。</p>
+<hr>
+<p>最后给出github地址，上面的小项目是我平时没事写写玩玩的。</p>
+<p><a href="https://github.com/gdutxiaoxu/FunAPP" target="_blank" rel="external">github地址</a></p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/54554253" target="_blank" rel="external">CSDN首发地址：</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://ww4.sinaimg.cn/large/9fe4afa0jw1fajouf05iyj20k00jyjtq.jpg" alt="xujun WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://ww2.sinaimg.cn/large/9fe4afa0jw1fajotg1815j20k00uc77g.jpg" alt="xujun Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/设计模式/" rel="tag"># 设计模式</a>
+          
+            <a href="/tags/简单工厂模式的应用/" rel="tag"># 简单工厂模式的应用</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/31/16年，平凡而又收获的一年/" rel="next" title="16年，平凡而又收获的一年">
+                <i class="fa fa-chevron-left"></i> 16年，平凡而又收获的一年
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2017/01/15/使用第三方框架解耦的一种思路——简单工厂模式的运用/"
+     data-title="使用第三方框架解耦的一种思路——简单工厂模式的运用"
+     data-content=""
+     data-url="https://gdutxiaoxu.github.io/2017/01/15/使用第三方框架解耦的一种思路——简单工厂模式的运用/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/01/15/使用第三方框架解耦的一种思路——简单工厂模式的运用/"
+           data-title="使用第三方框架解耦的一种思路——简单工厂模式的运用" data-url="https://gdutxiaoxu.github.io/2017/01/15/使用第三方框架解耦的一种思路——简单工厂模式的运用/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.png"
+               alt="xujun" />
+          <p class="site-author-name" itemprop="name">xujun</p>
+          <p class="site-description motion-element" itemprop="description">移动开发技术分享博客</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="https://gdutxiaoxu.github.io/archives/">
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="https://gdutxiaoxu.github.io/tags/">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第一种方法"><span class="nav-number">2.</span> <span class="nav-text">第一种方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简单工厂模式"><span class="nav-number">3.</span> <span class="nav-text">简单工厂模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定义"><span class="nav-number">3.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类UML图"><span class="nav-number">3.2.</span> <span class="nav-text">类UML图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#角色介绍"><span class="nav-number">3.3.</span> <span class="nav-text">角色介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用步骤"><span class="nav-number">3.4.</span> <span class="nav-text">使用步骤</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简单工厂模式的运用——几行代码更换图片框架"><span class="nav-number">4.</span> <span class="nav-text">简单工厂模式的运用——几行代码更换图片框架</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#讨论"><span class="nav-number">4.1.</span> <span class="nav-text">讨论</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简单工厂模式总结"><span class="nav-number">5.</span> <span class="nav-text">简单工厂模式总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩展"><span class="nav-number">6.</span> <span class="nav-text">扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#题外话"><span class="nav-number">7.</span> <span class="nav-text">题外话</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xujun</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xujun"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("sybN87KmhJxd3H4Da6hVBgOf-gzGzoHsz", "7Ak1SzgvL37BJyjeMRDi6MVr");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>

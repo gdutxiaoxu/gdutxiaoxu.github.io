@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://gdutxiaoxu.github.io/"/>
-  <updated>2016-12-31T14:45:32.825Z</updated>
+  <updated>2017-01-15T08:24:30.063Z</updated>
   <id>https://gdutxiaoxu.github.io/</id>
   
   <author>
@@ -14,6 +14,93 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>使用第三方框架解耦的一种思路——简单工厂模式的运用</title>
+    <link href="https://gdutxiaoxu.github.io/2017/01/15/%E4%BD%BF%E7%94%A8%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A1%86%E6%9E%B6%E8%A7%A3%E8%80%A6%E7%9A%84%E4%B8%80%E7%A7%8D%E6%80%9D%E8%B7%AF%E2%80%94%E2%80%94%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%E7%9A%84%E8%BF%90%E7%94%A8/"/>
+    <id>https://gdutxiaoxu.github.io/2017/01/15/使用第三方框架解耦的一种思路——简单工厂模式的运用/</id>
+    <published>2017-01-15T08:22:24.000Z</published>
+    <updated>2017-01-15T08:24:30.063Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/54554253" target="_blank" rel="external">CSDN首发地址：</a></p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><strong>写在前头，这篇博客对于老司机们没什么多大的意义，老司机们就不用看了，对于新手还是有很大实用价值的。</strong></p>
+<p>平时在项目中，你们有没有遇到这样的情况，比如之前项目是使用开源框架ImageLoader，现在想使用Picasso或者Glide，这时候你会怎么办呢？是一行一行代码去改吗？</p>
+<p>当然可以，如果项目使用到ImageLoader相应的方法少的话，那还可以，但是一旦项目比较大型的话，这会是多大的工作量，估计至少得改个几天，累先不说，至少毫无意义，那怎么办呢？别急，下面就来讲解。</p>
+<h2 id="第一种方法"><a href="#第一种方法" class="headerlink" title="第一种方法"></a>第一种方法</h2><p>这种方法大多数人都会使用，直接封装成为一个工具类，提取公共参数，以后想修改的话，直接修改工具类里面具体的实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">public class ImageLoaderUtils &#123;</div><div class="line"></div><div class="line"></div><div class="line">    public static void loadImageView(Context mContext, String url, ImageView mImageView) &#123;</div><div class="line">        Picasso.with(mContext).load(url).into(mImageView);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这个时候我们的项目中如果不想使用Picasso，这个时候我们想使用Glide，我们只需修改<br>ImageLoaderUtils类中方法的具体实现即可，代码如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">public class ImageLoaderUtils &#123;</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 指定大小加载图片</div><div class="line">     *</div><div class="line">     * @param mContext   上下文</div><div class="line">     * @param url       图片路径</div><div class="line">     * @param mImageView 控件</div><div class="line">     */</div><div class="line">    public static void loadImageView(Context mContext, String url, ImageView mImageView) &#123;</div><div class="line">//        Picasso.with(mContext).load(url).into(mImageView);</div><div class="line">        Glide.with(mContext).load(url).into(mImageView);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>看了上面的代码，相信大多数人都知道，如果我们不封装，我们必须查找每个类文件里面使用到Picasso的相应方法的位置，然后再替换，这会是一个很大的工作量。而我们如果进行封装，只需更改工具类里面的方法的具体实现，这样是不是很方便呢？看到这里，你是不是觉得这篇文章结束呢，还没，下面介绍另外一种方法，这种方法将更加优雅。</p>
+<p>那就是使用简单工厂模式。</p>
+<hr>
+<h2 id="简单工厂模式"><a href="#简单工厂模式" class="headerlink" title="简单工厂模式"></a><strong>简单工厂模式</strong></h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>简单工厂模式(Simple Factory Pattern)：又称为静态工厂方法(Static Factory Method)模式，它属于类创建型模式。在简单工厂模式中，可以根据参数的不同返回不同类的实例。简单工厂模式专门定义一个类来负责创建其他类的实例，被创建的实例通常都具有共同的父类。简单点说就是<strong>用来创建具有相同基类的对象</strong></p>
+<h3 id="类UML图"><a href="#类UML图" class="headerlink" title="类UML图"></a>类UML图</h3><p><img src="http://ww4.sinaimg.cn/large/9fe4afa0gw1fbr3oi9164j20gl0bfwez.jpg" alt=""></p>
+<h3 id="角色介绍"><a href="#角色介绍" class="headerlink" title="角色介绍"></a>角色介绍</h3><p>从上面的UML图可以看到，总共有三个角色Factory，Product，ConcreteProuct，其中Factory依赖于Product</p>
+<p>Product：产品的基类，通常有抽象类或者接口来充当，用来统一接口，不关心细节的实现</p>
+<p>ConcreteProduct：Product的具体实现类</p>
+<p>Factory：工厂类，用来创建对象，可以根据参数的不同返回不同的Product对象，实现逻辑封装在其内部</p>
+<h3 id="使用步骤"><a href="#使用步骤" class="headerlink" title="使用步骤"></a>使用步骤</h3><p>从上面的分析，我们知道，采用简单工厂模式，一般需要三个步骤</p>
+<ul>
+<li>抽象Product的共同特点，定义成一个接口或者抽象类</li>
+<li>ConcreteProduct的具体实现</li>
+<li>实现Factory</li>
+</ul>
+<p>下面我们一起来看一下怎样运用于替换图片框架上</p>
+<hr>
+<h2 id="简单工厂模式的运用——几行代码更换图片框架"><a href="#简单工厂模式的运用——几行代码更换图片框架" class="headerlink" title="简单工厂模式的运用——几行代码更换图片框架"></a>简单工厂模式的运用——几行代码更换图片框架</h2><p>首先为了加深理解，我们一起先来看一下类UML图</p>
+<p><img src="http://ww2.sinaimg.cn/large/9fe4afa0gw1fbr41lv6n4j20l30ckaae.jpg" alt=""></p>
+<p>接着按照上面的三部曲，第一步，我们先定义一个接口IimageListener，用来统一参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">public interface IimageListener &#123;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">    void display(Context context, ImageView imageView, String url, int progressId, int errorId,</div><div class="line">                 Object tag);</div><div class="line"></div><div class="line">    void display(Context context, ImageView imageView, String url, int progressId, int errorId);</div><div class="line"></div><div class="line">    void display(Context context, ImageView imageView, String url, int progressId);</div><div class="line"></div><div class="line">    void display(Context context, ImageView imageView, String url);</div><div class="line"></div><div class="line">    void display(Context context, ImageView imageView, Uri uri);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>第二步，我们来写GlideRequest和PicassoRequest的具体实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">public class GlideRequest implements IimageListener &#123;</div><div class="line"></div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void display(Context context, ImageView imageView, String url, int progressId, int</div><div class="line">            errorId, Object tag) &#123;</div><div class="line">        DrawableTypeRequest&lt;String&gt; load = Glide.with(context).load(url);</div><div class="line">        if (progressId != -1) &#123;</div><div class="line">            load.placeholder(progressId).centerCrop();</div><div class="line">        &#125; else &#123;</div><div class="line">            load.placeholder(new ColorDrawable(Color.GRAY));</div><div class="line">        &#125;</div><div class="line">        if (errorId != -1) &#123;</div><div class="line">            load.error(errorId);</div><div class="line">        &#125;else&#123;</div><div class="line">            load.error(R.drawable.ic_error);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        load.into(imageView);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void display(Context context, ImageView imageView, String url, int progressId, int</div><div class="line">            errorId) &#123;</div><div class="line">        display(context, imageView, url, progressId, errorId, null);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void display(Context context, ImageView imageView, String url, int progressId) &#123;</div><div class="line">        display(context, imageView, url, progressId, -1, null);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void display(Context context, ImageView imageView, String url) &#123;</div><div class="line">        display(context, imageView, url, -1, -1, null);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void display(Context context, ImageView imageView, Uri uri) &#123;</div><div class="line">        DrawableTypeRequest&lt;Uri&gt; load = Glide.with(context).load(uri);</div><div class="line">        load.into(imageView);</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>}</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">public class PicassoRequest implements IimageListener &#123;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void display(Context context, ImageView imageView, String url, int progressId, int</div><div class="line">            errorId, Object tag) &#123;</div><div class="line">        Picasso.with(context).load(url).placeholder(progressId).error(errorId).tag(tag).into(imageView);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void display(Context context, ImageView imageView, String url, int progressId, int</div><div class="line">            errorId) &#123;</div><div class="line">        Picasso.with(context).load(url).placeholder(progressId).error(errorId).into(imageView);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void display(Context context, ImageView imageView, String url, int progressId) &#123;</div><div class="line">       Picasso.with(context).load(url).placeholder(progressId).into(imageView);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void display(Context context, ImageView imageView, String url) &#123;</div><div class="line">        Picasso.with(context).load(url).into(imageView);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void display(Context context, ImageView imageView, Uri uri) &#123;</div><div class="line">           Picasso.with(context).load(uri).into(imageView);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>第三步，我们来写工厂类ImageRequestManager的实现,可以看到我们可以根据不同的参数返回不同的实例，进而来决定使用Picasso或者是Glide</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">public class ImageRequestManager &#123;</div><div class="line"></div><div class="line">    public static final String type_Glide=&quot;Glide&quot;;</div><div class="line">    public static final String type_Picasso=&quot;Picasso&quot;;</div><div class="line">    public static final String type_default =type_Glide;</div><div class="line"></div><div class="line">   private ImageRequestManager()&#123;</div><div class="line"></div><div class="line">   &#125;</div><div class="line"></div><div class="line">    public static IimageListener getRequest()&#123;</div><div class="line">      return getRequest(type_default);</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public static IimageListener getRequest(String type)&#123;</div><div class="line">        switch (type)&#123;</div><div class="line">            case type_Glide:</div><div class="line">                return new GlideRequest();</div><div class="line"></div><div class="line">            case type_Picasso:</div><div class="line">                return new PicassoRequest();</div><div class="line"></div><div class="line">            default:</div><div class="line">                return new GlideRequest();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>最后，以后我们想加载图片只需简单调用下面的方法就OK了，简单明了，再也不用怕替换框架了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ImageRequestManager.getRequest().display(mContext, imageView, imageUrl);</div></pre></td></tr></table></figure>
+<h3 id="讨论"><a href="#讨论" class="headerlink" title="讨论"></a>讨论</h3><p>情景一：之前我是使用Glide框架，现在想使用Picasso框架，那要怎么办呢？</p>
+<p>只需将 ImageRequestManager 里面的 String type_default=type_Glide 更改为String type_default=type_Picasso 就ok了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">//public static final String type_default =type_Glide;</div><div class="line">public static final String type_default =type_Picasso;</div></pre></td></tr></table></figure>
+<p>情景二：有人会说了，平时在项目中基本只会使用一种图片加载框架，要么使用Picasso，要么使用Glide，你这样做同时使用了两种框架，无疑增加了APK的大小，那要怎么办呢？其实很简单</p>
+<p>如果你只想使用Picasso，去掉Glide的具体实现就OK了，同理你只想使用Glide，去掉Picasso的具体实现就好了，<strong>不过建议保留空方法，以后要修改就不必更改工厂类 ImageRequestManager 里面的逻辑呢</strong>。</p>
+<hr>
+<h2 id="简单工厂模式总结"><a href="#简单工厂模式总结" class="headerlink" title="简单工厂模式总结"></a>简单工厂模式总结</h2><ul>
+<li><p>将对象的创建工作与对象的业务逻辑分析，降低了系统的耦合度</p>
+</li>
+<li><p>简单工厂模式的要点在于：当你需要什么，只需要传入一个正确的参数，就可以获取你所需要的对象，而无须知道其创建细节。<strong>为了调用者的方便，我们可以给工厂类添加一个默认参数，这样调用的时候不必每次传入参数</strong></p>
+</li>
+</ul>
+<ul>
+<li>从上面知道的例子，我们知道，业务逻辑大部分在工厂类里面，如果工厂类需要创建的对象不多的话，简单工厂方法模式还是很有很大的优势的，而如果需要创建很多对象的话，那工厂里面无疑要增加很多case 语句，这样会导致工厂类的职责太重了，破坏了类的单一性。</li>
+</ul>
+<p>综上所述：</p>
+<p><strong>简单工厂模式最大的优点在于实现对象的创建和对象的使用分离，将对象的创建交给专门的工厂类负责，但是其最大的缺点在于工厂类不够灵活，增加新的具体产品需要修改工厂类的判断逻辑代码，而且产品较多时，工厂方法代码将会非常复杂。</strong></p>
+<p><strong>简单工厂模式适用情况包括：工厂类负责创建的对象比较少；客户端只知道传入工厂类的参数，对于如何创建对象不关心。</strong></p>
+<hr>
+<h2 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h2><p>看了上面的文章，对于于Volley，OKhttp等网络框架的简单封装，你是不是也想到了什么，应该懂得怎么封装了吧。</p>
+<p>而对于Retrofit的封装，你有没有想到了什么呢？因为Retrofit的返回对象比较特殊，是  Observable&lt;&gt;,更其他的网络框架不太一样，其实还是可以大概处理一下的，这里暂时就不讨论了，大家有兴趣的可以自己先去尝试，相信你会收获到很多东西的。</p>
+<hr>
+<h2 id="题外话"><a href="#题外话" class="headerlink" title="题外话"></a>题外话</h2><p>万丈高楼平地起，对于程序猿的我们，一定要多动手实践，我相信很多同学看到这里，都基本掌握了，但是很有很多同学不动手去实践一下，就这样，几天过去了，似懂非懂，最后忘记了，而这恰恰是分水岭。哈哈，就扯蛋这么多了。</p>
+<hr>
+<p>最后给出github地址，上面的小项目是我平时没事写写玩玩的。</p>
+<p><a href="https://github.com/gdutxiaoxu/FunAPP" target="_blank" rel="external">github地址</a></p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/54554253" target="_blank" rel="external">CSDN首发地址：</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;a href=&quot;http://blog.csdn.net/gdutxiaoxu/article/details/54554253&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;CSDN首发地址：&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;
+    
+    </summary>
+    
+    
+      <category term="设计模式" scheme="https://gdutxiaoxu.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+      <category term="简单工厂模式的应用" scheme="https://gdutxiaoxu.github.io/tags/%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%BA%94%E7%94%A8/"/>
+    
+  </entry>
   
   <entry>
     <title>16年，平凡而又收获的一年</title>
