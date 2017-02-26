@@ -1,0 +1,1164 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="徐俊个人博客" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言IntentService使用及源码分析 
+HandlerThread源码分析
+AsyncTask使用及封装实践
+AsyncTask源码分析
+上一篇博客，AsyncTask使用及封装实践 我们主要介绍了AsyncTask 的使用及封装实践，这一篇博客我们主要来讲解AsyncTask的源码
+
+这篇博客主要讲解以下内容
+
+AsyncTask的几个主要方法讲解
+AsyncTask 的源码分析
+Asy">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AsyncTask源码分析">
+<meta property="og:url" content="https://gdutxiaoxu.github.io/2017/02/26/AsyncTask源码分析/index.html">
+<meta property="og:site_name" content="徐俊个人博客">
+<meta property="og:description" content="前言IntentService使用及源码分析 
+HandlerThread源码分析
+AsyncTask使用及封装实践
+AsyncTask源码分析
+上一篇博客，AsyncTask使用及封装实践 我们主要介绍了AsyncTask 的使用及封装实践，这一篇博客我们主要来讲解AsyncTask的源码
+
+这篇博客主要讲解以下内容
+
+AsyncTask的几个主要方法讲解
+AsyncTask 的源码分析
+Asy">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/9fe4afa0gy1fd3vg43hi2j20gj0ljwf1">
+<meta property="og:updated_time" content="2017-02-26T10:32:21.319Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AsyncTask源码分析">
+<meta name="twitter:description" content="前言IntentService使用及源码分析 
+HandlerThread源码分析
+AsyncTask使用及封装实践
+AsyncTask源码分析
+上一篇博客，AsyncTask使用及封装实践 我们主要介绍了AsyncTask 的使用及封装实践，这一篇博客我们主要来讲解AsyncTask的源码
+
+这篇博客主要讲解以下内容
+
+AsyncTask的几个主要方法讲解
+AsyncTask 的源码分析
+Asy">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/9fe4afa0gy1fd3vg43hi2j20gj0ljwf1">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://gdutxiaoxu.github.io/2017/02/26/AsyncTask源码分析/"/>
+
+
+
+
+
+  <title> AsyncTask源码分析 | 徐俊个人博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-88752307-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?4c07021d4e615e143c687345e17eb0ae";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=59860559";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">徐俊个人博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle">徐俊</p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="https://gdutxiaoxu.github.io/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="https://gdutxiaoxu.github.io/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="https://gdutxiaoxu.github.io/2017/02/26/AsyncTask源码分析/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="xujun">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/uploads/avatar.png">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="徐俊个人博客">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="徐俊个人博客" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                AsyncTask源码分析
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-26T18:29:40+08:00">
+                2017-02-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/02/26/AsyncTask源码分析/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/26/AsyncTask源码分析/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/02/26/AsyncTask源码分析/" class="leancloud_visitors" data-flag-title="AsyncTask源码分析">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52000680" target="_blank" rel="external"><strong>IntentService使用及源码分析</strong></a> </p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52060291" target="_blank" rel="external"><strong>HandlerThread源码分析</strong></a></p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/57409326" target="_blank" rel="external"><strong>AsyncTask使用及封装实践</strong></a></p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/57416380" target="_blank" rel="external"><strong>AsyncTask源码分析</strong></a></p>
+<p>上一篇博客，<a href="http://blog.csdn.net/gdutxiaoxu/article/details/57409326" target="_blank" rel="external"><strong>AsyncTask使用及封装实践</strong></a> 我们主要介绍了AsyncTask 的使用及封装实践，这一篇博客我们主要来讲解AsyncTask的源码</p>
+<hr>
+<p>这篇博客主要讲解以下内容</p>
+<ul>
+<li>AsyncTask的几个主要方法讲解</li>
+<li>AsyncTask 的源码分析</li>
+<li>AsyncTask怎样使用自定义的Executor</li>
+</ul>
+<h2 id="AsyncTask的几个主要方法讲解"><a href="#AsyncTask的几个主要方法讲解" class="headerlink" title="AsyncTask的几个主要方法讲解"></a>AsyncTask的几个主要方法讲解</h2><p>讲解之前我们先来回顾一下AsyncTask的几个主要方法</p>
+<ul>
+<li>Void onPreExecute()</li>
+</ul>
+<p>在task 任务开始执行的时候调用，在doInBackground(Params… params)方法之前调用，在主线程中执行</p>
+<ul>
+<li>Result doInBackground(Params… params)</li>
+</ul>
+<p>主要用来执行耗时操作，在子线程中执行，Params为我们参数的类型。而Result这个泛型，是我们返回的类型（<strong>可以是Integer，Long，String等等类型，只要不是八种基本类型就OK</strong>），同时 Result 的类型将作为 onPostExecute(Result result)的参数。</p>
+<ul>
+<li><p>Void onProgressUpdate(Progress… values)</p>
+<p>Runs on the UI thread after publishProgress(Progress…) is invoked. 当我们调用 publishProgress（）方法的时候，会调用 onProgressUpdate（）这个方法</p>
+</li>
+<li><p>Void onPostExecute(Result result)<br>在doInBackground（）方法执行完毕之后，会调用这个方法，是在主线程中执行的。<strong>但如果我们手动调用了cancelled()方法，那么这个方法将不会被调用。</strong></p>
+</li>
+<li><p>void onCancelled()</p>
+</li>
+</ul>
+<p>在Task </p>
+<ul>
+<li>execute(Params… params)</li>
+</ul>
+<p>Executes the task with the specified parameters.当我们调用这个方法的时候，会执行任务</p>
+<ul>
+<li>executeOnExecutor(Executor exec, Params… params)</li>
+</ul>
+<p>在指定的线程池里面执行Task</p>
+<p><strong>需要注意的是，Params，Progress，Result 并不是一种特定的类型，它其实是泛型，它支持除了八种基本类型之外的类型，跟普通的泛型一样。</strong></p>
+<hr>
+<h2 id="AsyncTask-的源码分析"><a href="#AsyncTask-的源码分析" class="headerlink" title="AsyncTask 的源码分析"></a>AsyncTask 的源码分析</h2><h3 id="执行流程"><a href="#执行流程" class="headerlink" title="执行流程"></a>执行流程</h3><p><img src="http://ww1.sinaimg.cn/large/9fe4afa0gy1fd3vg43hi2j20gj0ljwf1" alt=""></p>
+<p>当我们调用 execute（）方法的时候，会紧接着调用我们的execeteOnExecutor（sDefaultExecutor, params）方法<br>在这个方法里面，会首先判断执行的状态的合法性，如果是finish或者running，会抛出异常，<strong>这也就是为什么AsyncTak只能被调用执行一</strong>次。紧接着会调用onPreExecute()方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">public final AsyncTask&lt;Params, Progress, Result&gt; execute(Params... params) &#123;</div><div class="line">    return executeOnExecutor(sDefaultExecutor, params);</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">public final AsyncTask&lt;Params, Progress, Result&gt; executeOnExecutor(Executor exec,</div><div class="line">        Params... params) &#123;</div><div class="line">    if (mStatus != Status.PENDING) &#123;</div><div class="line">        switch (mStatus) &#123;</div><div class="line">            case RUNNING:</div><div class="line">                throw new IllegalStateException(&quot;Cannot execute task:&quot;</div><div class="line">                        + &quot; the task is already running.&quot;);</div><div class="line">            case FINISHED:</div><div class="line">                throw new IllegalStateException(&quot;Cannot execute task:&quot;</div><div class="line">                        + &quot; the task has already been executed &quot;</div><div class="line">                        + &quot;(a task can be executed only once)&quot;);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    mStatus = Status.RUNNING;</div><div class="line"></div><div class="line">    onPreExecute();</div><div class="line"></div><div class="line">    mWorker.mParams = params;</div><div class="line">    exec.execute(mFuture);</div><div class="line"></div><div class="line">    return this;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>接着会把当前的状态设置running状态，并把我们的params传递给我们的mWork。params=params；</p>
+<p>那这个mWork是什么呢？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">public AsyncTask() &#123;</div><div class="line">    mWorker = new WorkerRunnable&lt;Params, Result&gt;() &#123;</div><div class="line">        public Result call() throws Exception &#123;</div><div class="line">            mTaskInvoked.set(true);</div><div class="line">            Result result = null;</div><div class="line">            try &#123;</div><div class="line">                Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);</div><div class="line">                //noinspection unchecked</div><div class="line">                result = doInBackground(mParams);</div><div class="line">                Binder.flushPendingCommands();</div><div class="line">            &#125; catch (Throwable tr) &#123;</div><div class="line">                mCancelled.set(true);</div><div class="line">                throw tr;</div><div class="line">            &#125; finally &#123;</div><div class="line">                postResult(result);</div><div class="line">            &#125;</div><div class="line">            return result;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    mFuture = new FutureTask&lt;Result&gt;(mWorker) &#123;</div><div class="line">        @Override</div><div class="line">        protected void done() &#123;</div><div class="line">            try &#123;</div><div class="line">                postResultIfNotInvoked(get());</div><div class="line">            &#125; catch (InterruptedException e) &#123;</div><div class="line">                android.util.Log.w(LOG_TAG, e);</div><div class="line">            &#125; catch (ExecutionException e) &#123;</div><div class="line">                throw new RuntimeException(&quot;An error occurred while executing doInBackground()&quot;,</div><div class="line">                        e.getCause());</div><div class="line">            &#125; catch (CancellationException e) &#123;</div><div class="line">                postResultIfNotInvoked(null);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>我们先来分析一下mWorker;</li>
+</ul>
+<p>mWorker为AsyncTask的一个内部类<br>，实现了Callable接口，在call方法里面会调用我们的doInBackground方法，这也就是为什么我们的doInBackground。方法是在子线程里面执行的，执行完doInBackground（）方法会把结构传递给我们的postResult（result）方法，在result方法，会调用handler发送消息，<br>接着再handler的handleMessage里面处理，在handleMessage里面，又会调用我们的  finish()方法,finish()方法里面会判断任务是否取消，如果被取消，会调用onCancelled（），否则会调用onPostExecute（）方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">private static class InternalHandler extends Handler &#123;</div><div class="line">    public InternalHandler() &#123;</div><div class="line">        super(Looper.getMainLooper());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @SuppressWarnings(&#123;&quot;unchecked&quot;, &quot;RawUseOfParameterizedType&quot;&#125;)</div><div class="line">    @Override</div><div class="line">    public void handleMessage(Message msg) &#123;</div><div class="line">        AsyncTaskResult&lt;?&gt; result = (AsyncTaskResult&lt;?&gt;) msg.obj;</div><div class="line">        switch (msg.what) &#123;</div><div class="line">            case MESSAGE_POST_RESULT:</div><div class="line">                // There is only one result</div><div class="line">                result.mTask.finish(result.mData[0]);</div><div class="line">                break;</div><div class="line">            case MESSAGE_POST_PROGRESS:</div><div class="line">                result.mTask.onProgressUpdate(result.mData);</div><div class="line">                break;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">private void finish(Result result) &#123;</div><div class="line">    if (isCancelled()) &#123;</div><div class="line">        onCancelled(result);</div><div class="line">    &#125; else &#123;</div><div class="line">        onPostExecute(result);</div><div class="line">    &#125;</div><div class="line">    mStatus = Status.FINISHED;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>接着我们来分析一下mFuture</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">mFuture = new FutureTask&lt;Result&gt;(mWorker) &#123;</div><div class="line">        @Override</div><div class="line">        protected void done() &#123;</div><div class="line">            try &#123;</div><div class="line">                postResultIfNotInvoked(get());</div><div class="line">            &#125; catch (InterruptedException e) &#123;</div><div class="line">                android.util.Log.w(LOG_TAG, e);</div><div class="line">            &#125; catch (ExecutionException e) &#123;</div><div class="line">                throw new RuntimeException(&quot;An error occurred while executing doInBackground()&quot;,</div><div class="line">                        e.getCause());</div><div class="line">            &#125; catch (CancellationException e) &#123;</div><div class="line">                postResultIfNotInvoked(null);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div></pre></td></tr></table></figure>
+<ol>
+<li><p>postResultIfNotInvoked(get());get()表示获取mWorker的call的返回值，即Result。</p>
+</li>
+<li><p>然后看postResultIfNotInvoked方法。<strong>会判断是否已经将结果发送出去，即判断在mWork里面是否已经调用postResult(result)发送结果，没有的话调用再调用postResult(result)发送出去</strong></p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">private void postResultIfNotInvoked(Result result) &#123;</div><div class="line">        final boolean wasTaskInvoked = mTaskInvoked.get();</div><div class="line">        if (!wasTaskInvoked) &#123;</div><div class="line">            postResult(result);</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p><strong>还记得上面exec.execute()吗？exec为executeOnExecutor(sDefaultExecutor,params)中的sDefaultExecutor</strong></p>
+<h3 id="下面看这个sDefaultExecutor"><a href="#下面看这个sDefaultExecutor" class="headerlink" title="下面看这个sDefaultExecutor"></a>下面看这个sDefaultExecutor</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">private static volatile Executor sDefaultExecutor = SERIAL_EXECUTOR;  </div><div class="line">public static final Executor SERIAL_EXECUTOR = new SerialExecutor();  </div><div class="line">private static class SerialExecutor implements Executor &#123;  </div><div class="line">        final ArrayDeque&lt;Runnable&gt; mTasks = new ArrayDeque&lt;Runnable&gt;();  </div><div class="line">        Runnable mActive;  </div><div class="line">        public synchronized void execute(final Runnable r) &#123;  </div><div class="line">            mTasks.offer(new Runnable() &#123;  </div><div class="line">                public void run() &#123;  </div><div class="line">                    try &#123;  </div><div class="line">                        r.run();  </div><div class="line">                    &#125; finally &#123;  </div><div class="line">                        scheduleNext();  </div><div class="line">                    &#125;  </div><div class="line">                &#125;  </div><div class="line">            &#125;);  </div><div class="line">            if (mActive == null) &#123;  </div><div class="line">                scheduleNext();  </div><div class="line">            &#125;  </div><div class="line">        &#125;  </div><div class="line">        protected synchronized void scheduleNext() &#123;  </div><div class="line">            if ((mActive = mTasks.poll()) != null) &#123;  </div><div class="line">                THREAD_POOL_EXECUTOR.execute(mActive);  </div><div class="line">            &#125;  </div><div class="line">        &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到sDefaultExecutor其实为SerialExecutor的一个实例，其内部维持一个任务队列；直接看其execute（Runnable runnable）方法，将runnable放入mTasks队尾；<br>判断当前mActive是否为空，为空则调用scheduleNext方法</p>
+<p>scheduleNext方法里面，则直接取出任务队列中的队首任务，如果不为null则传入THREAD_POOL_EXECUTOR进行执行。</p>
+<p>下面看THREAD_POOL_EXECUTOR为何方神圣：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Public static final Executor THREAD_POOL_EXECUTOR  </div><div class="line">          =new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,  </div><div class="line">                    TimeUnit.SECONDS, sPoolWorkQueue, sThreadFactory);</div></pre></td></tr></table></figure>
+<p>可以看到就是一个自己设置参数的线程池，参数为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">private static final int CORE_POOL_SIZE = Math.max(2, Math.min(CPU_COUNT - 1, 4));</div><div class="line">private static final int MAXIMUM_POOL_SIZE = CPU_COUNT * 2 + 1;</div><div class="line">private static final int KEEP_ALIVE_SECONDS = 30;</div><div class="line"></div><div class="line">private static final ThreadFactory sThreadFactory = new ThreadFactory() &#123;</div><div class="line">    private final AtomicInteger mCount = new AtomicInteger(1);</div><div class="line"></div><div class="line">    public Thread newThread(Runnable r) &#123;</div><div class="line">        return new Thread(r, &quot;AsyncTask #&quot; + mCount.getAndIncrement());</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">private static final BlockingQueue&lt;Runnable&gt; sPoolWorkQueue =</div><div class="line">        new LinkedBlockingQueue&lt;Runnable&gt;(128);</div></pre></td></tr></table></figure>
+<p>回顾一下sDefaultExecutor，真正在execute()中调用的为sDefaultExecutor.execute：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">private static class SerialExecutor implements Executor &#123;  </div><div class="line">        final ArrayDeque&lt;Runnable&gt; mTasks = new ArrayDeque&lt;Runnable&gt;();  </div><div class="line">        Runnable mActive;  </div><div class="line"></div><div class="line"></div><div class="line">        public synchronized void execute(final Runnable r) &#123;  </div><div class="line">            mTasks.offer(new Runnable() &#123;  </div><div class="line">                public void run() &#123;  </div><div class="line">                    try &#123;  </div><div class="line">                        r.run();  </div><div class="line">                    &#125; finally &#123;  </div><div class="line">                        scheduleNext();  </div><div class="line">                    &#125;  </div><div class="line">                &#125;  </div><div class="line">            &#125;);  </div><div class="line">            if (mActive == null) &#123;  </div><div class="line">                scheduleNext();  </div><div class="line">            &#125;  </div><div class="line">        &#125;  </div><div class="line">        protected synchronized void scheduleNext() &#123;  </div><div class="line">            if ((mActive = mTasks.poll()) != null) &#123;  </div><div class="line">                THREAD_POOL_EXECUTOR.execute(mActive);  </div><div class="line">            &#125;  </div><div class="line">        &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到，如果此时有10个任务同时调用execute（s synchronized）方法，第一个任务入队，然后在mActive = mTasks.poll()) != null被取出，并且赋值给mActivte，然后交给线程池去执行。然后第二个任务入队，但是此时mActive并不为null，并不会执行scheduleNext();所以如果第一个任务比较慢，10个任务都会进入队列等待；</p>
+<p>真正执行下一个任务的时机是，线程池执行完成第一个任务以后，调用Runnable中的finally代码块中的scheduleNext，所以虽然内部有一个线程池，其实调用的过程还是线性的。一个接着一个的执行，相当于单线程。</p>
+<h3 id="publicProgress（）方法的分析"><a href="#publicProgress（）方法的分析" class="headerlink" title="publicProgress（）方法的分析"></a>publicProgress（）方法的分析</h3><p>这也就是我们在Result doInBackground(Params… params)方法里面调用 publishProgress（）方法，会回调onProgressUpdate的原因</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">protected final void publishProgress(Progress... values) &#123;</div><div class="line">    if (!isCancelled()) &#123;</div><div class="line">        getHandler().obtainMessage(MESSAGE_POST_PROGRESS,</div><div class="line">                new AsyncTaskResult&lt;Progress&gt;(this, values)).sendToTarget();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">public void handleMessage(Message msg) &#123;</div><div class="line">    AsyncTaskResult&lt;?&gt; result = (AsyncTaskResult&lt;?&gt;) msg.obj;</div><div class="line">    switch (msg.what) &#123;</div><div class="line">        case MESSAGE_POST_RESULT:</div><div class="line">            // There is only one result</div><div class="line">            result.mTask.finish(result.mData[0]);</div><div class="line">            break;</div><div class="line">        case MESSAGE_POST_PROGRESS:</div><div class="line">            result.mTask.onProgressUpdate(result.mData);</div><div class="line">            break;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<hr>
+<h2 id="AsyncTask怎样使用自定义的Executor"><a href="#AsyncTask怎样使用自定义的Executor" class="headerlink" title="AsyncTask怎样使用自定义的Executor"></a>AsyncTask怎样使用自定义的Executor</h2><h3 id="常用的集中线程池介绍"><a href="#常用的集中线程池介绍" class="headerlink" title="常用的集中线程池介绍"></a>常用的集中线程池介绍</h3><ul>
+<li>newCachedThreadPool() </li>
+</ul>
+<p>缓存型池子，先查看池中有没有以前建立的线程，如果有，就reuse.如果没有，就建一个新的线程加入池中。能reuse的线程，必须是timeout IDLE内的池中线程，缺省timeout是60s,超过这个IDLE时长，线程实例将被终止及移出池。缓存型池子通常用于执行一些生存期很短的异步型任务 。</p>
+<ul>
+<li>newFixedThreadPool() </li>
+</ul>
+<p>fixedThreadPool与cacheThreadPool差不多，也是能reuse就用，但不能随时建新的线程 其独特之处:任意时间点，最多只能有固定数目的活动线程存在，此时如果有新的线程要建立，只能放在另外的队列中等待，直到当前的线程中某个线程终止直接被移出池子。和cacheThreadPool不同：fixedThreadPool池线程数固定，但是0秒IDLE（无IDLE）。这也就意味着创建的线程会一直存在。所以fixedThreadPool多数针对一些很稳定很固定的正规并发线程，多用于服务器。</p>
+<ul>
+<li>newScheduledThreadPool() </li>
+</ul>
+<p>调度型线程池。这个池子里的线程可以按schedule依次delay执行，或周期执行 。0秒IDLE（无IDLE）。</p>
+<ul>
+<li>SingleThreadExecutor </li>
+</ul>
+<p>单例线程，任意时间池中只能有一个线程 。用的是和cache池和fixed池相同的底层池，但线程数目是1-1,0秒IDLE（无IDLE）。</p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">// 调用 executeOnExecutor，传入相应的线程池即可。</div><div class="line">mDownloadTask.executeOnExecutor(Executors.newFixedThreadPool(4));</div></pre></td></tr></table></figure>
+<hr>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52000680" target="_blank" rel="external"><strong>IntentService使用及源码分析</strong></a> </p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52060291" target="_blank" rel="external"><strong>HandlerThread源码分析</strong></a></p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/57409326" target="_blank" rel="external"><strong>AsyncTask使用及封装实践</strong></a></p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/57416380" target="_blank" rel="external"><strong>AsyncTask源码分析</strong></a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://ww4.sinaimg.cn/large/9fe4afa0jw1fajouf05iyj20k00jyjtq.jpg" alt="xujun WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://ww2.sinaimg.cn/large/9fe4afa0jw1fajotg1815j20k00uc77g.jpg" alt="xujun Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/02/26/AsyncTask-使用及封装实践/" rel="next" title="AsyncTask 使用及封装实践">
+                <i class="fa fa-chevron-left"></i> AsyncTask 使用及封装实践
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2017/02/26/AsyncTask源码分析/"
+     data-title="AsyncTask源码分析"
+     data-content=""
+     data-url="https://gdutxiaoxu.github.io/2017/02/26/AsyncTask源码分析/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/02/26/AsyncTask源码分析/"
+           data-title="AsyncTask源码分析" data-url="https://gdutxiaoxu.github.io/2017/02/26/AsyncTask源码分析/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.png"
+               alt="xujun" />
+          <p class="site-author-name" itemprop="name">xujun</p>
+          <p class="site-description motion-element" itemprop="description">gdutxiaoxu</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="https://gdutxiaoxu.github.io/archives/">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="https://gdutxiaoxu.github.io/tags/">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AsyncTask的几个主要方法讲解"><span class="nav-number">2.</span> <span class="nav-text">AsyncTask的几个主要方法讲解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AsyncTask-的源码分析"><span class="nav-number">3.</span> <span class="nav-text">AsyncTask 的源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#执行流程"><span class="nav-number">3.1.</span> <span class="nav-text">执行流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#下面看这个sDefaultExecutor"><span class="nav-number">3.2.</span> <span class="nav-text">下面看这个sDefaultExecutor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#publicProgress（）方法的分析"><span class="nav-number">3.3.</span> <span class="nav-text">publicProgress（）方法的分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AsyncTask怎样使用自定义的Executor"><span class="nav-number">4.</span> <span class="nav-text">AsyncTask怎样使用自定义的Executor</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常用的集中线程池介绍"><span class="nav-number">4.1.</span> <span class="nav-text">常用的集中线程池介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用"><span class="nav-number">4.2.</span> <span class="nav-text">使用</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xujun</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xujun"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("sybN87KmhJxd3H4Da6hVBgOf-gzGzoHsz", "7Ak1SzgvL37BJyjeMRDi6MVr");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>

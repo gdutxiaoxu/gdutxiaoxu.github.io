@@ -1,0 +1,1158 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="徐俊个人博客" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言IntentService使用及源码分析 
+HandlerThread源码分析
+AsyncTask使用及封装实践
+AsyncTask源码分析
+这篇博客主要是讲解AsyncTask的使用及封装实践，对于新手们还是有很大的参考意义的，尤其是AsyncTask的封装实践这部分。对于老鸟们，你们可以跳过了。同时需要声明的一点是，下面下载的例子只是进行简单的下载而已，并没有支持断点续传下载。需要的话请自">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AsyncTask 使用及封装实践">
+<meta property="og:url" content="https://gdutxiaoxu.github.io/2017/02/26/AsyncTask-使用及封装实践/index.html">
+<meta property="og:site_name" content="徐俊个人博客">
+<meta property="og:description" content="前言IntentService使用及源码分析 
+HandlerThread源码分析
+AsyncTask使用及封装实践
+AsyncTask源码分析
+这篇博客主要是讲解AsyncTask的使用及封装实践，对于新手们还是有很大的参考意义的，尤其是AsyncTask的封装实践这部分。对于老鸟们，你们可以跳过了。同时需要声明的一点是，下面下载的例子只是进行简单的下载而已，并没有支持断点续传下载。需要的话请自">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/9fe4afa0gy1fd3oyr1xy5g208i0j2wh3">
+<meta property="og:updated_time" content="2017-02-26T10:31:04.498Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AsyncTask 使用及封装实践">
+<meta name="twitter:description" content="前言IntentService使用及源码分析 
+HandlerThread源码分析
+AsyncTask使用及封装实践
+AsyncTask源码分析
+这篇博客主要是讲解AsyncTask的使用及封装实践，对于新手们还是有很大的参考意义的，尤其是AsyncTask的封装实践这部分。对于老鸟们，你们可以跳过了。同时需要声明的一点是，下面下载的例子只是进行简单的下载而已，并没有支持断点续传下载。需要的话请自">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/9fe4afa0gy1fd3oyr1xy5g208i0j2wh3">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://gdutxiaoxu.github.io/2017/02/26/AsyncTask-使用及封装实践/"/>
+
+
+
+
+
+  <title> AsyncTask 使用及封装实践 | 徐俊个人博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-88752307-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?4c07021d4e615e143c687345e17eb0ae";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=59860559";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">徐俊个人博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle">徐俊</p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="https://gdutxiaoxu.github.io/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="https://gdutxiaoxu.github.io/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="https://gdutxiaoxu.github.io/2017/02/26/AsyncTask-使用及封装实践/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="xujun">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/uploads/avatar.png">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="徐俊个人博客">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="徐俊个人博客" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                AsyncTask 使用及封装实践
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-26T18:29:31+08:00">
+                2017-02-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/02/26/AsyncTask-使用及封装实践/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/26/AsyncTask-使用及封装实践/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/02/26/AsyncTask-使用及封装实践/" class="leancloud_visitors" data-flag-title="AsyncTask 使用及封装实践">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52000680" target="_blank" rel="external"><strong>IntentService使用及源码分析</strong></a> </p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52060291" target="_blank" rel="external"><strong>HandlerThread源码分析</strong></a></p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/57409326" target="_blank" rel="external"><strong>AsyncTask使用及封装实践</strong></a></p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/57416380" target="_blank" rel="external"><strong>AsyncTask源码分析</strong></a></p>
+<p>这篇博客主要是讲解AsyncTask的使用及封装实践，对于新手们还是有很大的参考意义的，尤其是AsyncTask的封装实践这部分。对于老鸟们，你们可以跳过了。同时需要声明的一点是，下面下载的例子只是进行简单的下载而已，并没有支持断点续传下载。需要的话请自行到github上面找相应的库，因为这并不是本篇博客的重点。</p>
+<p>这篇博客主要讲解以下问题：</p>
+<ul>
+<li>AsyncTask的简单使用</li>
+<li>AsyncTask的封装使用</li>
+<li>AsyncTask使用注意事项</li>
+</ul>
+<hr>
+<h2 id="AsyncTask的使用例子"><a href="#AsyncTask的使用例子" class="headerlink" title="AsyncTask的使用例子"></a>AsyncTask的使用例子</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>AsyncTask ，异步任务。没错，就想字面上理解的那样。它允许我们在子线程执行耗时任务，在UI 线程更新操作（如更新进度条等）。简单来说，就是帮我们做好了子线程与UI 线程的通讯，我们只需要调用响应的方法实现即可。底层是用Handler消息机制实现的。</p>
+<p>在Android开发中，我们经常需要下载各种东西，为了给用户较好的体验，我们经常需要显示下载进度。今天我们用以这个为例子，来教大家怎样使用AsyncTak。当然，github上面有很多开源库，实现断点下载，文件重命名等。不过这些不是本篇博客的重点。</p>
+<h3 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h3><p><img src="http://ww1.sinaimg.cn/large/9fe4afa0gy1fd3oyr1xy5g208i0j2wh3" alt=""></p>
+<h3 id="AsyncTask的主要几个方法"><a href="#AsyncTask的主要几个方法" class="headerlink" title="AsyncTask的主要几个方法"></a>AsyncTask的主要几个方法</h3><ul>
+<li>Void onPreExecute()</li>
+</ul>
+<p>在task 任务开始执行的时候调用，在doInBackground(Params… params)方法之前调用，在主线程中执行</p>
+<ul>
+<li>Result doInBackground(Params… params)</li>
+</ul>
+<p>主要用来执行耗时操作，在子线程中执行，Params为我们参数的类型。而Result这个泛型，是我们返回的类型（<strong>可以是Integer，Long，String等等类型，只要不是八种基本类型就OK</strong>），同时 Result 的类型将作为 onPostExecute(Result result)的参数。</p>
+<ul>
+<li><p>Void onProgressUpdate(Progress… values)</p>
+<p>Runs on the UI thread after publishProgress(Progress…) is invoked. 当我们调用 publishProgress（）方法的时候，会调用 onProgressUpdate（）这个方法</p>
+</li>
+<li><p>Void onPostExecute(Result result)<br>在doInBackground（）方法执行完毕之后，会调用这个方法，是在主线程中执行的。<strong>但如果我们手动调用了cancelled()方法，那么这个方法将不会被调用。</strong></p>
+</li>
+<li><p>void onCancelled()</p>
+</li>
+</ul>
+<p>在Task 任务取消的时候会调用</p>
+<ul>
+<li>execute(Params… params)</li>
+</ul>
+<p>Executes the task with the specified parameters.当我们调用这个方法的时候，会执行任务</p>
+<ul>
+<li>executeOnExecutor(Executor exec, Params… params)</li>
+</ul>
+<p>在指定的线程池里面执行Task</p>
+<p><strong>需要注意的是，Params，Progress，Result 并不是一种特定的类型，它其实是泛型，它支持除了八种基本类型之外的类型，跟普通的泛型一样。</strong></p>
+<h3 id="AsyncTask使用的几个步骤"><a href="#AsyncTask使用的几个步骤" class="headerlink" title="AsyncTask使用的几个步骤"></a>AsyncTask使用的几个步骤</h3><p>这里我们以下载一个apk为例讲解</p>
+<ol>
+<li>写一个类继承AsyncTask，并传入Params，Progress，Result 。三个参数的类型。</li>
+</ol>
+<p>比如我们传入的 Params，Progress，Result 的参数的类型分别为 Void, FileInfo, FileInfo，那我们可以这样写。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">private class MyDownloadTask extends AsyncTask&lt;Void, FileInfo, FileInfo&gt;&#123;</div><div class="line">     </div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>那Void, FileInfo, FileInfo，这几个参数的类型在哪里体现出来呢？</p>
+<p>请看下面注释</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">private class MyDownloadTask extends AsyncTask&lt;Void, FileInfo, FileInfo&gt; &#123;</div><div class="line"></div><div class="line">   ---</div><div class="line">  </div><div class="line">   // 方法参数的类型为Void，跟我们传入的Void一致，返回类型为 FileInfo ，跟我们传入Result的类型FileInfo一致</div><div class="line">    @Override</div><div class="line">    protected FileInfo doInBackground(Void... params) &#123;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line"></div><div class="line">   // 方法参数类型为FileInfo，跟我们传入Progress的类型FileInfo一致</div><div class="line">    @Override</div><div class="line">    protected void onProgressUpdate(FileInfo... values) &#123;</div><div class="line">       </div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">   // 方法参数FileInfo，跟我们传入Result的类型FileInfo一致</div><div class="line">    @Override</div><div class="line">    protected void onPostExecute(FileInfo fileInfo) &#123;</div><div class="line">       </div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line"> </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>如果我们更新进度的话，需要重写 onProgressUpdate（）方法，并在doInBackground（）方法里面调用publishProgress（）方法</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">protected FileInfo doInBackground(Void... params) &#123;</div><div class="line">   </div><div class="line">   publishProgress(fileInfo);</div><div class="line"></div><div class="line">  </div><div class="line">&#125;</div><div class="line"></div><div class="line">@Override</div><div class="line">protected void onProgressUpdate(FileInfo... values) &#123;</div><div class="line">    super.onProgressUpdate(values);</div><div class="line">    refreshProgress(values[0]);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>当我们调用execute(Params… params) 或者 executeOnExecutor(Executor exec, Params… params) 方法的时候，Task将被防盗相应的 Executor 执行。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">MyDownloadTask myDownloadTask = new MyDownloadTask(mDownloadUrl, mDstPath);</div><div class="line">myDownloadTask.execute();</div></pre></td></tr></table></figure>
+<p>完整的Task代码如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div></pre></td><td class="code"><pre><div class="line">private class MyDownloadTask extends AsyncTask&lt;Void, FileInfo, FileInfo&gt; &#123;</div><div class="line"></div><div class="line">    String mDownLoadUrl;</div><div class="line">    String mDstPath;</div><div class="line"></div><div class="line">    public MyDownloadTask(String downloadUrl, String dstPath) &#123;</div><div class="line">        this.mDownLoadUrl = downloadUrl;</div><div class="line">        this.mDstPath = dstPath;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onPreExecute() &#123;</div><div class="line">        super.onPreExecute();</div><div class="line">        start();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected FileInfo doInBackground(Void... params) &#123;</div><div class="line">        //url字符串，检查网址是否已http:// 开头</div><div class="line">        mDownLoadUrl = (mDownLoadUrl.startsWith(&quot;http://&quot;)) ? mDownLoadUrl : &quot;http://&quot; +</div><div class="line">                mDownLoadUrl;</div><div class="line">        Log.d(TAG, &quot;doInBackground: mDownLoadUrl=&quot; + mDownLoadUrl);</div><div class="line">        Log.d(TAG, &quot;doInBackground: mDstPath=&quot; + mDstPath);</div><div class="line">        URL url = null;</div><div class="line">        FileInfo fileInfo = null;</div><div class="line">        int contentLength = -1;</div><div class="line">        int downloadLength = 0;</div><div class="line">        OutputStream output = null;</div><div class="line">        InputStream istream = null;</div><div class="line">        try &#123;</div><div class="line">            url = new URL(mDownLoadUrl);</div><div class="line">            //打开到url的连接</div><div class="line">            HttpURLConnection connection = (HttpURLConnection) url.openConnection();</div><div class="line">            contentLength = connection.getContentLength();</div><div class="line">            Log.i(TAG, &quot;doInBackground: contentLength=&quot; + contentLength);</div><div class="line">            //O部分，大体来说就是先检查文件夹是否存在，不存在则创建</div><div class="line">            istream = connection.getInputStream();</div><div class="line">            String filename = mDownLoadUrl.substring(mDownLoadUrl.lastIndexOf(&quot;/&quot;) + 1);</div><div class="line"></div><div class="line">            File dir = new File(mDstPath);</div><div class="line">            if (!dir.exists()) &#123;</div><div class="line">                dir.mkdir();</div><div class="line">            &#125;</div><div class="line">            File file = new File(mDstPath + filename);</div><div class="line">            // 如果存在同名文件，重命名</div><div class="line">            if (file.exists()) &#123;</div><div class="line">                file = FileUtils.rename(file.getPath());</div><div class="line">            &#125;</div><div class="line"></div><div class="line"></div><div class="line">            output = new FileOutputStream(file);</div><div class="line">            byte[] buffer = new byte[1024 * 4];</div><div class="line">            int count = 0;</div><div class="line">            int len = -1;</div><div class="line">            while ((len = istream.read(buffer)) != -1) &#123;</div><div class="line">                output.write(buffer, 0, len);</div><div class="line">                downloadLength += len;</div><div class="line"></div><div class="line">                if (count == 10) &#123;</div><div class="line">                    fileInfo = new FileInfo(contentLength, downloadLength, file, file.getPath</div><div class="line">                            (), file.getName());</div><div class="line">                    publishProgress(fileInfo);</div><div class="line">                    count = 0;</div><div class="line">                &#125;</div><div class="line">                count++;</div><div class="line"></div><div class="line">            &#125;</div><div class="line">            //                有可能count还没有走到10</div><div class="line">            fileInfo = new FileInfo(contentLength, downloadLength, file, file.getPath(), file</div><div class="line">                    .getName());</div><div class="line">            publishProgress(fileInfo);</div><div class="line">            output.flush();</div><div class="line">            output.close();</div><div class="line">            istream.close();</div><div class="line"></div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">            try &#123;</div><div class="line">                IOUtils.close(output);</div><div class="line">                IOUtils.close(istream);</div><div class="line">            &#125; catch (IOException e1) &#123;</div><div class="line">                e1.printStackTrace();</div><div class="line">            &#125;</div><div class="line"></div><div class="line">        &#125; finally &#123;</div><div class="line">            try &#123;</div><div class="line">                IOUtils.close(output);</div><div class="line">                IOUtils.close(istream);</div><div class="line">            &#125; catch (IOException e1) &#123;</div><div class="line">                e1.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        return fileInfo;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onProgressUpdate(FileInfo... values) &#123;</div><div class="line">        super.onProgressUpdate(values);</div><div class="line">        refreshProgress(values[0]);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onPostExecute(FileInfo fileInfo) &#123;</div><div class="line">        super.onPostExecute(fileInfo);</div><div class="line">        downloadfinish(fileInfo);</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onCancelled() &#123;</div><div class="line">        super.onCancelled();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">private void start() &#123;</div><div class="line">    mTvDownloadText.setText(&quot;开始下载&quot;);</div><div class="line">    mProgressBar.setMax(100);</div><div class="line">    mProgressBar.setProgress(0);</div><div class="line">&#125;</div><div class="line"></div><div class="line">private void downloadfinish(FileInfo fileInfo) &#123;</div><div class="line">    Log.i(TAG, &quot;onPostExecute: 下载完成=&quot; + fileInfo.mPath);</div><div class="line">    Toast.makeText(MainActivity.this, &quot;下载完成&quot;, Toast.LENGTH_SHORT).show();</div><div class="line">&#125;</div><div class="line"></div><div class="line">private void refreshProgress(FileInfo value) &#123;</div><div class="line">    FileInfo fileInfo = value;</div><div class="line">    if (fileInfo != null) &#123;</div><div class="line">        mProgressBar.setMax((int) fileInfo.mLength);</div><div class="line">        mProgressBar.setProgress((int) fileInfo.mDownloadLength);</div><div class="line">        mDownText = fileInfo.mFile.getName() + &quot;下载了&quot; + fileInfo.mDownloadLength + &quot;总长度是&quot; +</div><div class="line">                fileInfo.mLength;</div><div class="line">        mTvDownloadText.setText(mDownText);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<hr>
+<h2 id="AsyncTask的封装使用"><a href="#AsyncTask的封装使用" class="headerlink" title="AsyncTask的封装使用"></a>AsyncTask的封装使用</h2><p>前面我们讲完了AsyncTask的基本使用，不知道你有没有发现，其实代码耦合性是挺高的，</p>
+<ul>
+<li>我们直接在 onProgressUpdata(),onPostExecute()方法里面更新我们的界面，即我们的AsyncTask访问了我们Activity里面的控件，那如果我们修改了Activity的控件，我们岂不是又要去阅读AsyncTask的代码，去做相应的修改。</li>
+<li>下一次我们如果要下载别的东西，按照我们前面的代码，我们又要重新复制一份，这样无疑是做了很多重复的工作。</li>
+</ul>
+<p>说到这样，我相信大多数人的第一感觉就是把AsyncTask提取为外部类，封装起来。是的，确实，我们就是要把AsyncTask提取为外部类。那提取为歪不累之后呢？我们要访问Activity里面的空间，要怎样访问呢？</p>
+<ol>
+<li>在Activity里面定义静态方法</li>
+<li>把需要访问的View对象通过构造函数传递进来</li>
+<li>采用接口回调机制</li>
+</ol>
+<p>前面说到的三种方法，是可以做到AsyncTask与外界进行通讯的。但第一第二中方法明显不行。原因如下：</p>
+<ul>
+<li>第一种方法定义静态方法，那View对象也必须定义为static变量，这static变量的级别比较高，不易被垃圾回收机制回收，易发生没存泄露。</li>
+<li>第二种方法，把需要访问的View对象通过构造函数传递进来。如果需要访问的对象少的话，勉强可以接受，如果多的话，那岂不是要定义很多成员变量。不过最致命的还算是代码耦合性太高了。还不如AsyncTask直接作为内部类。</li>
+</ul>
+<p>好了，说了这么多，下面我们一起来看怎样使用接口回调机制来进行解耦。</p>
+<h3 id="AsyncTask-使用接口回调机制来进行解耦"><a href="#AsyncTask-使用接口回调机制来进行解耦" class="headerlink" title="AsyncTask 使用接口回调机制来进行解耦"></a>AsyncTask 使用接口回调机制来进行解耦</h3><ol>
+<li>使用接口回调机制，首先我们必须有一个接口</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">public interface DownloadListener &#123;</div><div class="line"></div><div class="line">    void onStart();</div><div class="line">    void onProgress(FileInfo fileInfo);</div><div class="line">    void onFinish(FileInfo FileInfo);</div><div class="line">    void onPaused(FileInfo fileInfo);</div><div class="line">    void onCancled();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>将DownLoadTask提取为一个外部类，并将需要传递的参数传递进来</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">public class DownloadTask extends AsyncTask&lt;Void,FileInfo,FileInfo&gt; &#123;</div><div class="line"></div><div class="line">    private  String mDownloadUrl;</div><div class="line">    private final String mDstPath;</div><div class="line">    private final String mFileName;</div><div class="line">    private final DownloadListener mDownloadListener;</div><div class="line"></div><div class="line">    public DownloadTask(String downloadUrl, String dstPath, String fileName, DownloadListener downloadListener)&#123;</div><div class="line">        mDownloadUrl = downloadUrl;</div><div class="line">        mDstPath = dstPath;</div><div class="line">        mFileName = fileName;</div><div class="line">        mDownloadListener = downloadListener;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>在相应的地方调用我们接口的方法</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line">public class DownloadTask extends AsyncTask&lt;Void,FileInfo,FileInfo&gt; &#123;</div><div class="line"></div><div class="line">    ----</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onPreExecute() &#123;</div><div class="line">        super.onPreExecute();</div><div class="line">        mDownloadListener.onStart();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected FileInfo doInBackground(Void... params) &#123;</div><div class="line">    </div><div class="line">       ----</div><div class="line">            int len = -1;</div><div class="line">            while ((len = istream.read(buffer)) != -1) &#123;</div><div class="line">                output.write(buffer, 0, len);</div><div class="line">                downloadLength += len;</div><div class="line"></div><div class="line">                if (count == 10) &#123;</div><div class="line">                    fileInfo = new FileInfo(contentLength, downloadLength, file, file.getPath</div><div class="line">                            (), file.getName());</div><div class="line">                    publishProgress(fileInfo);</div><div class="line">                    count = 0;</div><div class="line">                &#125;</div><div class="line">                count++;</div><div class="line"></div><div class="line">            &#125;</div><div class="line">            //                有可能count还没有走到10</div><div class="line">            fileInfo = new FileInfo(contentLength, downloadLength, file, file.getPath(), file</div><div class="line">                    .getName());</div><div class="line">            publishProgress(fileInfo);</div><div class="line">            output.flush();</div><div class="line">            output.close();</div><div class="line">            istream.close();</div><div class="line"></div><div class="line">    </div><div class="line">       </div><div class="line">        return fileInfo;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onProgressUpdate(FileInfo... values) &#123;</div><div class="line">        super.onProgressUpdate(values);</div><div class="line">        mDownloadListener.onProgress(values[0]);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onPostExecute(FileInfo fileInfo) &#123;</div><div class="line">        super.onPostExecute(fileInfo);</div><div class="line">        mDownloadListener.onFinish(fileInfo);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onCancelled() &#123;</div><div class="line">        super.onCancelled();</div><div class="line">        mDownloadListener.onCancled();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>以后我们要下载东西，只需要调用下面的方法即可。同时，如果产品再更改需求，比如，从显示一个进度条ProgressDialog对话框，改成显示一个ProgressBar，我们只需要在<br>onProgress（）里面做相应的修改就好了，在也不用去阅读DownloadTask里面的代码呢？减少了代码的耦合性，是不是瞬间感觉世界很美好呢？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">mDownloadTask = new DownloadTask(mDownloadUrl, mDstPath, null, new</div><div class="line">        DownloadListener() &#123;</div><div class="line">    @Override</div><div class="line">    public void onStart() &#123;</div><div class="line">          start();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void onProgress(FileInfo fileInfo) &#123;</div><div class="line">        refreshProgress(fileInfo);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void onFinish(FileInfo fileInfo) &#123;</div><div class="line">        downloadfinish(fileInfo);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void onPaused(FileInfo fileInfo) &#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void onCancled() &#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line">mDownloadTask.execute();</div></pre></td></tr></table></figure>
+<hr>
+<h2 id="AsyncTask使用的注意事项"><a href="#AsyncTask使用的注意事项" class="headerlink" title="AsyncTask使用的注意事项"></a>AsyncTask使用的注意事项</h2><ul>
+<li>The AsyncTask class must be loaded on the UI thread. This is done automatically as of JELLY_BEAN.</li>
+<li>The task instance must be created on the UI thread.（AsyncTask必须在UI 线程里面初始化</li>
+<li>execute(Params…) must be invoked on the UI thread.</li>
+<li>Do not call onPreExecute(), onPostExecute(Result), doInBackground(Params…), onProgressUpdate(Progress…) manually.（不要手动地调用 onPreExecute(), onPostExecute(Result), doInBackground(Params…), onProgressUpdate(Progress…) 这些方法）</li>
+<li>The task can be executed only once (an exception will be thrown if a second execution is attempted.) （Task任务只能被执行一次，否则会抛出异常）</li>
+</ul>
+<hr>
+<p>相关知识点推荐：</p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52000680" target="_blank" rel="external"><strong>IntentService使用及源码分析</strong></a> </p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52060291" target="_blank" rel="external"><strong>HandlerThread源码分析</strong></a></p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/57409326" target="_blank" rel="external"><strong>AsyncTask使用及封装实践</strong></a></p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/57416380" target="_blank" rel="external"><strong>AsyncTask源码分析</strong></a></p>
+<p><a href="http://download.csdn.net/detail/gdutxiaoxu/9764362" target="_blank" rel="external"><strong>Demo下载地址</strong></a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="http://ww4.sinaimg.cn/large/9fe4afa0jw1fajouf05iyj20k00jyjtq.jpg" alt="xujun WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="http://ww2.sinaimg.cn/large/9fe4afa0jw1fajotg1815j20k00uc77g.jpg" alt="xujun Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/15/使用第三方框架解耦的一种思路——简单工厂模式的运用/" rel="next" title="使用第三方框架解耦的一种思路——简单工厂模式的运用">
+                <i class="fa fa-chevron-left"></i> 使用第三方框架解耦的一种思路——简单工厂模式的运用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/02/26/AsyncTask源码分析/" rel="prev" title="AsyncTask源码分析">
+                AsyncTask源码分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2017/02/26/AsyncTask-使用及封装实践/"
+     data-title="AsyncTask 使用及封装实践"
+     data-content=""
+     data-url="https://gdutxiaoxu.github.io/2017/02/26/AsyncTask-使用及封装实践/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/02/26/AsyncTask-使用及封装实践/"
+           data-title="AsyncTask 使用及封装实践" data-url="https://gdutxiaoxu.github.io/2017/02/26/AsyncTask-使用及封装实践/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.png"
+               alt="xujun" />
+          <p class="site-author-name" itemprop="name">xujun</p>
+          <p class="site-description motion-element" itemprop="description">gdutxiaoxu</p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="https://gdutxiaoxu.github.io/archives/">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="https://gdutxiaoxu.github.io/tags/">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AsyncTask的使用例子"><span class="nav-number">2.</span> <span class="nav-text">AsyncTask的使用例子</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简介"><span class="nav-number">2.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#效果图"><span class="nav-number">2.2.</span> <span class="nav-text">效果图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AsyncTask的主要几个方法"><span class="nav-number">2.3.</span> <span class="nav-text">AsyncTask的主要几个方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AsyncTask使用的几个步骤"><span class="nav-number">2.4.</span> <span class="nav-text">AsyncTask使用的几个步骤</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AsyncTask的封装使用"><span class="nav-number">3.</span> <span class="nav-text">AsyncTask的封装使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AsyncTask-使用接口回调机制来进行解耦"><span class="nav-number">3.1.</span> <span class="nav-text">AsyncTask 使用接口回调机制来进行解耦</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用"><span class="nav-number">3.2.</span> <span class="nav-text">使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AsyncTask使用的注意事项"><span class="nav-number">4.</span> <span class="nav-text">AsyncTask使用的注意事项</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xujun</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xujun"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("sybN87KmhJxd3H4Da6hVBgOf-gzGzoHsz", "7Ak1SzgvL37BJyjeMRDi6MVr");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>

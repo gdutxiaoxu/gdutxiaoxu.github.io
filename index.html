@@ -294,6 +294,492 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="https://gdutxiaoxu.github.io/2017/02/26/AsyncTask源码分析/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="xujun">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/uploads/avatar.png">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="徐俊个人博客">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="徐俊个人博客" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/02/26/AsyncTask源码分析/" itemprop="url">
+                  AsyncTask源码分析
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-26T18:29:40+08:00">
+                2017-02-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/02/26/AsyncTask源码分析/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/26/AsyncTask源码分析/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/02/26/AsyncTask源码分析/" class="leancloud_visitors" data-flag-title="AsyncTask源码分析">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52000680" target="_blank" rel="external"><strong>IntentService使用及源码分析</strong></a> </p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52060291" target="_blank" rel="external"><strong>HandlerThread源码分析</strong></a></p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/57409326" target="_blank" rel="external"><strong>AsyncTask使用及封装实践</strong></a></p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/57416380" target="_blank" rel="external"><strong>AsyncTask源码分析</strong></a></p>
+<p>上一篇博客，<a href="http://blog.csdn.net/gdutxiaoxu/article/details/57409326" target="_blank" rel="external"><strong>AsyncTask使用及封装实践</strong></a> 我们主要介绍了AsyncTask 的使用及封装实践，这一篇博客我们主要来讲解AsyncTask的源码</p>
+<hr>
+<p>这篇博客主要讲解以下内容</p>
+<ul>
+<li>AsyncTask的几个主要方法讲解</li>
+<li>AsyncTask 的源码分析</li>
+<li>AsyncTask怎样使用自定义的Executor</li>
+</ul>
+<h2 id="AsyncTask的几个主要方法讲解"><a href="#AsyncTask的几个主要方法讲解" class="headerlink" title="AsyncTask的几个主要方法讲解"></a>AsyncTask的几个主要方法讲解</h2><p>讲解之前我们先来回顾一下AsyncTask的几个主要方法</p>
+<ul>
+<li>Void onPreExecute()</li>
+</ul>
+<p>在task 任务开始执行的时候调用，在doInBackground(Params… params)方法之前调用，在主线程中执行</p>
+<ul>
+<li>Result doInBackground(Params… params)</li>
+</ul>
+<p>主要用来执行耗时操作，在子线程中执行，Params为我们参数的类型。而Result这个泛型，是我们返回的类型（<strong>可以是Integer，Long，String等等类型，只要不是八种基本类型就OK</strong>），同时 Result 的类型将作为 onPostExecute(Result result)的参数。</p>
+<ul>
+<li><p>Void onProgressUpdate(Progress… values)</p>
+<p>Runs on the UI thread after publishProgress(Progress…) is invoked. 当我们调用 publishProgress（）方法的时候，会调用 onProgressUpdate（）这个方法</p>
+</li>
+<li><p>Void onPostExecute(Result result)<br>在doInBackground（）方法执行完毕之后，会调用这个方法，是在主线程中执行的。<strong>但如果我们手动调用了cancelled()方法，那么这个方法将不会被调用。</strong></p>
+</li>
+<li><p>void onCancelled()</p>
+</li>
+</ul>
+<p>在Task </p>
+<ul>
+<li>execute(Params… params)</li>
+</ul>
+<p>Executes the task with the specified parameters.当我们调用这个方法的时候，会执行任务</p>
+<ul>
+<li>executeOnExecutor(Executor exec, Params… params)</li>
+</ul>
+<p>在指定的线程池里面执行Task</p>
+<p><strong>需要注意的是，Params，Progress，Result 并不是一种特定的类型，它其实是泛型，它支持除了八种基本类型之外的类型，跟普通的泛型一样。</strong></p>
+<hr>
+<h2 id="AsyncTask-的源码分析"><a href="#AsyncTask-的源码分析" class="headerlink" title="AsyncTask 的源码分析"></a>AsyncTask 的源码分析</h2><h3 id="执行流程"><a href="#执行流程" class="headerlink" title="执行流程"></a>执行流程</h3><p><img src="http://ww1.sinaimg.cn/large/9fe4afa0gy1fd3vg43hi2j20gj0ljwf1" alt=""></p>
+<p>当我们调用 execute（）方法的时候，会紧接着调用我们的execeteOnExecutor（sDefaultExecutor, params）方法<br>在这个方法里面，会首先判断执行的状态的合法性，如果是finish或者running，会抛出异常，<strong>这也就是为什么AsyncTak只能被调用执行一</strong>次。紧接着会调用onPreExecute()方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">public final AsyncTask&lt;Params, Progress, Result&gt; execute(Params... params) &#123;</div><div class="line">    return executeOnExecutor(sDefaultExecutor, params);</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">public final AsyncTask&lt;Params, Progress, Result&gt; executeOnExecutor(Executor exec,</div><div class="line">        Params... params) &#123;</div><div class="line">    if (mStatus != Status.PENDING) &#123;</div><div class="line">        switch (mStatus) &#123;</div><div class="line">            case RUNNING:</div><div class="line">                throw new IllegalStateException(&quot;Cannot execute task:&quot;</div><div class="line">                        + &quot; the task is already running.&quot;);</div><div class="line">            case FINISHED:</div><div class="line">                throw new IllegalStateException(&quot;Cannot execute task:&quot;</div><div class="line">                        + &quot; the task has already been executed &quot;</div><div class="line">                        + &quot;(a task can be executed only once)&quot;);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    mStatus = Status.RUNNING;</div><div class="line"></div><div class="line">    onPreExecute();</div><div class="line"></div><div class="line">    mWorker.mParams = params;</div><div class="line">    exec.execute(mFuture);</div><div class="line"></div><div class="line">    return this;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>接着会把当前的状态设置running状态，并把我们的params传递给我们的mWork。params=params；</p>
+<p>那这个mWork是什么呢？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">public AsyncTask() &#123;</div><div class="line">    mWorker = new WorkerRunnable&lt;Params, Result&gt;() &#123;</div><div class="line">        public Result call() throws Exception &#123;</div><div class="line">            mTaskInvoked.set(true);</div><div class="line">            Result result = null;</div><div class="line">            try &#123;</div><div class="line">                Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);</div><div class="line">                //noinspection unchecked</div><div class="line">                result = doInBackground(mParams);</div><div class="line">                Binder.flushPendingCommands();</div><div class="line">            &#125; catch (Throwable tr) &#123;</div><div class="line">                mCancelled.set(true);</div><div class="line">                throw tr;</div><div class="line">            &#125; finally &#123;</div><div class="line">                postResult(result);</div><div class="line">            &#125;</div><div class="line">            return result;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    mFuture = new FutureTask&lt;Result&gt;(mWorker) &#123;</div><div class="line">        @Override</div><div class="line">        protected void done() &#123;</div><div class="line">            try &#123;</div><div class="line">                postResultIfNotInvoked(get());</div><div class="line">            &#125; catch (InterruptedException e) &#123;</div><div class="line">                android.util.Log.w(LOG_TAG, e);</div><div class="line">            &#125; catch (ExecutionException e) &#123;</div><div class="line">                throw new RuntimeException(&quot;An error occurred while executing doInBackground()&quot;,</div><div class="line">                        e.getCause());</div><div class="line">            &#125; catch (CancellationException e) &#123;</div><div class="line">                postResultIfNotInvoked(null);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>我们先来分析一下mWorker;</li>
+</ul>
+<p>mWorker为AsyncTask的一个内部类<br>，实现了Callable接口，在call方法里面会调用我们的doInBackground方法，这也就是为什么我们的doInBackground。方法是在子线程里面执行的，执行完doInBackground（）方法会把结构传递给我们的postResult（result）方法，在result方法，会调用handler发送消息，<br>接着再handler的handleMessage里面处理，在handleMessage里面，又会调用我们的  finish()方法,finish()方法里面会判断任务是否取消，如果被取消，会调用onCancelled（），否则会调用onPostExecute（）方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">private static class InternalHandler extends Handler &#123;</div><div class="line">    public InternalHandler() &#123;</div><div class="line">        super(Looper.getMainLooper());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @SuppressWarnings(&#123;&quot;unchecked&quot;, &quot;RawUseOfParameterizedType&quot;&#125;)</div><div class="line">    @Override</div><div class="line">    public void handleMessage(Message msg) &#123;</div><div class="line">        AsyncTaskResult&lt;?&gt; result = (AsyncTaskResult&lt;?&gt;) msg.obj;</div><div class="line">        switch (msg.what) &#123;</div><div class="line">            case MESSAGE_POST_RESULT:</div><div class="line">                // There is only one result</div><div class="line">                result.mTask.finish(result.mData[0]);</div><div class="line">                break;</div><div class="line">            case MESSAGE_POST_PROGRESS:</div><div class="line">                result.mTask.onProgressUpdate(result.mData);</div><div class="line">                break;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">private void finish(Result result) &#123;</div><div class="line">    if (isCancelled()) &#123;</div><div class="line">        onCancelled(result);</div><div class="line">    &#125; else &#123;</div><div class="line">        onPostExecute(result);</div><div class="line">    &#125;</div><div class="line">    mStatus = Status.FINISHED;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>接着我们来分析一下mFuture</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">mFuture = new FutureTask&lt;Result&gt;(mWorker) &#123;</div><div class="line">        @Override</div><div class="line">        protected void done() &#123;</div><div class="line">            try &#123;</div><div class="line">                postResultIfNotInvoked(get());</div><div class="line">            &#125; catch (InterruptedException e) &#123;</div><div class="line">                android.util.Log.w(LOG_TAG, e);</div><div class="line">            &#125; catch (ExecutionException e) &#123;</div><div class="line">                throw new RuntimeException(&quot;An error occurred while executing doInBackground()&quot;,</div><div class="line">                        e.getCause());</div><div class="line">            &#125; catch (CancellationException e) &#123;</div><div class="line">                postResultIfNotInvoked(null);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;;</div></pre></td></tr></table></figure>
+<ol>
+<li><p>postResultIfNotInvoked(get());get()表示获取mWorker的call的返回值，即Result。</p>
+</li>
+<li><p>然后看postResultIfNotInvoked方法。<strong>会判断是否已经将结果发送出去，即判断在mWork里面是否已经调用postResult(result)发送结果，没有的话调用再调用postResult(result)发送出去</strong></p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">private void postResultIfNotInvoked(Result result) &#123;</div><div class="line">        final boolean wasTaskInvoked = mTaskInvoked.get();</div><div class="line">        if (!wasTaskInvoked) &#123;</div><div class="line">            postResult(result);</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p><strong>还记得上面exec.execute()吗？exec为executeOnExecutor(sDefaultExecutor,params)中的sDefaultExecutor</strong></p>
+<h3 id="下面看这个sDefaultExecutor"><a href="#下面看这个sDefaultExecutor" class="headerlink" title="下面看这个sDefaultExecutor"></a>下面看这个sDefaultExecutor</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">private static volatile Executor sDefaultExecutor = SERIAL_EXECUTOR;  </div><div class="line">public static final Executor SERIAL_EXECUTOR = new SerialExecutor();  </div><div class="line">private static class SerialExecutor implements Executor &#123;  </div><div class="line">        final ArrayDeque&lt;Runnable&gt; mTasks = new ArrayDeque&lt;Runnable&gt;();  </div><div class="line">        Runnable mActive;  </div><div class="line">        public synchronized void execute(final Runnable r) &#123;  </div><div class="line">            mTasks.offer(new Runnable() &#123;  </div><div class="line">                public void run() &#123;  </div><div class="line">                    try &#123;  </div><div class="line">                        r.run();  </div><div class="line">                    &#125; finally &#123;  </div><div class="line">                        scheduleNext();  </div><div class="line">                    &#125;  </div><div class="line">                &#125;  </div><div class="line">            &#125;);  </div><div class="line">            if (mActive == null) &#123;  </div><div class="line">                scheduleNext();  </div><div class="line">            &#125;  </div><div class="line">        &#125;  </div><div class="line">        protected synchronized void scheduleNext() &#123;  </div><div class="line">            if ((mActive = mTasks.poll()) != null) &#123;  </div><div class="line">                THREAD_POOL_EXECUTOR.execute(mActive);  </div><div class="line">            &#125;  </div><div class="line">        &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到sDefaultExecutor其实为SerialExecutor的一个实例，其内部维持一个任务队列；直接看其execute（Runnable runnable）方法，将runnable放入mTasks队尾；<br>判断当前mActive是否为空，为空则调用scheduleNext方法</p>
+<p>scheduleNext方法里面，则直接取出任务队列中的队首任务，如果不为null则传入THREAD_POOL_EXECUTOR进行执行。</p>
+<p>下面看THREAD_POOL_EXECUTOR为何方神圣：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Public static final Executor THREAD_POOL_EXECUTOR  </div><div class="line">          =new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,  </div><div class="line">                    TimeUnit.SECONDS, sPoolWorkQueue, sThreadFactory);</div></pre></td></tr></table></figure>
+<p>可以看到就是一个自己设置参数的线程池，参数为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">private static final int CORE_POOL_SIZE = Math.max(2, Math.min(CPU_COUNT - 1, 4));</div><div class="line">private static final int MAXIMUM_POOL_SIZE = CPU_COUNT * 2 + 1;</div><div class="line">private static final int KEEP_ALIVE_SECONDS = 30;</div><div class="line"></div><div class="line">private static final ThreadFactory sThreadFactory = new ThreadFactory() &#123;</div><div class="line">    private final AtomicInteger mCount = new AtomicInteger(1);</div><div class="line"></div><div class="line">    public Thread newThread(Runnable r) &#123;</div><div class="line">        return new Thread(r, &quot;AsyncTask #&quot; + mCount.getAndIncrement());</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">private static final BlockingQueue&lt;Runnable&gt; sPoolWorkQueue =</div><div class="line">        new LinkedBlockingQueue&lt;Runnable&gt;(128);</div></pre></td></tr></table></figure>
+<p>回顾一下sDefaultExecutor，真正在execute()中调用的为sDefaultExecutor.execute：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">private static class SerialExecutor implements Executor &#123;  </div><div class="line">        final ArrayDeque&lt;Runnable&gt; mTasks = new ArrayDeque&lt;Runnable&gt;();  </div><div class="line">        Runnable mActive;  </div><div class="line"></div><div class="line"></div><div class="line">        public synchronized void execute(final Runnable r) &#123;  </div><div class="line">            mTasks.offer(new Runnable() &#123;  </div><div class="line">                public void run() &#123;  </div><div class="line">                    try &#123;  </div><div class="line">                        r.run();  </div><div class="line">                    &#125; finally &#123;  </div><div class="line">                        scheduleNext();  </div><div class="line">                    &#125;  </div><div class="line">                &#125;  </div><div class="line">            &#125;);  </div><div class="line">            if (mActive == null) &#123;  </div><div class="line">                scheduleNext();  </div><div class="line">            &#125;  </div><div class="line">        &#125;  </div><div class="line">        protected synchronized void scheduleNext() &#123;  </div><div class="line">            if ((mActive = mTasks.poll()) != null) &#123;  </div><div class="line">                THREAD_POOL_EXECUTOR.execute(mActive);  </div><div class="line">            &#125;  </div><div class="line">        &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到，如果此时有10个任务同时调用execute（s synchronized）方法，第一个任务入队，然后在mActive = mTasks.poll()) != null被取出，并且赋值给mActivte，然后交给线程池去执行。然后第二个任务入队，但是此时mActive并不为null，并不会执行scheduleNext();所以如果第一个任务比较慢，10个任务都会进入队列等待；</p>
+<p>真正执行下一个任务的时机是，线程池执行完成第一个任务以后，调用Runnable中的finally代码块中的scheduleNext，所以虽然内部有一个线程池，其实调用的过程还是线性的。一个接着一个的执行，相当于单线程。</p>
+<h3 id="publicProgress（）方法的分析"><a href="#publicProgress（）方法的分析" class="headerlink" title="publicProgress（）方法的分析"></a>publicProgress（）方法的分析</h3><p>这也就是我们在Result doInBackground(Params… params)方法里面调用 publishProgress（）方法，会回调onProgressUpdate的原因</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">protected final void publishProgress(Progress... values) &#123;</div><div class="line">    if (!isCancelled()) &#123;</div><div class="line">        getHandler().obtainMessage(MESSAGE_POST_PROGRESS,</div><div class="line">                new AsyncTaskResult&lt;Progress&gt;(this, values)).sendToTarget();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">public void handleMessage(Message msg) &#123;</div><div class="line">    AsyncTaskResult&lt;?&gt; result = (AsyncTaskResult&lt;?&gt;) msg.obj;</div><div class="line">    switch (msg.what) &#123;</div><div class="line">        case MESSAGE_POST_RESULT:</div><div class="line">            // There is only one result</div><div class="line">            result.mTask.finish(result.mData[0]);</div><div class="line">            break;</div><div class="line">        case MESSAGE_POST_PROGRESS:</div><div class="line">            result.mTask.onProgressUpdate(result.mData);</div><div class="line">            break;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<hr>
+<h2 id="AsyncTask怎样使用自定义的Executor"><a href="#AsyncTask怎样使用自定义的Executor" class="headerlink" title="AsyncTask怎样使用自定义的Executor"></a>AsyncTask怎样使用自定义的Executor</h2><h3 id="常用的集中线程池介绍"><a href="#常用的集中线程池介绍" class="headerlink" title="常用的集中线程池介绍"></a>常用的集中线程池介绍</h3><ul>
+<li>newCachedThreadPool() </li>
+</ul>
+<p>缓存型池子，先查看池中有没有以前建立的线程，如果有，就reuse.如果没有，就建一个新的线程加入池中。能reuse的线程，必须是timeout IDLE内的池中线程，缺省timeout是60s,超过这个IDLE时长，线程实例将被终止及移出池。缓存型池子通常用于执行一些生存期很短的异步型任务 。</p>
+<ul>
+<li>newFixedThreadPool() </li>
+</ul>
+<p>fixedThreadPool与cacheThreadPool差不多，也是能reuse就用，但不能随时建新的线程 其独特之处:任意时间点，最多只能有固定数目的活动线程存在，此时如果有新的线程要建立，只能放在另外的队列中等待，直到当前的线程中某个线程终止直接被移出池子。和cacheThreadPool不同：fixedThreadPool池线程数固定，但是0秒IDLE（无IDLE）。这也就意味着创建的线程会一直存在。所以fixedThreadPool多数针对一些很稳定很固定的正规并发线程，多用于服务器。</p>
+<ul>
+<li>newScheduledThreadPool() </li>
+</ul>
+<p>调度型线程池。这个池子里的线程可以按schedule依次delay执行，或周期执行 。0秒IDLE（无IDLE）。</p>
+<ul>
+<li>SingleThreadExecutor </li>
+</ul>
+<p>单例线程，任意时间池中只能有一个线程 。用的是和cache池和fixed池相同的底层池，但线程数目是1-1,0秒IDLE（无IDLE）。</p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">// 调用 executeOnExecutor，传入相应的线程池即可。</div><div class="line">mDownloadTask.executeOnExecutor(Executors.newFixedThreadPool(4));</div></pre></td></tr></table></figure>
+<hr>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52000680" target="_blank" rel="external"><strong>IntentService使用及源码分析</strong></a> </p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52060291" target="_blank" rel="external"><strong>HandlerThread源码分析</strong></a></p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/57409326" target="_blank" rel="external"><strong>AsyncTask使用及封装实践</strong></a></p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/57416380" target="_blank" rel="external"><strong>AsyncTask源码分析</strong></a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="https://gdutxiaoxu.github.io/2017/02/26/AsyncTask-使用及封装实践/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="xujun">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/uploads/avatar.png">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="徐俊个人博客">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="徐俊个人博客" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/02/26/AsyncTask-使用及封装实践/" itemprop="url">
+                  AsyncTask 使用及封装实践
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-26T18:29:31+08:00">
+                2017-02-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/02/26/AsyncTask-使用及封装实践/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/26/AsyncTask-使用及封装实践/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/02/26/AsyncTask-使用及封装实践/" class="leancloud_visitors" data-flag-title="AsyncTask 使用及封装实践">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52000680" target="_blank" rel="external"><strong>IntentService使用及源码分析</strong></a> </p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52060291" target="_blank" rel="external"><strong>HandlerThread源码分析</strong></a></p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/57409326" target="_blank" rel="external"><strong>AsyncTask使用及封装实践</strong></a></p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/57416380" target="_blank" rel="external"><strong>AsyncTask源码分析</strong></a></p>
+<p>这篇博客主要是讲解AsyncTask的使用及封装实践，对于新手们还是有很大的参考意义的，尤其是AsyncTask的封装实践这部分。对于老鸟们，你们可以跳过了。同时需要声明的一点是，下面下载的例子只是进行简单的下载而已，并没有支持断点续传下载。需要的话请自行到github上面找相应的库，因为这并不是本篇博客的重点。</p>
+<p>这篇博客主要讲解以下问题：</p>
+<ul>
+<li>AsyncTask的简单使用</li>
+<li>AsyncTask的封装使用</li>
+<li>AsyncTask使用注意事项</li>
+</ul>
+<hr>
+<h2 id="AsyncTask的使用例子"><a href="#AsyncTask的使用例子" class="headerlink" title="AsyncTask的使用例子"></a>AsyncTask的使用例子</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>AsyncTask ，异步任务。没错，就想字面上理解的那样。它允许我们在子线程执行耗时任务，在UI 线程更新操作（如更新进度条等）。简单来说，就是帮我们做好了子线程与UI 线程的通讯，我们只需要调用响应的方法实现即可。底层是用Handler消息机制实现的。</p>
+<p>在Android开发中，我们经常需要下载各种东西，为了给用户较好的体验，我们经常需要显示下载进度。今天我们用以这个为例子，来教大家怎样使用AsyncTak。当然，github上面有很多开源库，实现断点下载，文件重命名等。不过这些不是本篇博客的重点。</p>
+<h3 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h3><p><img src="http://ww1.sinaimg.cn/large/9fe4afa0gy1fd3oyr1xy5g208i0j2wh3" alt=""></p>
+<h3 id="AsyncTask的主要几个方法"><a href="#AsyncTask的主要几个方法" class="headerlink" title="AsyncTask的主要几个方法"></a>AsyncTask的主要几个方法</h3><ul>
+<li>Void onPreExecute()</li>
+</ul>
+<p>在task 任务开始执行的时候调用，在doInBackground(Params… params)方法之前调用，在主线程中执行</p>
+<ul>
+<li>Result doInBackground(Params… params)</li>
+</ul>
+<p>主要用来执行耗时操作，在子线程中执行，Params为我们参数的类型。而Result这个泛型，是我们返回的类型（<strong>可以是Integer，Long，String等等类型，只要不是八种基本类型就OK</strong>），同时 Result 的类型将作为 onPostExecute(Result result)的参数。</p>
+<ul>
+<li><p>Void onProgressUpdate(Progress… values)</p>
+<p>Runs on the UI thread after publishProgress(Progress…) is invoked. 当我们调用 publishProgress（）方法的时候，会调用 onProgressUpdate（）这个方法</p>
+</li>
+<li><p>Void onPostExecute(Result result)<br>在doInBackground（）方法执行完毕之后，会调用这个方法，是在主线程中执行的。<strong>但如果我们手动调用了cancelled()方法，那么这个方法将不会被调用。</strong></p>
+</li>
+<li><p>void onCancelled()</p>
+</li>
+</ul>
+<p>在Task 任务取消的时候会调用</p>
+<ul>
+<li>execute(Params… params)</li>
+</ul>
+<p>Executes the task with the specified parameters.当我们调用这个方法的时候，会执行任务</p>
+<ul>
+<li>executeOnExecutor(Executor exec, Params… params)</li>
+</ul>
+<p>在指定的线程池里面执行Task</p>
+<p><strong>需要注意的是，Params，Progress，Result 并不是一种特定的类型，它其实是泛型，它支持除了八种基本类型之外的类型，跟普通的泛型一样。</strong></p>
+<h3 id="AsyncTask使用的几个步骤"><a href="#AsyncTask使用的几个步骤" class="headerlink" title="AsyncTask使用的几个步骤"></a>AsyncTask使用的几个步骤</h3><p>这里我们以下载一个apk为例讲解</p>
+<ol>
+<li>写一个类继承AsyncTask，并传入Params，Progress，Result 。三个参数的类型。</li>
+</ol>
+<p>比如我们传入的 Params，Progress，Result 的参数的类型分别为 Void, FileInfo, FileInfo，那我们可以这样写。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">private class MyDownloadTask extends AsyncTask&lt;Void, FileInfo, FileInfo&gt;&#123;</div><div class="line">     </div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>那Void, FileInfo, FileInfo，这几个参数的类型在哪里体现出来呢？</p>
+<p>请看下面注释</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">private class MyDownloadTask extends AsyncTask&lt;Void, FileInfo, FileInfo&gt; &#123;</div><div class="line"></div><div class="line">   ---</div><div class="line">  </div><div class="line">   // 方法参数的类型为Void，跟我们传入的Void一致，返回类型为 FileInfo ，跟我们传入Result的类型FileInfo一致</div><div class="line">    @Override</div><div class="line">    protected FileInfo doInBackground(Void... params) &#123;</div><div class="line">        </div><div class="line">    &#125;</div><div class="line"></div><div class="line">   // 方法参数类型为FileInfo，跟我们传入Progress的类型FileInfo一致</div><div class="line">    @Override</div><div class="line">    protected void onProgressUpdate(FileInfo... values) &#123;</div><div class="line">       </div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">   // 方法参数FileInfo，跟我们传入Result的类型FileInfo一致</div><div class="line">    @Override</div><div class="line">    protected void onPostExecute(FileInfo fileInfo) &#123;</div><div class="line">       </div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line"> </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>如果我们更新进度的话，需要重写 onProgressUpdate（）方法，并在doInBackground（）方法里面调用publishProgress（）方法</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">protected FileInfo doInBackground(Void... params) &#123;</div><div class="line">   </div><div class="line">   publishProgress(fileInfo);</div><div class="line"></div><div class="line">  </div><div class="line">&#125;</div><div class="line"></div><div class="line">@Override</div><div class="line">protected void onProgressUpdate(FileInfo... values) &#123;</div><div class="line">    super.onProgressUpdate(values);</div><div class="line">    refreshProgress(values[0]);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>当我们调用execute(Params… params) 或者 executeOnExecutor(Executor exec, Params… params) 方法的时候，Task将被防盗相应的 Executor 执行。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">MyDownloadTask myDownloadTask = new MyDownloadTask(mDownloadUrl, mDstPath);</div><div class="line">myDownloadTask.execute();</div></pre></td></tr></table></figure>
+<p>完整的Task代码如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div></pre></td><td class="code"><pre><div class="line">private class MyDownloadTask extends AsyncTask&lt;Void, FileInfo, FileInfo&gt; &#123;</div><div class="line"></div><div class="line">    String mDownLoadUrl;</div><div class="line">    String mDstPath;</div><div class="line"></div><div class="line">    public MyDownloadTask(String downloadUrl, String dstPath) &#123;</div><div class="line">        this.mDownLoadUrl = downloadUrl;</div><div class="line">        this.mDstPath = dstPath;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onPreExecute() &#123;</div><div class="line">        super.onPreExecute();</div><div class="line">        start();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected FileInfo doInBackground(Void... params) &#123;</div><div class="line">        //url字符串，检查网址是否已http:// 开头</div><div class="line">        mDownLoadUrl = (mDownLoadUrl.startsWith(&quot;http://&quot;)) ? mDownLoadUrl : &quot;http://&quot; +</div><div class="line">                mDownLoadUrl;</div><div class="line">        Log.d(TAG, &quot;doInBackground: mDownLoadUrl=&quot; + mDownLoadUrl);</div><div class="line">        Log.d(TAG, &quot;doInBackground: mDstPath=&quot; + mDstPath);</div><div class="line">        URL url = null;</div><div class="line">        FileInfo fileInfo = null;</div><div class="line">        int contentLength = -1;</div><div class="line">        int downloadLength = 0;</div><div class="line">        OutputStream output = null;</div><div class="line">        InputStream istream = null;</div><div class="line">        try &#123;</div><div class="line">            url = new URL(mDownLoadUrl);</div><div class="line">            //打开到url的连接</div><div class="line">            HttpURLConnection connection = (HttpURLConnection) url.openConnection();</div><div class="line">            contentLength = connection.getContentLength();</div><div class="line">            Log.i(TAG, &quot;doInBackground: contentLength=&quot; + contentLength);</div><div class="line">            //O部分，大体来说就是先检查文件夹是否存在，不存在则创建</div><div class="line">            istream = connection.getInputStream();</div><div class="line">            String filename = mDownLoadUrl.substring(mDownLoadUrl.lastIndexOf(&quot;/&quot;) + 1);</div><div class="line"></div><div class="line">            File dir = new File(mDstPath);</div><div class="line">            if (!dir.exists()) &#123;</div><div class="line">                dir.mkdir();</div><div class="line">            &#125;</div><div class="line">            File file = new File(mDstPath + filename);</div><div class="line">            // 如果存在同名文件，重命名</div><div class="line">            if (file.exists()) &#123;</div><div class="line">                file = FileUtils.rename(file.getPath());</div><div class="line">            &#125;</div><div class="line"></div><div class="line"></div><div class="line">            output = new FileOutputStream(file);</div><div class="line">            byte[] buffer = new byte[1024 * 4];</div><div class="line">            int count = 0;</div><div class="line">            int len = -1;</div><div class="line">            while ((len = istream.read(buffer)) != -1) &#123;</div><div class="line">                output.write(buffer, 0, len);</div><div class="line">                downloadLength += len;</div><div class="line"></div><div class="line">                if (count == 10) &#123;</div><div class="line">                    fileInfo = new FileInfo(contentLength, downloadLength, file, file.getPath</div><div class="line">                            (), file.getName());</div><div class="line">                    publishProgress(fileInfo);</div><div class="line">                    count = 0;</div><div class="line">                &#125;</div><div class="line">                count++;</div><div class="line"></div><div class="line">            &#125;</div><div class="line">            //                有可能count还没有走到10</div><div class="line">            fileInfo = new FileInfo(contentLength, downloadLength, file, file.getPath(), file</div><div class="line">                    .getName());</div><div class="line">            publishProgress(fileInfo);</div><div class="line">            output.flush();</div><div class="line">            output.close();</div><div class="line">            istream.close();</div><div class="line"></div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">            try &#123;</div><div class="line">                IOUtils.close(output);</div><div class="line">                IOUtils.close(istream);</div><div class="line">            &#125; catch (IOException e1) &#123;</div><div class="line">                e1.printStackTrace();</div><div class="line">            &#125;</div><div class="line"></div><div class="line">        &#125; finally &#123;</div><div class="line">            try &#123;</div><div class="line">                IOUtils.close(output);</div><div class="line">                IOUtils.close(istream);</div><div class="line">            &#125; catch (IOException e1) &#123;</div><div class="line">                e1.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        return fileInfo;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onProgressUpdate(FileInfo... values) &#123;</div><div class="line">        super.onProgressUpdate(values);</div><div class="line">        refreshProgress(values[0]);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onPostExecute(FileInfo fileInfo) &#123;</div><div class="line">        super.onPostExecute(fileInfo);</div><div class="line">        downloadfinish(fileInfo);</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onCancelled() &#123;</div><div class="line">        super.onCancelled();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">private void start() &#123;</div><div class="line">    mTvDownloadText.setText(&quot;开始下载&quot;);</div><div class="line">    mProgressBar.setMax(100);</div><div class="line">    mProgressBar.setProgress(0);</div><div class="line">&#125;</div><div class="line"></div><div class="line">private void downloadfinish(FileInfo fileInfo) &#123;</div><div class="line">    Log.i(TAG, &quot;onPostExecute: 下载完成=&quot; + fileInfo.mPath);</div><div class="line">    Toast.makeText(MainActivity.this, &quot;下载完成&quot;, Toast.LENGTH_SHORT).show();</div><div class="line">&#125;</div><div class="line"></div><div class="line">private void refreshProgress(FileInfo value) &#123;</div><div class="line">    FileInfo fileInfo = value;</div><div class="line">    if (fileInfo != null) &#123;</div><div class="line">        mProgressBar.setMax((int) fileInfo.mLength);</div><div class="line">        mProgressBar.setProgress((int) fileInfo.mDownloadLength);</div><div class="line">        mDownText = fileInfo.mFile.getName() + &quot;下载了&quot; + fileInfo.mDownloadLength + &quot;总长度是&quot; +</div><div class="line">                fileInfo.mLength;</div><div class="line">        mTvDownloadText.setText(mDownText);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<hr>
+<h2 id="AsyncTask的封装使用"><a href="#AsyncTask的封装使用" class="headerlink" title="AsyncTask的封装使用"></a>AsyncTask的封装使用</h2><p>前面我们讲完了AsyncTask的基本使用，不知道你有没有发现，其实代码耦合性是挺高的，</p>
+<ul>
+<li>我们直接在 onProgressUpdata(),onPostExecute()方法里面更新我们的界面，即我们的AsyncTask访问了我们Activity里面的控件，那如果我们修改了Activity的控件，我们岂不是又要去阅读AsyncTask的代码，去做相应的修改。</li>
+<li>下一次我们如果要下载别的东西，按照我们前面的代码，我们又要重新复制一份，这样无疑是做了很多重复的工作。</li>
+</ul>
+<p>说到这样，我相信大多数人的第一感觉就是把AsyncTask提取为外部类，封装起来。是的，确实，我们就是要把AsyncTask提取为外部类。那提取为歪不累之后呢？我们要访问Activity里面的空间，要怎样访问呢？</p>
+<ol>
+<li>在Activity里面定义静态方法</li>
+<li>把需要访问的View对象通过构造函数传递进来</li>
+<li>采用接口回调机制</li>
+</ol>
+<p>前面说到的三种方法，是可以做到AsyncTask与外界进行通讯的。但第一第二中方法明显不行。原因如下：</p>
+<ul>
+<li>第一种方法定义静态方法，那View对象也必须定义为static变量，这static变量的级别比较高，不易被垃圾回收机制回收，易发生没存泄露。</li>
+<li>第二种方法，把需要访问的View对象通过构造函数传递进来。如果需要访问的对象少的话，勉强可以接受，如果多的话，那岂不是要定义很多成员变量。不过最致命的还算是代码耦合性太高了。还不如AsyncTask直接作为内部类。</li>
+</ul>
+<p>好了，说了这么多，下面我们一起来看怎样使用接口回调机制来进行解耦。</p>
+<h3 id="AsyncTask-使用接口回调机制来进行解耦"><a href="#AsyncTask-使用接口回调机制来进行解耦" class="headerlink" title="AsyncTask 使用接口回调机制来进行解耦"></a>AsyncTask 使用接口回调机制来进行解耦</h3><ol>
+<li>使用接口回调机制，首先我们必须有一个接口</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">public interface DownloadListener &#123;</div><div class="line"></div><div class="line">    void onStart();</div><div class="line">    void onProgress(FileInfo fileInfo);</div><div class="line">    void onFinish(FileInfo FileInfo);</div><div class="line">    void onPaused(FileInfo fileInfo);</div><div class="line">    void onCancled();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>将DownLoadTask提取为一个外部类，并将需要传递的参数传递进来</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">public class DownloadTask extends AsyncTask&lt;Void,FileInfo,FileInfo&gt; &#123;</div><div class="line"></div><div class="line">    private  String mDownloadUrl;</div><div class="line">    private final String mDstPath;</div><div class="line">    private final String mFileName;</div><div class="line">    private final DownloadListener mDownloadListener;</div><div class="line"></div><div class="line">    public DownloadTask(String downloadUrl, String dstPath, String fileName, DownloadListener downloadListener)&#123;</div><div class="line">        mDownloadUrl = downloadUrl;</div><div class="line">        mDstPath = dstPath;</div><div class="line">        mFileName = fileName;</div><div class="line">        mDownloadListener = downloadListener;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li>在相应的地方调用我们接口的方法</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line">public class DownloadTask extends AsyncTask&lt;Void,FileInfo,FileInfo&gt; &#123;</div><div class="line"></div><div class="line">    ----</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onPreExecute() &#123;</div><div class="line">        super.onPreExecute();</div><div class="line">        mDownloadListener.onStart();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected FileInfo doInBackground(Void... params) &#123;</div><div class="line">    </div><div class="line">       ----</div><div class="line">            int len = -1;</div><div class="line">            while ((len = istream.read(buffer)) != -1) &#123;</div><div class="line">                output.write(buffer, 0, len);</div><div class="line">                downloadLength += len;</div><div class="line"></div><div class="line">                if (count == 10) &#123;</div><div class="line">                    fileInfo = new FileInfo(contentLength, downloadLength, file, file.getPath</div><div class="line">                            (), file.getName());</div><div class="line">                    publishProgress(fileInfo);</div><div class="line">                    count = 0;</div><div class="line">                &#125;</div><div class="line">                count++;</div><div class="line"></div><div class="line">            &#125;</div><div class="line">            //                有可能count还没有走到10</div><div class="line">            fileInfo = new FileInfo(contentLength, downloadLength, file, file.getPath(), file</div><div class="line">                    .getName());</div><div class="line">            publishProgress(fileInfo);</div><div class="line">            output.flush();</div><div class="line">            output.close();</div><div class="line">            istream.close();</div><div class="line"></div><div class="line">    </div><div class="line">       </div><div class="line">        return fileInfo;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onProgressUpdate(FileInfo... values) &#123;</div><div class="line">        super.onProgressUpdate(values);</div><div class="line">        mDownloadListener.onProgress(values[0]);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onPostExecute(FileInfo fileInfo) &#123;</div><div class="line">        super.onPostExecute(fileInfo);</div><div class="line">        mDownloadListener.onFinish(fileInfo);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    protected void onCancelled() &#123;</div><div class="line">        super.onCancelled();</div><div class="line">        mDownloadListener.onCancled();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>以后我们要下载东西，只需要调用下面的方法即可。同时，如果产品再更改需求，比如，从显示一个进度条ProgressDialog对话框，改成显示一个ProgressBar，我们只需要在<br>onProgress（）里面做相应的修改就好了，在也不用去阅读DownloadTask里面的代码呢？减少了代码的耦合性，是不是瞬间感觉世界很美好呢？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">mDownloadTask = new DownloadTask(mDownloadUrl, mDstPath, null, new</div><div class="line">        DownloadListener() &#123;</div><div class="line">    @Override</div><div class="line">    public void onStart() &#123;</div><div class="line">          start();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void onProgress(FileInfo fileInfo) &#123;</div><div class="line">        refreshProgress(fileInfo);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void onFinish(FileInfo fileInfo) &#123;</div><div class="line">        downloadfinish(fileInfo);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void onPaused(FileInfo fileInfo) &#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public void onCancled() &#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line">mDownloadTask.execute();</div></pre></td></tr></table></figure>
+<hr>
+<h2 id="AsyncTask使用的注意事项"><a href="#AsyncTask使用的注意事项" class="headerlink" title="AsyncTask使用的注意事项"></a>AsyncTask使用的注意事项</h2><ul>
+<li>The AsyncTask class must be loaded on the UI thread. This is done automatically as of JELLY_BEAN.</li>
+<li>The task instance must be created on the UI thread.（AsyncTask必须在UI 线程里面初始化</li>
+<li>execute(Params…) must be invoked on the UI thread.</li>
+<li>Do not call onPreExecute(), onPostExecute(Result), doInBackground(Params…), onProgressUpdate(Progress…) manually.（不要手动地调用 onPreExecute(), onPostExecute(Result), doInBackground(Params…), onProgressUpdate(Progress…) 这些方法）</li>
+<li>The task can be executed only once (an exception will be thrown if a second execution is attempted.) （Task任务只能被执行一次，否则会抛出异常）</li>
+</ul>
+<hr>
+<p>相关知识点推荐：</p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52000680" target="_blank" rel="external"><strong>IntentService使用及源码分析</strong></a> </p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52060291" target="_blank" rel="external"><strong>HandlerThread源码分析</strong></a></p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/57409326" target="_blank" rel="external"><strong>AsyncTask使用及封装实践</strong></a></p>
+<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/57416380" target="_blank" rel="external"><strong>AsyncTask源码分析</strong></a></p>
+<p><a href="http://download.csdn.net/detail/gdutxiaoxu/9764362" target="_blank" rel="external"><strong>Demo下载地址</strong></a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
   <link itemprop="mainEntityOfPage" href="https://gdutxiaoxu.github.io/2017/01/15/使用第三方框架解耦的一种思路——简单工厂模式的运用/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2262,500 +2748,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="https://gdutxiaoxu.github.io/2016/12/08/Android-启动系统相机，相册，裁剪图片及6-0权限管理/">
-
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="xujun">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/uploads/avatar.png">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="徐俊个人博客">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="徐俊个人博客" src="">
-    </span>
-  </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/12/08/Android-启动系统相机，相册，裁剪图片及6-0权限管理/" itemprop="url">
-                  Android 启动系统相机，相册，裁剪图片及6.0权限管理
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-08T14:10:13+08:00">
-                2016-12-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2016/12/08/Android-启动系统相机，相册，裁剪图片及6-0权限管理/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/12/08/Android-启动系统相机，相册，裁剪图片及6-0权限管理/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/12/08/Android-启动系统相机，相册，裁剪图片及6-0权限管理/" class="leancloud_visitors" data-flag-title="Android 启动系统相机，相册，裁剪图片及6.0权限管理">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数 </span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在日常开发中，我们经常需要用到上传图片的 功能，这个时候通常有两种做法，第一种，从相机获取，第二种，从相册获取。今天这篇博客主要讲解利用系统的Intent怎样获取？</p>
-<p>主要内容如下</p>
-<ul>
-<li>怎样通过相机获取我们的图片</li>
-<li>怎样启动相册获取我们想要的图片</li>
-<li>在Android 6.0中的动态权限处理】</li>
-<li>调用系统Intent和自定义相册的优缺点对比</li>
-</ul>
-<h2 id="怎样通过相机获取我们的图片"><a href="#怎样通过相机获取我们的图片" class="headerlink" title="怎样通过相机获取我们的图片"></a>怎样通过相机获取我们的图片</h2><p>总共有两种方式，</p>
-<h3 id="第一种方式："><a href="#第一种方式：" class="headerlink" title="第一种方式："></a>第一种方式：</h3><p>第一步，通过 MediaStore.ACTION_IMAGE_CAPTURE 启动我们的相机</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Intent pIntent = <span class="keyword">new</span> Intent(MediaStore.ACTION_IMAGE_CAPTURE);<span class="comment">//调用摄像头action</span></div><div class="line">startActivityForResult(pIntent, INTENT_CODE_IMAGE_CAPTURE1);<span class="comment">//requestcode</span></div></pre></td></tr></table></figure>
-<p>第二步，在onActivityResult进行处理，，核心代码如下</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onActivityResult</span><span class="params">(<span class="keyword">int</span> requestCode, <span class="keyword">int</span> resultCode, Intent data)</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onActivityResult(requestCode, resultCode, data);</div><div class="line">    <span class="keyword">switch</span> (requestCode) &#123;</div><div class="line">        <span class="keyword">case</span> INTENT_CODE_IMAGE_CAPTURE1:</div><div class="line">            <span class="keyword">if</span> (resultCode == RESULT_OK) &#123;</div><div class="line">                Bundle pBundle = data.getExtras(); <span class="comment">//从intent对象中获取数据，</span></div><div class="line"></div><div class="line">                <span class="keyword">if</span> (pBundle != <span class="keyword">null</span>) &#123;</div><div class="line">                    Bitmap pBitmap = (Bitmap) pBundle.get(<span class="string">"data"</span>);</div><div class="line">                    <span class="keyword">if</span> (pBitmap != <span class="keyword">null</span>) &#123;</div><div class="line">                        mIv.setImageBitmap(pBitmap);</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="第二种-方式"><a href="#第二种-方式" class="headerlink" title="第二种 方式"></a>第二种 方式</h3><p>第一步，通过 MediaStore.ACTION_IMAGE_CAPTURE 启动相机，并指定 MediaStore.EXTRA_OUTPUT ，intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mFile)); 传入我们的URI，这样，最终返回的信息会存储在我们的mFile中。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startCameraWithHighBitmap</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="comment">//确定存储拍照得到的图片文件路径</span></div><div class="line">    <span class="keyword">if</span> (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) &#123;</div><div class="line">        mFile = <span class="keyword">new</span> File(Environment.getExternalStorageDirectory(),</div><div class="line">                getName());</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        Toast.makeText(<span class="keyword">this</span>, <span class="string">"请插入sd卡"</span>, Toast.LENGTH_SHORT).show();</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        mFile.createNewFile();</div><div class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    Intent intent = <span class="keyword">new</span> Intent();</div><div class="line">    intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);</div><div class="line">    <span class="comment">//加载Uri型的文件路径</span></div><div class="line">    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mFile));</div><div class="line">    <span class="comment">//向onActivityResult发送intent，requestCode为INTENT_CODE_IMAGE_CAPTURE2</span></div><div class="line">    startActivityForResult(intent, INTENT_CODE_IMAGE_CAPTURE2);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>第二步：在onActivityResult进行处理，并对图片进行相应的压缩，防止在大图片的情况下发生OOM</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">case</span> INTENT_CODE_IMAGE_CAPTURE2:</div><div class="line">    <span class="keyword">if</span> (resultCode == RESULT_OK) &#123;</div><div class="line">        Bitmap bitmap = ImageZip.decodeSampledBitmapFromFile(mFile.getAbsolutePath(),</div><div class="line">                mWidth, mHeight);</div><div class="line">        mIv.setImageBitmap(bitmap);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">break</span>;</div></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Bitmap <span class="title">decodeSampledBitmapFromFile</span><span class="params">(String pathName, <span class="keyword">int</span> reqWidth, <span class="keyword">int</span> reqHeight)</span> </span>&#123;</div><div class="line">        <span class="keyword">final</span> BitmapFactory.Options options = <span class="keyword">new</span> BitmapFactory.Options();</div><div class="line">        options.inJustDecodeBounds = <span class="keyword">true</span>;</div><div class="line">        BitmapFactory.decodeFile(pathName, options);</div><div class="line">        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);</div><div class="line">        options.inJustDecodeBounds = <span class="keyword">false</span>;</div><div class="line">        Bitmap src = BitmapFactory.decodeFile(pathName, options);</div><div class="line"><span class="comment">//        return createScaleBitmap(src, reqWidth, reqHeight, options.inSampleSize);</span></div><div class="line">        <span class="keyword">return</span> src;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    </div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">calculateInSampleSize</span><span class="params">(BitmapFactory.Options options,</span></span></div><div class="line">                                         <span class="keyword">int</span> reqWidth, <span class="keyword">int</span> reqHeight) &#123;</div><div class="line">    <span class="comment">// 源图片的高度和宽度</span></div><div class="line">    <span class="keyword">final</span> <span class="keyword">int</span> height = options.outHeight;</div><div class="line">    <span class="keyword">final</span> <span class="keyword">int</span> width = options.outWidth;</div><div class="line">    <span class="keyword">int</span> inSampleSize = <span class="number">1</span>;</div><div class="line">    <span class="keyword">if</span> (height &gt; reqHeight || width &gt; reqWidth) &#123;</div><div class="line">        <span class="keyword">final</span> <span class="keyword">int</span> halfHeight = height / <span class="number">2</span>;</div><div class="line">        <span class="keyword">final</span> <span class="keyword">int</span> halfWidth = width / <span class="number">2</span>;</div><div class="line">        <span class="comment">// Calculate the largest inSampleSize value that is a power of 2 and keeps both</span></div><div class="line">        <span class="comment">// height and width larger than the requested height and width.</span></div><div class="line">        <span class="keyword">while</span> ((halfHeight / inSampleSize) &gt; reqHeight &amp;&amp; (halfWidth / inSampleSize) &gt; reqWidth) &#123;</div><div class="line">            inSampleSize *= <span class="number">2</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> inSampleSize;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="两种方法的区别"><a href="#两种方法的区别" class="headerlink" title="两种方法的区别"></a>两种方法的区别</h3><p>第一种方法获取的bitmap是被缩放的bitmap，第二种方法获取的bitmap是完整的bitmap，实际使用中根据需求情况决定使用哪一种方法。</p>
-<p><a href="https://developer.android.com/reference/android/provider/MediaStore.html#ACTION_IMAGE_CAPTURE" target="_blank" rel="external">官网参考地址</a></p>
-<hr>
-<h2 id="怎样启动相册获取我们想要的图片"><a href="#怎样启动相册获取我们想要的图片" class="headerlink" title="怎样启动相册获取我们想要的图片"></a>怎样启动相册获取我们想要的图片</h2><p>第一步，通过 Intent.ACTION_GET_CONTENT 这个Intent，并设置相应的type，启动相册。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Intent i = <span class="keyword">new</span> Intent(Intent.ACTION_GET_CONTENT, <span class="keyword">null</span>);</div><div class="line">i.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, <span class="string">"image/*"</span>);</div><div class="line">startActivityForResult(i, INTENT_CODE_IMAGE_GALLERY1);</div></pre></td></tr></table></figure>
-<p> 第二步，在onActivityResult中对返回的uri数据进行处理</p>
-<ul>
-<li>需要注意的是：这里我们需要注意是不是MIUI系统，如果不是MIUI系统，我们只需要进行一下处理，就OK了</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setPhotoForNormalSystem</span><span class="params">(Intent data)</span> </span>&#123;</div><div class="line">    String filePath = getRealPathFromURI(data.getData());</div><div class="line">    Bitmap bitmap = ImageZip.decodeSampledBitmapFromFile(filePath, mWidth, mHeight);</div><div class="line">    mIv.setImageBitmap(bitmap);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 解析Intent.getdata()得到的uri为String型的filePath</div><div class="line"> *</div><div class="line"> * <span class="doctag">@param</span> contentUri</div><div class="line"> * <span class="doctag">@return</span></div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getRealPathFromURI</span><span class="params">(Uri contentUri)</span> </span>&#123;</div><div class="line">    String[] proj = &#123;MediaStore.Audio.Media.DATA&#125;;</div><div class="line">    Cursor cursor = managedQuery(contentUri, proj, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</div><div class="line">    <span class="keyword">int</span> column_index = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);</div><div class="line">    cursor.moveToFirst();</div><div class="line">    <span class="keyword">return</span> cursor.getString(column_index);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<ul>
-<li>如果是MIUI系统，我们需要进行一下处理</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">private void setPhotoForMiuiSystem(Intent data) &#123;</div><div class="line">    Uri localUri = data.getData();</div><div class="line">    String scheme = localUri.getScheme();</div><div class="line">    String imagePath = &quot;&quot;;</div><div class="line">    if (&quot;content&quot;.equals(scheme)) &#123;</div><div class="line">        String[] filePathColumns = &#123;MediaStore.Images.Media.DATA&#125;;</div><div class="line">        Cursor c = getContentResolver().query(localUri, filePathColumns, null, null, null);</div><div class="line">        c.moveToFirst();</div><div class="line">        int columnIndex = c.getColumnIndex(filePathColumns[0]);</div><div class="line">        imagePath = c.getString(columnIndex);</div><div class="line">        c.close();</div><div class="line">    &#125; else if (&quot;file&quot;.equals(scheme)) &#123;//小米4选择云相册中的图片是根据此方法获得路径</div><div class="line">        imagePath = localUri.getPath();</div><div class="line">    &#125;</div><div class="line">    Bitmap bitmap = ImageZip.decodeSampledBitmapFromFile(imagePath, mWidth, mHeight);</div><div class="line">    mIv.setImageBitmap(bitmap);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>在代码中的体现如下，即判断是否是MIUI系统，对于不同的系统采用不同的方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onActivityResult</span><span class="params">(<span class="keyword">int</span> requestCode, <span class="keyword">int</span> resultCode, Intent data)</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onActivityResult(requestCode, resultCode, data);</div><div class="line">    <span class="keyword">if</span> (resultCode != RESULT_OK) &#123;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">switch</span> (requestCode) &#123;</div><div class="line">        <span class="keyword">case</span> INTENT_CODE_IMAGE_GALLERY1:</div><div class="line">            <span class="keyword">if</span> (SystemUtils.isMIUI()) &#123;</div><div class="line">                setPhotoForMiuiSystem(data);</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                setPhotoForNormalSystem(data);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<hr>
-<h2 id="Android6-0动态权限管理"><a href="#Android6-0动态权限管理" class="headerlink" title="Android6.0动态权限管理"></a>Android6.0动态权限管理</h2><p>我们知道在Android6.0以上的系统，有一些权限需要动态授予 </p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">group:android.permission-group.CONTACTS</div><div class="line">  permission:android.permission.WRITE_CONTACTS</div><div class="line">  permission:android.permission.GET_ACCOUNTS</div><div class="line">  permission:android.permission.READ_CONTACTS</div><div class="line"></div><div class="line">group:android.permission-group.PHONE</div><div class="line">  permission:android.permission.READ_CALL_LOG</div><div class="line">  permission:android.permission.READ_PHONE_STATE</div><div class="line">  permission:android.permission.CALL_PHONE</div><div class="line">  permission:android.permission.WRITE_CALL_LOG</div><div class="line">  permission:android.permission.USE_SIP</div><div class="line">  permission:android.permission.PROCESS_OUTGOING_CALLS</div><div class="line">  permission:com.android.voicemail.permission.ADD_VOICEMAIL</div><div class="line"></div><div class="line">group:android.permission-group.CALENDAR</div><div class="line">  permission:android.permission.READ_CALENDAR</div><div class="line">  permission:android.permission.WRITE_CALENDAR</div><div class="line"></div><div class="line">group:android.permission-group.CAMERA</div><div class="line">  permission:android.permission.CAMERA</div><div class="line"></div><div class="line">group:android.permission-group.SENSORS</div><div class="line">  permission:android.permission.BODY_SENSORS</div><div class="line"></div><div class="line">group:android.permission-group.LOCATION</div><div class="line">  permission:android.permission.ACCESS_FINE_LOCATION</div><div class="line">  permission:android.permission.ACCESS_COARSE_LOCATION</div><div class="line"></div><div class="line">group:android.permission-group.STORAGE</div><div class="line">  permission:android.permission.READ_EXTERNAL_STORAGE</div><div class="line">  permission:android.permission.WRITE_EXTERNAL_STORAGE</div><div class="line"></div><div class="line">group:android.permission-group.MICROPHONE</div><div class="line">  permission:android.permission.RECORD_AUDIO</div><div class="line"></div><div class="line">group:android.permission-group.SMS</div><div class="line">  permission:android.permission.READ_SMS</div><div class="line">  permission:android.permission.RECEIVE_WAP_PUSH</div><div class="line">  permission:android.permission.RECEIVE_MMS</div><div class="line">  permission:android.permission.RECEIVE_SMS</div><div class="line">  permission:android.permission.SEND_SMS</div><div class="line">  permission:android.permission.READ_CELL_BROADCASTS</div></pre></td></tr></table></figure>
-<p>我们这里容易 得知读取相机需要的权限有，写sd卡权限，读取camera权限，这两个权限都需要动态授予。</p>
-<h3 id="这里我们以检查是否授予camera权限为例子讲解"><a href="#这里我们以检查是否授予camera权限为例子讲解" class="headerlink" title="这里我们以检查是否授予camera权限为例子讲解"></a>这里我们以检查是否授予camera权限为例子讲解</h3><p>第一步，在启动相机的时候检查时候已经授予camera权限，没有的话 ，请求camera权限</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">if (ContextCompat.checkSelfPermission(this, permission)</div><div class="line">        != PackageManager.PERMISSION_GRANTED) &#123;//还没有授予权限</div><div class="line">    if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) &#123;</div><div class="line">        Toast.makeText(this, &quot;您已禁止该权限，需要重新开启。&quot;, Toast.LENGTH_SHORT).show();</div><div class="line">    &#125; else &#123;</div><div class="line">        ActivityCompat.requestPermissions(this, new String[]&#123;permission&#125;,</div><div class="line">                request_camera2);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;else&#123;// 已经授予权限</div><div class="line">    startCameraWithHighBitmap();</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">private void startCameraWithHighBitmap() &#123;</div><div class="line">    //确定存储拍照得到的图片文件路径</div><div class="line">    if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) &#123;</div><div class="line">        mFile = new File(Environment.getExternalStorageDirectory(),</div><div class="line">                getName());</div><div class="line">    &#125; else &#123;</div><div class="line">        Toast.makeText(this, &quot;请插入sd卡&quot;, Toast.LENGTH_SHORT).show();</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    try &#123;</div><div class="line">        mFile.createNewFile();</div><div class="line">    &#125; catch (IOException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    Intent intent = new Intent();</div><div class="line">    intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);</div><div class="line">    //加载Uri型的文件路径</div><div class="line">    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mFile));</div><div class="line">    //向onActivityResult发送intent，requestCode为INTENT_CODE_IMAGE_CAPTURE2</div><div class="line">    startActivityForResult(intent, INTENT_CODE_IMAGE_CAPTURE2);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>第二步:重写onRequestPermissionsResult方法，判断是否授权成功，成功的话启动相机，核心代码如下。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,</div><div class="line">                                       @NonNull int[] grantResults) &#123;</div><div class="line">    super.onRequestPermissionsResult(requestCode, permissions, grantResults);</div><div class="line">    switch (requestCode) &#123;</div><div class="line">       </div><div class="line"></div><div class="line">        case request_camera2:</div><div class="line">            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) &#123;</div><div class="line">                startCameraWithHighBitmap();</div><div class="line">            &#125; else &#123;</div><div class="line">                // Permission Denied</div><div class="line">                Toast.makeText(this, &quot;Permission Denied&quot;, Toast</div><div class="line">                        .LENGTH_SHORT).show();</div><div class="line">            &#125;</div><div class="line">            break;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>至于检查sd卡写权限的，这里不再阐述，有兴趣的话，可以下载源码看一下。</p>
-<p>关于Android6.0动态获取权限的，可以参考这一篇博客<a href="http://gudong.name/%E6%8A%80%E6%9C%AF/2015/11/10/android_m_permission.html" target="_blank" rel="external">在Android 6.0 设备上动态获取权限</a></p>
-<hr>
-<h2 id="调用系统Intent和自定义相册的优缺点对比"><a href="#调用系统Intent和自定义相册的优缺点对比" class="headerlink" title="调用系统Intent和自定义相册的优缺点对比"></a>调用系统Intent和自定义相册的优缺点对比</h2><h3 id="调用系统Intent启动相册"><a href="#调用系统Intent启动相册" class="headerlink" title="调用系统Intent启动相册"></a>调用系统Intent启动相册</h3><p>优点： 代码简洁</p>
-<p>缺点：对于不同的手机厂商，room往往被修改了，有时候调用系统的Intent，会有一些一项不到的bug， 不能实现多张图片的选择</p>
-<h3 id="自定义相册"><a href="#自定义相册" class="headerlink" title="自定义相册"></a>自定义相册</h3><p>优点： 实现的样式可以自己定制，可以实现多张图片的选择等</p>
-<p>缺点： 代码量稍微多一些</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a><strong>总结</strong></h3><p>综上所述，对于本地相册的功能，本人还是强烈推荐自己实现，因为采用系统的，灵活性差，更重要的是，经常会有一些 莫名其妙的bug</p>
-<p>这里给大家推荐两种实现方式，一个是鸿洋大神以前写的，一个是GitHub的开源库。</p>
-<p><a href="http://blog.csdn.net/lmj623565791/article/details/39943731" target="_blank" rel="external">Android 超高仿微信图片选择器 图片该这么加载</a></p>
-<p>Android仿微信图片上传，可以选择多张图片，缩放预览，拍照上传等</p>
-<p><a href="https://github.com/zfdang/android-multiple-images-selector" target="_blank" rel="external">android-multiple-images-selector</a></p>
-<hr>
-<h2 id="裁剪图片"><a href="#裁剪图片" class="headerlink" title="裁剪图片"></a>裁剪图片</h2><p>关于裁剪图片的Intent，网上的大多数做法是</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Intent <span class="title">cropPic</span><span class="params">(Uri imageUri)</span> </span>&#123;</div><div class="line"></div><div class="line">    Intent intent = <span class="keyword">new</span> Intent(<span class="string">"com.android.camera.action.CROP"</span>);</div><div class="line"></div><div class="line">    intent.putExtra(<span class="string">"crop"</span>, <span class="string">"true"</span>);</div><div class="line"></div><div class="line">    <span class="comment">// 设置x,y的比例，截图方框就按照这个比例来截 若设置为0,0，或者不设置 则自由比例截图</span></div><div class="line">    intent.putExtra(<span class="string">"aspectX"</span>, <span class="number">2</span>);</div><div class="line">    intent.putExtra(<span class="string">"aspectY"</span>, <span class="number">1</span>);</div><div class="line"></div><div class="line">    <span class="comment">// 裁剪区的宽和高 其实就是裁剪后的显示区域 若裁剪的比例不是显示的比例，</span></div><div class="line">    <span class="comment">// 则自动压缩图片填满显示区域。若设置为0,0 就不显示。若不设置，则按原始大小显示</span></div><div class="line">    intent.putExtra(<span class="string">"outputX"</span>, <span class="number">200</span>);</div><div class="line">    intent.putExtra(<span class="string">"outputY"</span>, <span class="number">100</span>);</div><div class="line"></div><div class="line">    <span class="comment">// 不知道有啥用。。可能会保存一个比例值 需要相关文档啊</span></div><div class="line">    intent.putExtra(<span class="string">"scale"</span>, <span class="keyword">true</span>);</div><div class="line"></div><div class="line">    <span class="comment">// true的话直接返回bitmap，可能会很占内存 不建议</span></div><div class="line">    intent.putExtra(<span class="string">"return-data"</span>, <span class="keyword">false</span>);</div><div class="line">    <span class="comment">// 上面设为false的时候将MediaStore.EXTRA_OUTPUT即"output"关联一个Uri</span></div><div class="line">    intent.putExtra(<span class="string">"output"</span>, imageUri);</div><div class="line">    <span class="comment">// 看参数即可知道是输出格式</span></div><div class="line">    intent.putExtra(<span class="string">"outputFormat"</span>, Bitmap.CompressFormat.JPEG.toString());</div><div class="line">    <span class="comment">// 面部识别 这里用不上</span></div><div class="line">    intent.putExtra(<span class="string">"noFaceDetection"</span>, <span class="keyword">false</span>);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="keyword">return</span> intent;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>当你运行代码的时候，部分设备会报错，大致的意思是：com.android.camera.action.CROP 的Activity  not found</p>
-<p>解决方法，我们可以捕获一下异常，防止发生崩溃，并弹出吐司提醒用户不支持裁剪功能。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">try</span>&#123;</div><div class="line">    Intent intent = IntentUtils.cropPic(Uri.fromFile(mF));</div><div class="line">    startActivityForResult(intent,req_crop);</div><div class="line">&#125;<span class="keyword">catch</span>(ActivityNotFoundException a)&#123;</div><div class="line">    String errorMessage = <span class="string">"Your device doesn't support the crop action!"</span>;</div><div class="line">    Toast toast = Toast.makeText(<span class="keyword">this</span>, errorMessage, Toast.LENGTH_SHORT);</div><div class="line">    toast.show();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>当然，github上面有两个比较好的开源库</p>
-<p><a href="https://github.com/jdamcd/android-crop" target="_blank" rel="external">android-crop</a></p>
-<p><a href="https://github.com/edmodo/cropper" target="_blank" rel="external">cropper</a></p>
-<hr>
-<p><strong><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53411790" target="_blank" rel="external">文章首发地址CSDN：</a><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53411790" target="_blank" rel="external">http://blog.csdn.net/gdutxiaoxu/article/details/53411790</a></strong></p>
-<p><strong><a href="http://download.csdn.net/detail/gdutxiaoxu/9698246" target="_blank" rel="external">源码下载地址：</a><a href="http://download.csdn.net/detail/gdutxiaoxu/9698246" target="_blank" rel="external">http://download.csdn.net/detail/gdutxiaoxu/9698246</a></strong></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="https://gdutxiaoxu.github.io/2016/12/08/Retrofit使用教程（一）-Retrofit入门详解/">
-
-  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="xujun">
-    <meta itemprop="description" content="">
-    <meta itemprop="image" content="/uploads/avatar.png">
-  </span>
-
-  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-    <meta itemprop="name" content="徐俊个人博客">
-    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
-      <img style="display:none;" itemprop="url image" alt="徐俊个人博客" src="">
-    </span>
-  </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/12/08/Retrofit使用教程（一）-Retrofit入门详解/" itemprop="url">
-                   Retrofit使用教程（一）- Retrofit入门详解
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-08T14:04:56+08:00">
-                2016-12-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2016/12/08/Retrofit使用教程（一）-Retrofit入门详解/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/12/08/Retrofit使用教程（一）-Retrofit入门详解/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/12/08/Retrofit使用教程（一）-Retrofit入门详解/" class="leancloud_visitors" data-flag-title=" Retrofit使用教程（一）- Retrofit入门详解">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数 </span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Retrofit使用教程（一）-Retrofit入门详解"><a href="#Retrofit使用教程（一）-Retrofit入门详解" class="headerlink" title="Retrofit使用教程（一）- Retrofit入门详解"></a>Retrofit使用教程（一）- Retrofit入门详解</h1><hr>
-<p><strong><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52745491" target="_blank" rel="external">转载请注明博客地址：</a><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52745491" target="_blank" rel="external">http://blog.csdn.net/gdutxiaoxu/article/details/52745491</a></strong></p>
-<p><strong><a href="https://github.com/gdutxiaoxu/RetrofitDemo.git" target="_blank" rel="external">源码下载地址：</a><a href="https://github.com/gdutxiaoxu/RetrofitDemo.git" target="_blank" rel="external">https://github.com/gdutxiaoxu/RetrofitDemo.git</a></strong></p>
-<p><strong>本人已经好久没有更新 博客了，这次更新博客打算写一下retrofit的使用教程系列的 博客，写作思路大概如下</strong></p>
-<ul>
-<li>先从retrofit的基本使用讲起;</li>
-<li>接着将retrofit结合RxJava的使用;</li>
-<li>接着讲Retrofit的封装使用，（包括错误统一处理）;</li>
-<li>有时间和能力的话会尝试研究一下retrofit的 源码.</li>
-</ul>
-<h2 id="本篇博客主要讲解以下问题"><a href="#本篇博客主要讲解以下问题" class="headerlink" title="本篇博客主要讲解以下问题"></a>本篇博客主要讲解以下问题</h2><ul>
-<li>Retrofit简介</li>
-<li>Retrofit的简单使用例子</li>
-<li>Retrofit的get请求</li>
-<li>Retrofit的put请求（提交表单数据）</li>
-<li>如何为 retrofit添加header</li>
-<li>如何提交json数据</li>
-</ul>
-<h2 id="Retrofit简介"><a href="#Retrofit简介" class="headerlink" title="Retrofit简介"></a>Retrofit简介</h2><p>Retrofit是square开源的网络请求库，底层是使用OKHttp封装的，网络请求速度很快.</p>
-<h3 id="主要有一下几种请求方法"><a href="#主要有一下几种请求方法" class="headerlink" title="主要有一下几种请求方法"></a>主要有一下几种请求方法</h3><table>
-<thead>
-<tr>
-<th>格式</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>@GET</td>
-<td>表示这是一个GET请求</td>
-</tr>
-<tr>
-<td>@POST</td>
-<td>表示这个一个POST请求</td>
-</tr>
-<tr>
-<td>@PUT</td>
-<td>表示这是一个PUT请求</td>
-</tr>
-<tr>
-<td>@DELETE</td>
-<td>表示这是一个DELETE请求</td>
-</tr>
-<tr>
-<td>@HEAD</td>
-<td>表示这是一个HEAD请求</td>
-</tr>
-<tr>
-<td>@OPTIONS</td>
-<td>表示这是一个OPTION请求</td>
-</tr>
-<tr>
-<td>@PATCH</td>
-<td>表示这是一个PAT请求</td>
-</tr>
-</tbody>
-</table>
-<h3 id="各种请求注解的意思"><a href="#各种请求注解的意思" class="headerlink" title="各种请求注解的意思"></a>各种请求注解的意思</h3><table>
-<thead>
-<tr>
-<th>格式</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>@Headers</td>
-<td>添加请求头</td>
-</tr>
-<tr>
-<td>@Path</td>
-<td>替换路径</td>
-</tr>
-<tr>
-<td>@Query</td>
-<td>替代参数值，通常是结合get请求的</td>
-</tr>
-<tr>
-<td>@FormUrlEncoded</td>
-<td>用表单数据提交</td>
-</tr>
-<tr>
-<td>@Field</td>
-<td>替换参数值，是结合post请求的</td>
-</tr>
-</tbody>
-</table>
-<h2 id="Retrofit的简单使用例子"><a href="#Retrofit的简单使用例子" class="headerlink" title="Retrofit的简单使用例子"></a>Retrofit的简单使用例子</h2><p>要使用retrofit请求网络数据，大概可以分为以下几步</p>
-<ul>
-<li>1)添加依赖，这里以AndroidStudio为例：在build.grale添加如下依赖</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"> compile <span class="string">'com.squareup.retrofit2:retrofit:2.1.0'</span></div><div class="line">compile <span class="string">'com.squareup.retrofit2:converter-gson:2.1.0'</span></div></pre></td></tr></table></figure>
-<ul>
-<li>2） 创建Retrofit对象</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Retrofit retrofit = <span class="keyword">new</span> Retrofit.Builder()</div><div class="line">        <span class="comment">//使用自定义的mGsonConverterFactory</span></div><div class="line">        .addConverterFactory(GsonConverterFactory.create())</div><div class="line">        .baseUrl(<span class="string">"http://apis.baidu.com/txapi/"</span>)</div><div class="line">        .build();</div><div class="line">mApi = retrofit.create(APi.class);</div></pre></td></tr></table></figure>
-<ul>
-<li>3）发起网络请求</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">mApi = retrofit.create(APi.class);</div><div class="line">Call&lt;News&gt; news = mApi.getNews(<span class="string">"1"</span>, <span class="string">"10"</span>);</div><div class="line">news.enqueue(<span class="keyword">new</span> Callback&lt;News&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(Call&lt;News&gt; call, Response&lt;News&gt; response)</span> </span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFailure</span><span class="params">(Call&lt;News&gt; call, Throwable t)</span> </span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">APi</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Headers</span>(<span class="string">"apikey:81bf9da930c7f9825a3c3383f1d8d766"</span>)</div><div class="line">    <span class="meta">@GET</span>(<span class="string">"word/word"</span>)</div><div class="line">    <span class="function">Call&lt;News&gt; <span class="title">getNews</span><span class="params">(@Query(<span class="string">"num"</span>)</span> String num,@<span class="title">Query</span><span class="params">(<span class="string">"page"</span>)</span>String page)</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><strong>到此一个简单的使用retrofit的网络请求就完成了。</strong>接下来我们来了解retrofit的各种请求方式。</p>
-<hr>
-<h2 id="Retrofit的get请求"><a href="#Retrofit的get请求" class="headerlink" title="Retrofit的get请求"></a>Retrofit的get请求</h2><p>加入我们想请求这样的网址：<a href="http://apis.baidu.com/txapi/world/world?num=10&amp;page=1，header为&quot;apikey:81bf9da930c7f9825a3c3383f1d8d766&quot;,我们可以这样请求：" target="_blank" rel="external">http://apis.baidu.com/txapi/world/world?num=10&amp;page=1，header为&quot;apikey:81bf9da930c7f9825a3c3383f1d8d766&quot;,我们可以这样请求：</a></p>
-<p>第一步，在interface Api中 增加如下方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">@Headers</span>(<span class="string">"apikey:81bf9da930c7f9825a3c3383f1d8d766"</span>)</div><div class="line"><span class="meta">@GET</span>(<span class="string">"word/word"</span>)</div><div class="line"><span class="function">Call&lt;News&gt; <span class="title">getNews</span><span class="params">(@Query(<span class="string">"num"</span>)</span> String num,@<span class="title">Query</span><span class="params">(<span class="string">"page"</span>)</span>String page)</span>;</div></pre></td></tr></table></figure></p>
-<p>第二部，在代码里面请求<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//创建retrofit对象</span></div><div class="line">Retrofit retrofit = <span class="keyword">new</span> Retrofit.Builder()</div><div class="line">        <span class="comment">//使用自定义的mGsonConverterFactory</span></div><div class="line">        .addConverterFactory(GsonConverterFactory.create())</div><div class="line">        .baseUrl(<span class="string">"http://apis.baidu.com/txapi/"</span>)</div><div class="line">        .build();</div><div class="line"><span class="comment">// 实例化我们的mApi对象</span></div><div class="line">mApi = retrofit.create(APi.class); </div><div class="line"></div><div class="line"><span class="comment">// 调用我们的响应的方法</span></div><div class="line">Call&lt;News&gt; news = mApi.getNews(number, page);</div><div class="line">news.enqueue(<span class="keyword">new</span> Callback&lt;News&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(Call&lt;News&gt; call, Response&lt;News&gt; response)</span> </span>&#123;</div><div class="line">        News body = response.body();</div><div class="line">        Logger.i(<span class="string">"onResponse:   ="</span>+body.toString());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFailure</span><span class="params">(Call&lt;News&gt; call, Throwable t)</span> </span>&#123;</div><div class="line">        Logger.i(<span class="string">"onResponse:   ="</span>+t.getMessage());</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
-<h3 id="解释说明"><a href="#解释说明" class="headerlink" title="解释说明"></a>解释说明</h3><p>假设BaseUrl是<a href="http://apis.baidu.com/txapi/的前提下" target="_blank" rel="external">http://apis.baidu.com/txapi/的前提下</a></p>
-<ul>
-<li>1）其中 @GET(“word/word”)会追加到baseUrl ：<a href="http://apis.baidu.com/txapi/的后面，即变成：http://apis.baidu.com/txapi/world/world" target="_blank" rel="external">http://apis.baidu.com/txapi/的后面，即变成：http://apis.baidu.com/txapi/world/world</a></li>
-<li>2）@Query(“num”) String num,@Query(“page”)String page；分别对应键值的名称与值。会追加到<a href="http://apis.baidu.com/txapi/world/world的后面，请求网址即变成:http://apis.baidu.com/txapi/world/world?num=10&amp;page=1" target="_blank" rel="external">http://apis.baidu.com/txapi/world/world的后面，请求网址即变成:http://apis.baidu.com/txapi/world/world?num=10&amp;page=1</a></li>
-<li>3）  @Headers(“apikey:81bf9da930c7f9825a3c3383f1d8d766”)是 在基础之上为 其添加响应头</li>
-<li><p>4）如果想继续增加参数，只需要在方法参数追加这样的形式就OK了：<br>,@Query(“page”)String page</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Headers</span>(<span class="string">"apikey:81bf9da930c7f9825a3c3383f1d8d766"</span>)</div><div class="line"><span class="meta">@GET</span>(<span class="string">"word/word"</span>)</div><div class="line"><span class="function">Call&lt;News&gt; <span class="title">getNews</span><span class="params">(@Query(<span class="string">"num"</span>)</span> String num,@<span class="title">Query</span><span class="params">(<span class="string">"page"</span>)</span>String page，@<span class="title">Query</span><span class="params">(<span class="string">"type"</span>)</span> String type)</span>;</div></pre></td></tr></table></figure>
-</li>
-<li><p>5)加入我们想要请求这样的网址<a href="http://apis.baidu.com/txapi/tiyu/tiyu?num=10&amp;page=1，,我们可以这样写" target="_blank" rel="external">http://apis.baidu.com/txapi/tiyu/tiyu?num=10&amp;page=1，,我们可以这样写</a></p>
-</li>
-</ul>
-  <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"> <span class="meta">@Headers</span>(&#123;<span class="string">"apikey:81bf9da930c7f9825a3c3383f1d8d766"</span> ,<span class="string">"Content-Type:application/json"</span>&#125;)</div><div class="line"><span class="meta">@GET</span>(<span class="string">"&#123;type&#125;/&#123;type&#125;"</span>)</div><div class="line"><span class="function">Call&lt;News&gt; <span class="title">tiYu</span><span class="params">(@Path(<span class="string">"type"</span>)</span> String type, @<span class="title">Query</span><span class="params">(<span class="string">"num"</span>)</span> String num,@<span class="title">Query</span><span class="params">(<span class="string">"page"</span>)</span>String page)</span>;</div><div class="line">String type=<span class="string">"tiyu"</span>;</div><div class="line">Call&lt;News&gt; news = api.tiYu(type,number, page);</div></pre></td></tr></table></figure>
-<hr>
-<h2 id="retrofit的post请求"><a href="#retrofit的post请求" class="headerlink" title="retrofit的post请求"></a>retrofit的post请求</h2><p>假如我们想要 请求这样的网址<a href="http://apis.baidu.com/txapi/world/world?以post的" target="_blank" rel="external">http://apis.baidu.com/txapi/world/world?以post的</a> 方式提交这样的 数据：num=10&amp;page=1，我们可以写成 如下的 样子，注意post的时候必须使用@Field这种形式的注解，而不是使用@Query这种形式的注解，其他的 与get请求一样，这样只给出核心代码</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@FormUrlEncoded</span></div><div class="line"><span class="meta">@Headers</span>(&#123;<span class="string">"apikey:81bf9da930c7f9825a3c3383f1d8d766"</span> ,<span class="string">"Content-Type:application/json"</span>&#125;)</div><div class="line"><span class="meta">@POST</span>(<span class="string">"world/world"</span>)</div><div class="line"><span class="function">Call&lt;News&gt; <span class="title">postNews</span><span class="params">(@Field(<span class="string">"num"</span>)</span> String num, @<span class="title">Field</span><span class="params">(<span class="string">"page"</span>)</span>String page)</span>;</div></pre></td></tr></table></figure>
-<h2 id="如何为retrofit添加请求头head"><a href="#如何为retrofit添加请求头head" class="headerlink" title="如何为retrofit添加请求头head"></a>如何为retrofit添加请求头head</h2><p>总共有以下几种方式</p>
-<h3 id="第一种方法"><a href="#第一种方法" class="headerlink" title="第一种方法"></a>第一种方法</h3><p>在OKHttpClient interceptors里面进行处理，这样添加的headKey不会覆盖掉 前面的 headKey</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">okHttpClient.interceptors().add(<span class="keyword">new</span> Interceptor() &#123;  </div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Response <span class="title">intercept</span><span class="params">(Interceptor.Chain chain)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">        Request original = chain.request();</div><div class="line"></div><div class="line">        <span class="comment">// Request customization: add request headers</span></div><div class="line">        Request.Builder requestBuilder = original.newBuilder()</div><div class="line">                    .addHeader(<span class="string">"header-key"</span>, <span class="string">"value1"</span>)</div><div class="line">                    .addHeader(<span class="string">"header-key"</span>, <span class="string">"value2"</span>);</div><div class="line"></div><div class="line">        Request request = requestBuilder.build();</div><div class="line">        <span class="keyword">return</span> chain.proceed(request);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
-<h3 id="第二种方法"><a href="#第二种方法" class="headerlink" title="第二种方法"></a>第二种方法</h3><p>同样在在OKHttpClient interceptors里面进行处理，这样添加的headKey会覆盖掉 前面的 headKey<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">okHttpClient.interceptors().add(<span class="keyword">new</span> Interceptor() &#123;  </div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Response <span class="title">intercept</span><span class="params">(Interceptor.Chain chain)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">        Request original = chain.request();</div><div class="line"></div><div class="line">        <span class="comment">// Request customization: add request headers</span></div><div class="line">        Request.Builder requestBuilder = original.newBuilder()</div><div class="line">                .header(<span class="string">"headerkey"</span>, <span class="string">"header-value"</span>); <span class="comment">// &lt;-- this is the important line</span></div><div class="line"></div><div class="line">        Request request = requestBuilder.build();</div><div class="line">        <span class="keyword">return</span> chain.proceed(request);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
-<h3 id="第三种方法"><a href="#第三种方法" class="headerlink" title="第三种方法"></a>第三种方法</h3><p>利用 retrofit自带的注解，比如我们想要添加这样的请求头：”apikey:81bf9da930c7f9825a3c3383f1d8d766” ,”Content-Type:application/json”；则可以写成如下的 样式</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Headers</span>(&#123;<span class="string">"apikey:81bf9da930c7f9825a3c3383f1d8d766"</span> ,<span class="string">"Content-Type:application/json"</span>&#125;)</div><div class="line"><span class="meta">@GET</span>(<span class="string">"world/world"</span>)</div><div class="line"><span class="function">Call&lt;News&gt; <span class="title">getNews</span><span class="params">(@Query(<span class="string">"num"</span>)</span> String num,@<span class="title">Query</span><span class="params">(<span class="string">"page"</span>)</span>String page)</span>;</div></pre></td></tr></table></figure>
-<hr>
-<h2 id="通过post提交json数据"><a href="#通过post提交json数据" class="headerlink" title="通过post提交json数据"></a>通过post提交json数据</h2><p>Post 提交JSON数据</p>
-<p>有时提交的数据量比较大时，用键值对的方式提交参数不太方便，Retrofit可以通过@Body注释，直接传递一个对象给请求主体，Retrofit通过JSON转化器，把对象映射成JSON数据。</p>
-<p>假设我们需要提交的数据为<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="string">"id"</span>: <span class="number">1</span>,</div><div class="line">    <span class="string">"text"</span>: <span class="string">"my task title"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<ul>
-<li><p>接口定义：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TaskService</span> </span>&#123;  </div><div class="line">    <span class="meta">@Headers</span>(&#123;<span class="string">"Content-Type: application/json"</span>,<span class="string">"Accept:  application/json"</span>&#125;)</div><div class="line">    <span class="meta">@POST</span>(<span class="string">"/tasks"</span>)</div><div class="line">    <span class="function">Call&lt;Task&gt; <span class="title">createTask</span><span class="params">(@Body Task task)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>传递实体需要有Model：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Task</span> </span>&#123;  </div><div class="line">    <span class="keyword">private</span> <span class="keyword">long</span> id;</div><div class="line">    <span class="keyword">private</span> String text;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Task</span><span class="params">()</span> </span>&#123;&#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Task</span><span class="params">(<span class="keyword">long</span> id, String text)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.id = id;</div><div class="line">        <span class="keyword">this</span>.text = text;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-<li><p>客户端调用：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Task task = <span class="keyword">new</span> Task(<span class="number">1</span>, <span class="string">"my task title"</span>);  </div><div class="line">Call&lt;Task&gt; call = taskService.createTask(task);  </div><div class="line">call.enqueue(<span class="keyword">new</span> Callback&lt;Task&gt;() &#123;&#125;);</div></pre></td></tr></table></figure>
-</li>
-<li><p>这样，服务端得到的是JOSN数据：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="string">"id"</span>: <span class="number">1</span>,</div><div class="line">    <span class="string">"text"</span>: <span class="string">"my task title"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>到此，这篇博客为止</p>
-<h2 id="题外话："><a href="#题外话：" class="headerlink" title="题外话："></a>题外话：</h2><p>其实retrofit在5月份实习的时候就接触了，之前为什么不写 博客了，因为网上的 使用教程很多，觉得没有必要。到后面学习的时候，发现retrofit的使用时 比较灵活的，并且使用方法也是相对较多的，于是，就写了retrofit这系列的使用博客。</p>
-<p><strong><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52745491" target="_blank" rel="external">转载请注明博客地址：</a><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52745491" target="_blank" rel="external">http://blog.csdn.net/gdutxiaoxu/article/details/52745491</a></strong></p>
-<p><strong><a href="https://github.com/gdutxiaoxu/RetrofitDemo.git" target="_blank" rel="external">源码下载地址：</a><a href="https://github.com/gdutxiaoxu/RetrofitDemo.git" target="_blank" rel="external">https://github.com/gdutxiaoxu/RetrofitDemo.git</a></strong></p>
-<p><strong><a href="http://square.github.io/retrofit/" target="_blank" rel="external">参考官网地址</a><a href="http://square.github.io/retrofit/" target="_blank" rel="external">http://square.github.io/retrofit/</a></strong></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2803,7 +2795,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="https://gdutxiaoxu.github.io/archives/">
-                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-count">16</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
