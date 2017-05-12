@@ -1,3 +1,3 @@
+https://gdutxiaoxu.github.io/2017/05/12/自定义-Behavior-仿新浪微博发现页的实现/
+https://gdutxiaoxu.github.io/2017/05/12/Behavior/
 https://gdutxiaoxu.github.io/2017/02/26/AsyncTask源码分析/
-https://gdutxiaoxu.github.io/2017/02/26/AsyncTask-使用及封装实践/
-https://gdutxiaoxu.github.io/2017/01/15/使用第三方框架解耦的一种思路——简单工厂模式的运用/
