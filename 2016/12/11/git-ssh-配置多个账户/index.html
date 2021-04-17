@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
+<!DOCTYPE html><html lang="zh-CN"><head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
@@ -10,10 +8,10 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
   <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
@@ -96,13 +94,13 @@
   </style>
 </noscript>
 
-</head>
+<script>function loadCss(l){var d=document,h=d.head,s=d.createElement('link');s.rel='stylesheet';s.href=l;!function e(f){if (d.body)return f();setTimeout(function(){e(f)})}(function(){h.appendChild(s);});}loadCss('/style.css');</script></head>
 
-<body itemscope itemtype="http://schema.org/WebPage">
+<body itemscope="" itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
     <div class="headband"></div>
 
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <header class="header" itemscope="" itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
     <div class="toggle" aria-label="切换导航栏">
@@ -180,16 +178,16 @@
     
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://gdutxiaoxu.gitee.io/2016/12/11/git-ssh-%E9%85%8D%E7%BD%AE%E5%A4%9A%E4%B8%AA%E8%B4%A6%E6%88%B7/">
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="徐公">
       <meta itemprop="description" content="「Android学习+面试指南」助你升职加薪">
     </span>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="程序员徐公">
     </span>
       <header class="post-header">
@@ -220,7 +218,7 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                <span class="post-meta-item-text">阅读时长 ≈</span>
               <span>NaN:aN</span>
             </span>
 
@@ -256,27 +254,27 @@
 <li>登陆Github, 添加 ssh </li>
 <li>测试：</li>
 </ul>
-<h2 id="1、设置Git的user-name和email：-如果是第一次的话"><a href="#1、设置Git的user-name和email：-如果是第一次的话" class="headerlink" title="1、设置Git的user name和email：(如果是第一次的话)"></a>1、设置Git的user name和email：(如果是第一次的话)</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># 这里的“xujun&quot; 可以替换成自己的用户名</div><div class="line">git config --global user.name &quot;xujun&quot;</div><div class="line"># 这里的邮箱 gdutxiaoxu@163.com  替换成自己的邮箱</div><div class="line">git config --global user.email  &quot;gdutxiaoxu@163.com&quot;</div></pre></td></tr></table></figure>
-<h2 id="检查是否已经有SSH-Key。"><a href="#检查是否已经有SSH-Key。" class="headerlink" title="检查是否已经有SSH Key。"></a>检查是否已经有SSH Key。</h2><figure class="highlight scilab"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">　　<span class="built_in">cd</span> ~/.ssh</div></pre></td></tr></table></figure>
+<h2 id="1、设置Git的user-name和email：-如果是第一次的话"><a href="#1、设置Git的user-name和email：-如果是第一次的话" class="headerlink" title="1、设置Git的user name和email：(如果是第一次的话)"></a>1、设置Git的user name和email：(如果是第一次的话)</h2><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># 这里的“xujun" 可以替换成自己的用户名</div><div class="line">git config --global user.name "xujun"</div><div class="line"># 这里的邮箱 gdutxiaoxu@163.com  替换成自己的邮箱</div><div class="line">git config --global user.email  "gdutxiaoxu@163.com"</div></pre></td></tr></tbody></table></figure>
+<h2 id="检查是否已经有SSH-Key。"><a href="#检查是否已经有SSH-Key。" class="headerlink" title="检查是否已经有SSH Key。"></a>检查是否已经有SSH Key。</h2><figure class="highlight scilab"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">　　<span class="built_in">cd</span> ~/.ssh</div></pre></td></tr></tbody></table></figure>
 <p>接着输入ls，</p>
-<figure class="highlight mel"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">ls</span></div></pre></td></tr></table></figure>
+<figure class="highlight mel"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">ls</span></div></pre></td></tr></tbody></table></figure>
 <p>列出该文件下的文件，看是否存在 id_isa 和 id_isa.pub 文件（也可以是别的文件名，只要 yourName 和 yourName.pub 承兑存在），如果存在的话，证明已经存在 ssh key了，可以直接跳过 <em>生成密钥</em> 这一步骤，</p>
 <p>下图是存在的情况下</p>
 <p><img src="http://ww2.sinaimg.cn/large/9fe4afa0jw1famro8k282j20d3026jrq.jpg" alt=""></p>
-<h2 id="3、生成密钥"><a href="#3、生成密钥" class="headerlink" title="3、生成密钥"></a>3、生成密钥</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># 这里的邮箱 gdutxiaoxu@163.com  替换成自己的邮箱</div><div class="line">ssh-keygen -t rsa -C &quot;gdutxiaoxu@163.com&quot;</div></pre></td></tr></table></figure>
+<h2 id="3、生成密钥"><a href="#3、生成密钥" class="headerlink" title="3、生成密钥"></a>3、生成密钥</h2><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># 这里的邮箱 gdutxiaoxu@163.com  替换成自己的邮箱</div><div class="line">ssh-keygen -t rsa -C "gdutxiaoxu@163.com"</div></pre></td></tr></tbody></table></figure>
 <p>连续3个回车。如果不需要密码的话。<br>最后得到了两个文件：id_rsa和id_rsa.pub。</p>
 <p>默认的存储路径是：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">C:\Users\Administrator\.ssh</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">C:\Users\Administrator\.ssh</div></pre></td></tr></tbody></table></figure>
 <h2 id="4、添加密钥到ssh-agent"><a href="#4、添加密钥到ssh-agent" class="headerlink" title="4、添加密钥到ssh-agent"></a>4、添加密钥到ssh-agent</h2><p>确保 ssh-agent 是可用的。ssh-agent是一种控制用来保存公钥身份验证所使用的私钥的程序，其实ssh-agent就是一个密钥管理器，运行ssh-agent以后，使用ssh-add将私钥交给ssh-agent保管，其他程序需要身份验证的时候可以将验证申请交给ssh-agent来完成整个认证过程。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># start the ssh-agent in the background</div><div class="line">eval &quot;$(ssh-agent -s)&quot;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># start the ssh-agent in the background</div><div class="line">eval "$(ssh-agent -s)"</div></pre></td></tr></tbody></table></figure>
 <p><img src="http://ww3.sinaimg.cn/large/9fe4afa0gw1fammrmpcbfj20as02eaad.jpg" alt=""></p>
 <p>添加生成的 SSH key 到 ssh-agent。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh-add ~/.ssh/id_rsa</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh-add ~/.ssh/id_rsa</div></pre></td></tr></tbody></table></figure>
 <h2 id="5、登陆Github-添加-ssh-。"><a href="#5、登陆Github-添加-ssh-。" class="headerlink" title="5、登陆Github, 添加 ssh 。"></a>5、登陆Github, 添加 ssh 。</h2><p>把id_rsa.pub文件里的内容复制到这里</p>
 <p><img src="http://ww4.sinaimg.cn/large/9fe4afa0gw1fammt1ixqwj20h209k3yx.jpg" alt=""></p>
 <p><img src="http://ww2.sinaimg.cn/large/9fe4afa0gw1fammth6gk9j20ir035t8v.jpg" alt=""></p>
 <p><img src="http://ww4.sinaimg.cn/large/9fe4afa0gw1fammtr9flrj20iq0aywgp.jpg" alt=""></p>
-<h2 id="6、测试："><a href="#6、测试：" class="headerlink" title="6、测试："></a>6、测试：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh -T git@github.com</div></pre></td></tr></table></figure>
+<h2 id="6、测试："><a href="#6、测试：" class="headerlink" title="6、测试："></a>6、测试：</h2><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh -T git@github.com</div></pre></td></tr></tbody></table></figure>
 <p>你将会看到：</p>
 <blockquote>
 <p>Hi humingx! You’ve successfully authenticated, but GitHub does not provide shell access.</p>
@@ -286,10 +284,10 @@
 <h2 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h2><p> 如果我之前的仓库是用https提交的，那么我现在想用ssh 的方式提交，怎么办呢 ，别急，下面就来教你怎样操作了。</p>
 <p> 这里同样以我本机目录下的G://test 仓库为例子，</p>
 <p> 找到仓库下 .git 文件夹下的config文件，打开，可以看到以下内容</p>
-<figure class="highlight nix"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"> [core]</div><div class="line">	<span class="attr">repositoryformatversion</span> = <span class="number">0</span></div><div class="line">	<span class="attr">filemode</span> = <span class="literal">false</span></div><div class="line">	<span class="attr">bare</span> = <span class="literal">false</span></div><div class="line">	<span class="attr">logallrefupdates</span> = <span class="literal">true</span></div><div class="line">	<span class="attr">symlinks</span> = <span class="literal">false</span></div><div class="line">	<span class="attr">ignorecase</span> = <span class="literal">true</span></div><div class="line">[remote <span class="string">"origin"</span>]</div><div class="line">	<span class="attr">url</span> = https://github.com/gdutxiaoxu/test.git</div><div class="line">	<span class="attr">fetch</span> = +refs/heads<span class="comment">/*:refs/remotes/origin/*</span></div><div class="line">[branch "master"]</div><div class="line">	remote = origin</div><div class="line">	merge = refs/heads/master</div></pre></td></tr></table></figure>
+<figure class="highlight nix"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"> [core]</div><div class="line">	<span class="attr">repositoryformatversion</span> = <span class="number">0</span></div><div class="line">	<span class="attr">filemode</span> = <span class="literal">false</span></div><div class="line">	<span class="attr">bare</span> = <span class="literal">false</span></div><div class="line">	<span class="attr">logallrefupdates</span> = <span class="literal">true</span></div><div class="line">	<span class="attr">symlinks</span> = <span class="literal">false</span></div><div class="line">	<span class="attr">ignorecase</span> = <span class="literal">true</span></div><div class="line">[remote <span class="string">"origin"</span>]</div><div class="line">	<span class="attr">url</span> = https://github.com/gdutxiaoxu/test.git</div><div class="line">	<span class="attr">fetch</span> = +refs/heads<span class="comment">/*:refs/remotes/origin/*</span></div><div class="line">[branch "master"]</div><div class="line">	remote = origin</div><div class="line">	merge = refs/heads/master</div></pre></td></tr></tbody></table></figure>
 <p> 将文件中的 url = <a href="https://github.com/gdutxiaoxu/test.git" target="_blank" rel="external">https://github.com/gdutxiaoxu/test.git</a> 更改为 url = git@github.com:gdutxiaoxu/test.git 即可。</p>
 <p>修改后的文件如下</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[core]</div><div class="line">	repositoryformatversion = <span class="number">0</span></div><div class="line">	filemode = false</div><div class="line">	bare = false</div><div class="line">	logallrefupdates = true</div><div class="line">	symlinks = false</div><div class="line">	ignorecase = true</div><div class="line">[remote <span class="string">"origin"</span>]</div><div class="line">	url = git@github<span class="selector-class">.com</span>:gdutxiaoxu/test<span class="selector-class">.git</span></div><div class="line">	fetch = +refs/heads<span class="comment">/*:refs/remotes/origin/*</span></div><div class="line">[branch "master"]</div><div class="line">	remote = origin</div><div class="line">	merge = refs/heads/master</div></pre></td></tr></table></figure>
+<figure class="highlight stylus"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[core]</div><div class="line">	repositoryformatversion = <span class="number">0</span></div><div class="line">	filemode = false</div><div class="line">	bare = false</div><div class="line">	logallrefupdates = true</div><div class="line">	symlinks = false</div><div class="line">	ignorecase = true</div><div class="line">[remote <span class="string">"origin"</span>]</div><div class="line">	url = git@github<span class="selector-class">.com</span>:gdutxiaoxu/test<span class="selector-class">.git</span></div><div class="line">	fetch = +refs/heads<span class="comment">/*:refs/remotes/origin/*</span></div><div class="line">[branch "master"]</div><div class="line">	remote = origin</div><div class="line">	merge = refs/heads/master</div></pre></td></tr></tbody></table></figure>
 <p>进入本地仓库 ，增加 xujun.txt 文件，提交，你会看到不需要再提交密码了</p>
 <p><img src="http://ww2.sinaimg.cn/large/9fe4afa0jw1famsfk3xzoj20dy0b5ab6.jpg" alt=""></p>
 <p>远程仓库</p>
@@ -402,7 +400,7 @@
       <!--/noindex-->
 
       <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
   <p class="site-author-name" itemprop="name">徐公</p>
   <div class="site-description" itemprop="description">「Android学习+面试指南」助你升职加薪</div>
 </div>
@@ -432,11 +430,11 @@
       </div>
 
       <div class="wechat_OA">
-        <br/>
+        <br>
         <span>扫一扫，欢迎关注我的公众号</span>
         <br>
           <!-- 这里添加你的二维码图片 -->
-        <img src ="https://gitee.com/gdutxiaoxu/blog-picture/raw/master/21/01/qrcode_for_gh_f0b7a2d93f70_430%20(2).jpg">
+        <img src="https://gitee.com/gdutxiaoxu/blog-picture/raw/master/21/01/qrcode_for_gh_f0b7a2d93f70_430%20(2).jpg">
       </div>
 
     </div>
@@ -455,7 +453,7 @@
 
 <div class="copyright">
   
-  &copy; 
+  © 
   <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
@@ -471,10 +469,10 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+      <span class="post-meta-item-text">站点阅读时长 ≈</span>
     <span title="站点阅读时长">NaN:aN</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> &amp; <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
 
         
@@ -491,25 +489,50 @@
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
+  
+  
+  
 
 
-<script src="/js/schemes/pisces.js"></script>
 
 
-<script src="/js/next-boot.js"></script>
+
+
+
+
+
+
 
 
 
 
   
-  <script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+<script src="/bundle.js"></script><script>
     (function(){
       var canonicalURL, curProtocol;
       //Get the <link> tag
@@ -533,10 +556,8 @@
 	    if (!canonicalURL) canonicalURL = window.location.href;
 	    //Assign script content. Replace current URL with the canonical URL
       !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
-  </script>
+  ;
 
-
-<script>
 (function(){
     var bp = document.createElement('script');
     var curProtocol = window.location.protocol.split(':')[0];
@@ -549,25 +570,4 @@
     var s = document.getElementsByTagName("script")[0];
     s.parentNode.insertBefore(bp, s);
 })();
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
-</body>
-</html>
+</script></body></html>
