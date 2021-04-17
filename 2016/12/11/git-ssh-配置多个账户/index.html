@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>git ssh 配置多个账户 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前言：前几天在写博客  手把手教你用Hexo + github 搭建自己博客的时候，经常需要用到一些git操作，截了好多图，于是就想干脆整理成一系列的git 教程，总结如下
+
+Git下载及配置环境变量
+Git 命令行教程及实例教程
+Git ssh 配置及使用
+ git ssh 配置多个账户
+
+
+闲聊这篇教程是在电脑上已经安装好git的前提之上的，要进行以下配置，请先确保你的电脑已经安装好git。以">
+<meta property="og:type" content="article">
+<meta property="og:title" content="git ssh 配置多个账户">
+<meta property="og:url" content="http://example.com/2016/12/11/git-ssh-配置多个账户/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="前言：前几天在写博客  手把手教你用Hexo + github 搭建自己博客的时候，经常需要用到一些git操作，截了好多图，于是就想干脆整理成一系列的git 教程，总结如下
+
+Git下载及配置环境变量
+Git 命令行教程及实例教程
+Git ssh 配置及使用
+ git ssh 配置多个账户
+
+
+闲聊这篇教程是在电脑上已经安装好git的前提之上的，要进行以下配置，请先确保你的电脑已经安装好git。以">
+<meta property="og:image" content="http://ww3.sinaimg.cn/mw690/9fe4afa0gw1famnawriudj211y0lc4ar.jpg">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/9fe4afa0jw1famro8k282j20d3026jrq.jpg">
+<meta property="og:image" content="http://ww3.sinaimg.cn/large/9fe4afa0gw1fammrmpcbfj20as02eaad.jpg">
+<meta property="og:image" content="http://ww4.sinaimg.cn/large/9fe4afa0gw1fammt1ixqwj20h209k3yx.jpg">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/9fe4afa0gw1fammth6gk9j20ir035t8v.jpg">
+<meta property="og:image" content="http://ww4.sinaimg.cn/large/9fe4afa0gw1fammtr9flrj20iq0aywgp.jpg">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/9fe4afa0gw1fammv8uf98j20j502udgk.jpg">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/9fe4afa0jw1famsfk3xzoj20dy0b5ab6.jpg">
+<meta property="og:image" content="http://ww4.sinaimg.cn/mw690/9fe4afa0gw1famw6htumvj20cw08ugm3.jpg">
+<meta property="og:updated_time" content="2016-12-11T14:10:53.811Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="git ssh 配置多个账户">
+<meta name="twitter:description" content="前言：前几天在写博客  手把手教你用Hexo + github 搭建自己博客的时候，经常需要用到一些git操作，截了好多图，于是就想干脆整理成一系列的git 教程，总结如下
+
+Git下载及配置环境变量
+Git 命令行教程及实例教程
+Git ssh 配置及使用
+ git ssh 配置多个账户
+
+
+闲聊这篇教程是在电脑上已经安装好git的前提之上的，要进行以下配置，请先确保你的电脑已经安装好git。以">
+<meta name="twitter:image" content="http://ww3.sinaimg.cn/mw690/9fe4afa0gw1famnawriudj211y0lc4ar.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-git-ssh-配置多个账户" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/12/11/git-ssh-配置多个账户/" class="article-date">
+  <time datetime="2016-12-11T08:26:48.000Z" itemprop="datePublished">2016-12-11</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      git ssh 配置多个账户
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>前言：前几天在写博客  <a href="http://blog.csdn.net/gdutxiaoxu/article/details/53576018" target="_blank" rel="external">手把手教你用Hexo + github 搭建自己博客</a><br>的时候，经常需要用到一些git操作，截了好多图，于是就想干脆整理成一系列的git 教程，总结如下</strong></p>
+<ul>
+<li><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53573286" target="_blank" rel="external">Git下载及配置环境变量</a></li>
+<li><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53573339" target="_blank" rel="external">Git 命令行教程及实例教程</a></li>
+<li><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53573399" target="_blank" rel="external">Git ssh 配置及使用</a></li>
+<li><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53573426" target="_blank" rel="external"> git ssh 配置多个账户</a></li>
+</ul>
+<hr>
+<h2 id="闲聊"><a href="#闲聊" class="headerlink" title="闲聊"></a>闲聊</h2><p>这篇教程是在电脑上已经安装好git的前提之上的，要进行以下配置，请先确保你的电脑已经安装好git。以下配置步骤是在git bash里面进行配置的，可以通过 右键》 git bash here 打开</p>
+<p><img src="http://ww3.sinaimg.cn/mw690/9fe4afa0gw1famnawriudj211y0lc4ar.jpg" alt=""></p>
+<p>在管理Git项目上，很多时候都是直接使用https url克隆到本地，当然也有有些人使用SSH url克隆到本地。</p>
+<p>这两种方式的主要区别在于：使用https url克隆对初学者来说会比较方便，复制https url然后到git Bash里面直接用clone命令克隆到本地就好了，但是每次fetch和push代码都需要输入账号和密码，这也是https方式的麻烦之处。</p>
+<p>而使用SSH url克隆却需要在克隆之前先配置和添加好SSH key，因此，如果你想要使用SSH url克隆的话，你必须是这个项目的拥有者。否则你是无法添加SSH key的，另外ssh默认是每次fetch和push代码都不需要输入账号和密码，如果你想要每次都输入账号密码才能进行fetch和push也可以另外进行设置。前面的几篇介绍Git的博客里面采用的都是https的方式作为案例，</p>
+<p>今天主要是讲述如何配置使用ssh方式来提交和克隆代码。</p>
+<p>大概可以分为一下几个步骤</p>
+<ul>
+<li>设置Git的user name和email：(如果是第一次的话)</li>
+<li>检查是否已经有SSH Key。</li>
+<li>生成密钥</li>
+<li>添加密钥到ssh-agent</li>
+<li>登陆Github, 添加 ssh </li>
+<li>测试：</li>
+</ul>
+<h2 id="1、设置Git的user-name和email：-如果是第一次的话"><a href="#1、设置Git的user-name和email：-如果是第一次的话" class="headerlink" title="1、设置Git的user name和email：(如果是第一次的话)"></a>1、设置Git的user name和email：(如果是第一次的话)</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># 这里的“xujun&quot; 可以替换成自己的用户名</div><div class="line">git config --global user.name &quot;xujun&quot;</div><div class="line"># 这里的邮箱 gdutxiaoxu@163.com  替换成自己的邮箱</div><div class="line">git config --global user.email  &quot;gdutxiaoxu@163.com&quot;</div></pre></td></tr></table></figure>
+<h2 id="检查是否已经有SSH-Key。"><a href="#检查是否已经有SSH-Key。" class="headerlink" title="检查是否已经有SSH Key。"></a>检查是否已经有SSH Key。</h2><figure class="highlight scilab"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">　　<span class="built_in">cd</span> ~/.ssh</div></pre></td></tr></table></figure>
+<p>接着输入ls，</p>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">ls</span></div></pre></td></tr></table></figure>
+<p>列出该文件下的文件，看是否存在 id_isa 和 id_isa.pub 文件（也可以是别的文件名，只要 yourName 和 yourName.pub 承兑存在），如果存在的话，证明已经存在 ssh key了，可以直接跳过 <em>生成密钥</em> 这一步骤，</p>
+<p>下图是存在的情况下</p>
+<p><img src="http://ww2.sinaimg.cn/large/9fe4afa0jw1famro8k282j20d3026jrq.jpg" alt=""></p>
+<h2 id="3、生成密钥"><a href="#3、生成密钥" class="headerlink" title="3、生成密钥"></a>3、生成密钥</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># 这里的邮箱 gdutxiaoxu@163.com  替换成自己的邮箱</div><div class="line">ssh-keygen -t rsa -C &quot;gdutxiaoxu@163.com&quot;</div></pre></td></tr></table></figure>
+<p>连续3个回车。如果不需要密码的话。<br>最后得到了两个文件：id_rsa和id_rsa.pub。</p>
+<p>默认的存储路径是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">C:\Users\Administrator\.ssh</div></pre></td></tr></table></figure>
+<h2 id="4、添加密钥到ssh-agent"><a href="#4、添加密钥到ssh-agent" class="headerlink" title="4、添加密钥到ssh-agent"></a>4、添加密钥到ssh-agent</h2><p>确保 ssh-agent 是可用的。ssh-agent是一种控制用来保存公钥身份验证所使用的私钥的程序，其实ssh-agent就是一个密钥管理器，运行ssh-agent以后，使用ssh-add将私钥交给ssh-agent保管，其他程序需要身份验证的时候可以将验证申请交给ssh-agent来完成整个认证过程。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># start the ssh-agent in the background</div><div class="line">eval &quot;$(ssh-agent -s)&quot;</div></pre></td></tr></table></figure>
+<p><img src="http://ww3.sinaimg.cn/large/9fe4afa0gw1fammrmpcbfj20as02eaad.jpg" alt=""></p>
+<p>添加生成的 SSH key 到 ssh-agent。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh-add ~/.ssh/id_rsa</div></pre></td></tr></table></figure>
+<h2 id="5、登陆Github-添加-ssh-。"><a href="#5、登陆Github-添加-ssh-。" class="headerlink" title="5、登陆Github, 添加 ssh 。"></a>5、登陆Github, 添加 ssh 。</h2><p>把id_rsa.pub文件里的内容复制到这里</p>
+<p><img src="http://ww4.sinaimg.cn/large/9fe4afa0gw1fammt1ixqwj20h209k3yx.jpg" alt=""></p>
+<p><img src="http://ww2.sinaimg.cn/large/9fe4afa0gw1fammth6gk9j20ir035t8v.jpg" alt=""></p>
+<p><img src="http://ww4.sinaimg.cn/large/9fe4afa0gw1fammtr9flrj20iq0aywgp.jpg" alt=""></p>
+<h2 id="6、测试："><a href="#6、测试：" class="headerlink" title="6、测试："></a>6、测试：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh -T git@github.com</div></pre></td></tr></table></figure>
+<p>你将会看到：</p>
+<blockquote>
+<p>Hi humingx! You’ve successfully authenticated, but GitHub does not provide shell access.</p>
+</blockquote>
+<p>如果看到Hi后面是你的用户名，就说明成功了。</p>
+<p><img src="http://ww2.sinaimg.cn/large/9fe4afa0gw1fammv8uf98j20j502udgk.jpg" alt=""></p>
+<h2 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h2><p> 如果我之前的仓库是用https提交的，那么我现在想用ssh 的方式提交，怎么办呢 ，别急，下面就来教你怎样操作了。</p>
+<p> 这里同样以我本机目录下的G://test 仓库为例子，</p>
+<p> 找到仓库下 .git 文件夹下的config文件，打开，可以看到以下内容</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"> [core]</div><div class="line">	<span class="attr">repositoryformatversion</span> = <span class="number">0</span></div><div class="line">	<span class="attr">filemode</span> = <span class="literal">false</span></div><div class="line">	<span class="attr">bare</span> = <span class="literal">false</span></div><div class="line">	<span class="attr">logallrefupdates</span> = <span class="literal">true</span></div><div class="line">	<span class="attr">symlinks</span> = <span class="literal">false</span></div><div class="line">	<span class="attr">ignorecase</span> = <span class="literal">true</span></div><div class="line">[remote <span class="string">"origin"</span>]</div><div class="line">	<span class="attr">url</span> = https://github.com/gdutxiaoxu/test.git</div><div class="line">	<span class="attr">fetch</span> = +refs/heads<span class="comment">/*:refs/remotes/origin/*</span></div><div class="line">[branch "master"]</div><div class="line">	remote = origin</div><div class="line">	merge = refs/heads/master</div></pre></td></tr></table></figure>
+<p> 将文件中的 url = <a href="https://github.com/gdutxiaoxu/test.git" target="_blank" rel="external">https://github.com/gdutxiaoxu/test.git</a> 更改为 url = git@github.com:gdutxiaoxu/test.git 即可。</p>
+<p>修改后的文件如下</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[core]</div><div class="line">	repositoryformatversion = <span class="number">0</span></div><div class="line">	filemode = false</div><div class="line">	bare = false</div><div class="line">	logallrefupdates = true</div><div class="line">	symlinks = false</div><div class="line">	ignorecase = true</div><div class="line">[remote <span class="string">"origin"</span>]</div><div class="line">	url = git@github<span class="selector-class">.com</span>:gdutxiaoxu/test<span class="selector-class">.git</span></div><div class="line">	fetch = +refs/heads<span class="comment">/*:refs/remotes/origin/*</span></div><div class="line">[branch "master"]</div><div class="line">	remote = origin</div><div class="line">	merge = refs/heads/master</div></pre></td></tr></table></figure>
+<p>进入本地仓库 ，增加 xujun.txt 文件，提交，你会看到不需要再提交密码了</p>
+<p><img src="http://ww2.sinaimg.cn/large/9fe4afa0jw1famsfk3xzoj20dy0b5ab6.jpg" alt=""></p>
+<p>远程仓库</p>
+<p><img src="http://ww4.sinaimg.cn/mw690/9fe4afa0gw1famw6htumvj20cw08ugm3.jpg" alt=""></p>
+<p>  到此本篇博客为止，下一篇博客将讲解电脑怎样配置多个ssh key。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2016/12/11/git-ssh-配置多个账户/" data-id="cixdcc02i000l7guc5ftb40gx" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/">git</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/12/11/手把手教你用Hexo-Github-搭建属于自己的博客/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          手把手教你用Hexo+Github 搭建属于自己的博客
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/12/11/Git-ssh-配置及使用/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Git ssh 配置及使用</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/6-0权限管理/">6.0权限管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FlowLayout/">FlowLayout</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Retrofit/">Retrofit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/启动相册/">启动相册</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/启动系统相机/">启动系统相机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/搭建个人博客/">搭建个人博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流布式布局/">流布式布局</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络/">网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/自定义控件/">自定义控件</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/6-0权限管理/" style="font-size: 10px;">6.0权限管理</a> <a href="/tags/FlowLayout/" style="font-size: 10px;">FlowLayout</a> <a href="/tags/Retrofit/" style="font-size: 10px;">Retrofit</a> <a href="/tags/git/" style="font-size: 20px;">git</a> <a href="/tags/启动相册/" style="font-size: 10px;">启动相册</a> <a href="/tags/启动系统相机/" style="font-size: 10px;">启动系统相机</a> <a href="/tags/搭建个人博客/" style="font-size: 10px;">搭建个人博客</a> <a href="/tags/流布式布局/" style="font-size: 10px;">流布式布局</a> <a href="/tags/网络/" style="font-size: 10px;">网络</a> <a href="/tags/自定义控件/" style="font-size: 10px;">自定义控件</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/12/31/16年，平凡而又收获的一年/">16年，平凡而又收获的一年</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/12/你真的了解View的坐标吗？/">你真的了解View的坐标吗？</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/11/手把手教你用Hexo-Github-搭建属于自己的博客/">手把手教你用Hexo+Github 搭建属于自己的博客</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/11/git-ssh-配置多个账户/">git ssh 配置多个账户</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/11/Git-ssh-配置及使用/">Git ssh 配置及使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
