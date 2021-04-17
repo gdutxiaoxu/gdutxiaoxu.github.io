@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title> Retrofit使用教程（一）- Retrofit入门详解 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Retrofit使用教程（一）- Retrofit入门详解 转载请注明博客地址：http:&#x2F;&#x2F;blog.csdn.net&#x2F;gdutxiaoxu&#x2F;article&#x2F;details&#x2F;52745491 源码下载地址：https:&#x2F;&#x2F;github.com&#x2F;gdutxiaoxu&#x2F;RetrofitDemo.git 本人已经好久没有更新 博客了，这次更新博客打算写一下retrofit的使用教程系列的 博客，写作思">
+<meta property="og:type" content="article">
+<meta property="og:title" content=" Retrofit使用教程（一）- Retrofit入门详解">
+<meta property="og:url" content="http://example.com/2016/12/08/Retrofit%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B%EF%BC%88%E4%B8%80%EF%BC%89-Retrofit%E5%85%A5%E9%97%A8%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Retrofit使用教程（一）- Retrofit入门详解 转载请注明博客地址：http:&#x2F;&#x2F;blog.csdn.net&#x2F;gdutxiaoxu&#x2F;article&#x2F;details&#x2F;52745491 源码下载地址：https:&#x2F;&#x2F;github.com&#x2F;gdutxiaoxu&#x2F;RetrofitDemo.git 本人已经好久没有更新 博客了，这次更新博客打算写一下retrofit的使用教程系列的 博客，写作思">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2016-12-08T06:04:56.000Z">
+<meta property="article:modified_time" content="2016-12-08T12:03:24.863Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Retrofit">
+<meta property="article:tag" content="网络">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Retrofit使用教程（一）-Retrofit入门详解" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2016/12/08/Retrofit%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B%EF%BC%88%E4%B8%80%EF%BC%89-Retrofit%E5%85%A5%E9%97%A8%E8%AF%A6%E8%A7%A3/" class="article-date">
+  <time class="dt-published" datetime="2016-12-08T06:04:56.000Z" itemprop="datePublished">2016-12-08</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+       Retrofit使用教程（一）- Retrofit入门详解
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="Retrofit使用教程（一）-Retrofit入门详解"><a href="#Retrofit使用教程（一）-Retrofit入门详解" class="headerlink" title="Retrofit使用教程（一）- Retrofit入门详解"></a>Retrofit使用教程（一）- Retrofit入门详解</h1><hr>
+<p><strong><a target="_blank" rel="noopener" href="http://blog.csdn.net/gdutxiaoxu/article/details/52745491">转载请注明博客地址：</a><a target="_blank" rel="noopener" href="http://blog.csdn.net/gdutxiaoxu/article/details/52745491">http://blog.csdn.net/gdutxiaoxu/article/details/52745491</a></strong></p>
+<p><strong><a target="_blank" rel="noopener" href="https://github.com/gdutxiaoxu/RetrofitDemo.git">源码下载地址：</a><a target="_blank" rel="noopener" href="https://github.com/gdutxiaoxu/RetrofitDemo.git">https://github.com/gdutxiaoxu/RetrofitDemo.git</a></strong></p>
+<p><strong>本人已经好久没有更新 博客了，这次更新博客打算写一下retrofit的使用教程系列的 博客，写作思路大概如下</strong></p>
+<ul>
+<li>先从retrofit的基本使用讲起;</li>
+<li>接着将retrofit结合RxJava的使用;</li>
+<li>接着讲Retrofit的封装使用，（包括错误统一处理）;</li>
+<li>有时间和能力的话会尝试研究一下retrofit的 源码.</li>
+</ul>
+<h2 id="本篇博客主要讲解以下问题"><a href="#本篇博客主要讲解以下问题" class="headerlink" title="本篇博客主要讲解以下问题"></a>本篇博客主要讲解以下问题</h2><ul>
+<li>Retrofit简介</li>
+<li>Retrofit的简单使用例子</li>
+<li>Retrofit的get请求</li>
+<li>Retrofit的put请求（提交表单数据）</li>
+<li>如何为 retrofit添加header</li>
+<li>如何提交json数据</li>
+</ul>
+<h2 id="Retrofit简介"><a href="#Retrofit简介" class="headerlink" title="Retrofit简介"></a>Retrofit简介</h2><p>Retrofit是square开源的网络请求库，底层是使用OKHttp封装的，网络请求速度很快.</p>
+<h3 id="主要有一下几种请求方法"><a href="#主要有一下几种请求方法" class="headerlink" title="主要有一下几种请求方法"></a>主要有一下几种请求方法</h3><table>
+<thead>
+<tr>
+<th>格式</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>@GET</td>
+<td>表示这是一个GET请求</td>
+</tr>
+<tr>
+<td>@POST</td>
+<td>表示这个一个POST请求</td>
+</tr>
+<tr>
+<td>@PUT</td>
+<td>表示这是一个PUT请求</td>
+</tr>
+<tr>
+<td>@DELETE</td>
+<td>表示这是一个DELETE请求</td>
+</tr>
+<tr>
+<td>@HEAD</td>
+<td>表示这是一个HEAD请求</td>
+</tr>
+<tr>
+<td>@OPTIONS</td>
+<td>表示这是一个OPTION请求</td>
+</tr>
+<tr>
+<td>@PATCH</td>
+<td>表示这是一个PAT请求</td>
+</tr>
+</tbody></table>
+<h3 id="各种请求注解的意思"><a href="#各种请求注解的意思" class="headerlink" title="各种请求注解的意思"></a>各种请求注解的意思</h3><table>
+<thead>
+<tr>
+<th>格式</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>@Headers</td>
+<td>添加请求头</td>
+</tr>
+<tr>
+<td>@Path</td>
+<td>替换路径</td>
+</tr>
+<tr>
+<td>@Query</td>
+<td>替代参数值，通常是结合get请求的</td>
+</tr>
+<tr>
+<td>@FormUrlEncoded</td>
+<td>用表单数据提交</td>
+</tr>
+<tr>
+<td>@Field</td>
+<td>替换参数值，是结合post请求的</td>
+</tr>
+</tbody></table>
+<h2 id="Retrofit的简单使用例子"><a href="#Retrofit的简单使用例子" class="headerlink" title="Retrofit的简单使用例子"></a>Retrofit的简单使用例子</h2><p>要使用retrofit请求网络数据，大概可以分为以下几步</p>
+<ul>
+<li>1)添加依赖，这里以AndroidStudio为例：在build.grale添加如下依赖</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> compile <span class="string">&#x27;com.squareup.retrofit2:retrofit:2.1.0&#x27;</span></span><br><span class="line">compile <span class="string">&#x27;com.squareup.retrofit2:converter-gson:2.1.0&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>2） 创建Retrofit对象</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Retrofit retrofit = <span class="keyword">new</span> Retrofit.Builder()</span><br><span class="line">        <span class="comment">//使用自定义的mGsonConverterFactory</span></span><br><span class="line">        .addConverterFactory(GsonConverterFactory.create())</span><br><span class="line">        .baseUrl(<span class="string">&quot;http://apis.baidu.com/txapi/&quot;</span>)</span><br><span class="line">        .build();</span><br><span class="line">mApi = retrofit.create(APi.class);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>3）发起网络请求</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mApi = retrofit.create(APi.class);</span><br><span class="line">Call&lt;News&gt; news = mApi.getNews(<span class="string">&quot;1&quot;</span>, <span class="string">&quot;10&quot;</span>);</span><br><span class="line">news.enqueue(<span class="keyword">new</span> Callback&lt;News&gt;() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(Call&lt;News&gt; call, Response&lt;News&gt; response)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFailure</span><span class="params">(Call&lt;News&gt; call, Throwable t)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">APi</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Headers(&quot;apikey:81bf9da930c7f9825a3c3383f1d8d766&quot;)</span></span><br><span class="line">    <span class="meta">@GET(&quot;word/word&quot;)</span></span><br><span class="line">    <span class="function">Call&lt;News&gt; <span class="title">getNews</span><span class="params">(<span class="meta">@Query(&quot;num&quot;)</span> String num,<span class="meta">@Query(&quot;page&quot;)</span>String page)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>到此一个简单的使用retrofit的网络请求就完成了。</strong>接下来我们来了解retrofit的各种请求方式。</p>
+<hr>
+<h2 id="Retrofit的get请求"><a href="#Retrofit的get请求" class="headerlink" title="Retrofit的get请求"></a>Retrofit的get请求</h2><p>加入我们想请求这样的网址：<a target="_blank" rel="noopener" href="http://apis.baidu.com/txapi/world/world?num=10&amp;page=1%EF%BC%8Cheader%E4%B8%BA&quot;apikey:81bf9da930c7f9825a3c3383f1d8d766&quot;,%E6%88%91%E4%BB%AC%E5%8F%AF%E4%BB%A5%E8%BF%99%E6%A0%B7%E8%AF%B7%E6%B1%82%EF%BC%9A">http://apis.baidu.com/txapi/world/world?num=10&amp;page=1，header为&quot;apikey:81bf9da930c7f9825a3c3383f1d8d766&quot;,我们可以这样请求：</a></p>
+<p>第一步，在interface Api中 增加如下方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@Headers(&quot;apikey:81bf9da930c7f9825a3c3383f1d8d766&quot;)</span></span><br><span class="line"><span class="meta">@GET(&quot;word/word&quot;)</span></span><br><span class="line"><span class="function">Call&lt;News&gt; <span class="title">getNews</span><span class="params">(<span class="meta">@Query(&quot;num&quot;)</span> String num,<span class="meta">@Query(&quot;page&quot;)</span>String page)</span></span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>第二部，在代码里面请求</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建retrofit对象</span></span><br><span class="line">Retrofit retrofit = <span class="keyword">new</span> Retrofit.Builder()</span><br><span class="line">        <span class="comment">//使用自定义的mGsonConverterFactory</span></span><br><span class="line">        .addConverterFactory(GsonConverterFactory.create())</span><br><span class="line">        .baseUrl(<span class="string">&quot;http://apis.baidu.com/txapi/&quot;</span>)</span><br><span class="line">        .build();</span><br><span class="line"><span class="comment">// 实例化我们的mApi对象</span></span><br><span class="line">mApi = retrofit.create(APi.class); </span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用我们的响应的方法</span></span><br><span class="line">Call&lt;News&gt; news = mApi.getNews(number, page);</span><br><span class="line">news.enqueue(<span class="keyword">new</span> Callback&lt;News&gt;() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(Call&lt;News&gt; call, Response&lt;News&gt; response)</span> </span>&#123;</span><br><span class="line">        News body = response.body();</span><br><span class="line">        Logger.i(<span class="string">&quot;onResponse:   =&quot;</span>+body.toString());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFailure</span><span class="params">(Call&lt;News&gt; call, Throwable t)</span> </span>&#123;</span><br><span class="line">        Logger.i(<span class="string">&quot;onResponse:   =&quot;</span>+t.getMessage());</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="解释说明"><a href="#解释说明" class="headerlink" title="解释说明"></a>解释说明</h3><p>假设BaseUrl是<a target="_blank" rel="noopener" href="http://apis.baidu.com/txapi/%E7%9A%84%E5%89%8D%E6%8F%90%E4%B8%8B">http://apis.baidu.com/txapi/的前提下</a></p>
+<ul>
+<li>1）其中 @GET(“word/word”)会追加到baseUrl ：<a target="_blank" rel="noopener" href="http://apis.baidu.com/txapi/%E7%9A%84%E5%90%8E%E9%9D%A2%EF%BC%8C%E5%8D%B3%E5%8F%98%E6%88%90%EF%BC%9Ahttp://apis.baidu.com/txapi/world/world">http://apis.baidu.com/txapi/的后面，即变成：http://apis.baidu.com/txapi/world/world</a></li>
+<li>2）@Query(“num”) String num,@Query(“page”)String page；分别对应键值的名称与值。会追加到<a target="_blank" rel="noopener" href="http://apis.baidu.com/txapi/world/world%E7%9A%84%E5%90%8E%E9%9D%A2%EF%BC%8C%E8%AF%B7%E6%B1%82%E7%BD%91%E5%9D%80%E5%8D%B3%E5%8F%98%E6%88%90:http://apis.baidu.com/txapi/world/world?num=10&amp;page=1">http://apis.baidu.com/txapi/world/world的后面，请求网址即变成:http://apis.baidu.com/txapi/world/world?num=10&amp;page=1</a></li>
+<li>3）  @Headers(“apikey:81bf9da930c7f9825a3c3383f1d8d766”)是 在基础之上为 其添加响应头</li>
+<li>4）如果想继续增加参数，只需要在方法参数追加这样的形式就OK了：<br>,@Query(“page”)String page</li>
+</ul>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Headers(&quot;apikey:81bf9da930c7f9825a3c3383f1d8d766&quot;)</span></span><br><span class="line"><span class="meta">@GET(&quot;word/word&quot;)</span></span><br><span class="line"><span class="function">Call&lt;News&gt; <span class="title">getNews</span><span class="params">(<span class="meta">@Query(&quot;num&quot;)</span> String num,<span class="meta">@Query(&quot;page&quot;)</span>String page，<span class="meta">@Query(&quot;type&quot;)</span> String type)</span></span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>5)加入我们想要请求这样的网址<a target="_blank" rel="noopener" href="http://apis.baidu.com/txapi/tiyu/tiyu?num=10&amp;page=1%EF%BC%8C,%E6%88%91%E4%BB%AC%E5%8F%AF%E4%BB%A5%E8%BF%99%E6%A0%B7%E5%86%99">http://apis.baidu.com/txapi/tiyu/tiyu?num=10&amp;page=1，,我们可以这样写</a></li>
+</ul>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@Headers(&#123;&quot;apikey:81bf9da930c7f9825a3c3383f1d8d766&quot; ,&quot;Content-Type:application/json&quot;&#125;)</span></span><br><span class="line"><span class="meta">@GET(&quot;&#123;type&#125;/&#123;type&#125;&quot;)</span></span><br><span class="line"><span class="function">Call&lt;News&gt; <span class="title">tiYu</span><span class="params">(<span class="meta">@Path(&quot;type&quot;)</span> String type, <span class="meta">@Query(&quot;num&quot;)</span> String num,<span class="meta">@Query(&quot;page&quot;)</span>String page)</span></span>;</span><br><span class="line">String type=<span class="string">&quot;tiyu&quot;</span>;</span><br><span class="line">Call&lt;News&gt; news = api.tiYu(type,number, page);</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="retrofit的post请求"><a href="#retrofit的post请求" class="headerlink" title="retrofit的post请求"></a>retrofit的post请求</h2><p>假如我们想要 请求这样的网址<a target="_blank" rel="noopener" href="http://apis.baidu.com/txapi/world/world?%E4%BB%A5post%E7%9A%84">http://apis.baidu.com/txapi/world/world?以post的</a> 方式提交这样的 数据：num=10&amp;page=1，我们可以写成 如下的 样子，注意post的时候必须使用@Field这种形式的注解，而不是使用@Query这种形式的注解，其他的 与get请求一样，这样只给出核心代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FormUrlEncoded</span></span><br><span class="line"><span class="meta">@Headers(&#123;&quot;apikey:81bf9da930c7f9825a3c3383f1d8d766&quot; ,&quot;Content-Type:application/json&quot;&#125;)</span></span><br><span class="line"><span class="meta">@POST(&quot;world/world&quot;)</span></span><br><span class="line"><span class="function">Call&lt;News&gt; <span class="title">postNews</span><span class="params">(<span class="meta">@Field(&quot;num&quot;)</span> String num, <span class="meta">@Field(&quot;page&quot;)</span>String page)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="如何为retrofit添加请求头head"><a href="#如何为retrofit添加请求头head" class="headerlink" title="如何为retrofit添加请求头head"></a>如何为retrofit添加请求头head</h2><p>总共有以下几种方式</p>
+<h3 id="第一种方法"><a href="#第一种方法" class="headerlink" title="第一种方法"></a>第一种方法</h3><p>在OKHttpClient interceptors里面进行处理，这样添加的headKey不会覆盖掉 前面的 headKey</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">okHttpClient.interceptors().add(<span class="keyword">new</span> Interceptor() &#123;  </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Response <span class="title">intercept</span><span class="params">(Interceptor.Chain chain)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        Request original = chain.request();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Request customization: add request headers</span></span><br><span class="line">        Request.Builder requestBuilder = original.newBuilder()</span><br><span class="line">                    .addHeader(<span class="string">&quot;header-key&quot;</span>, <span class="string">&quot;value1&quot;</span>)</span><br><span class="line">                    .addHeader(<span class="string">&quot;header-key&quot;</span>, <span class="string">&quot;value2&quot;</span>);</span><br><span class="line"></span><br><span class="line">        Request request = requestBuilder.build();</span><br><span class="line">        <span class="keyword">return</span> chain.proceed(request);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="第二种方法"><a href="#第二种方法" class="headerlink" title="第二种方法"></a>第二种方法</h3><p>同样在在OKHttpClient interceptors里面进行处理，这样添加的headKey会覆盖掉 前面的 headKey</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">okHttpClient.interceptors().add(<span class="keyword">new</span> Interceptor() &#123;  </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Response <span class="title">intercept</span><span class="params">(Interceptor.Chain chain)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        Request original = chain.request();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Request customization: add request headers</span></span><br><span class="line">        Request.Builder requestBuilder = original.newBuilder()</span><br><span class="line">                .header(<span class="string">&quot;headerkey&quot;</span>, <span class="string">&quot;header-value&quot;</span>); <span class="comment">// &lt;-- this is the important line</span></span><br><span class="line"></span><br><span class="line">        Request request = requestBuilder.build();</span><br><span class="line">        <span class="keyword">return</span> chain.proceed(request);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="第三种方法"><a href="#第三种方法" class="headerlink" title="第三种方法"></a>第三种方法</h3><p>利用 retrofit自带的注解，比如我们想要添加这样的请求头：”apikey:81bf9da930c7f9825a3c3383f1d8d766” ,”Content-Type:application/json”；则可以写成如下的 样式</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Headers(&#123;&quot;apikey:81bf9da930c7f9825a3c3383f1d8d766&quot; ,&quot;Content-Type:application/json&quot;&#125;)</span></span><br><span class="line"><span class="meta">@GET(&quot;world/world&quot;)</span></span><br><span class="line"><span class="function">Call&lt;News&gt; <span class="title">getNews</span><span class="params">(<span class="meta">@Query(&quot;num&quot;)</span> String num,<span class="meta">@Query(&quot;page&quot;)</span>String page)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="通过post提交json数据"><a href="#通过post提交json数据" class="headerlink" title="通过post提交json数据"></a>通过post提交json数据</h2><p>Post 提交JSON数据</p>
+<p>有时提交的数据量比较大时，用键值对的方式提交参数不太方便，Retrofit可以通过@Body注释，直接传递一个对象给请求主体，Retrofit通过JSON转化器，把对象映射成JSON数据。</p>
+<p>假设我们需要提交的数据为</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;id&quot;</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="string">&quot;text&quot;</span>: <span class="string">&quot;my task title&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>接口定义：</li>
+</ul>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TaskService</span> </span>&#123;  </span><br><span class="line">    <span class="meta">@Headers(&#123;&quot;Content-Type: application/json&quot;,&quot;Accept:  application/json&quot;&#125;)</span></span><br><span class="line">    <span class="meta">@POST(&quot;/tasks&quot;)</span></span><br><span class="line">    <span class="function">Call&lt;Task&gt; <span class="title">createTask</span><span class="params">(<span class="meta">@Body</span> Task task)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>传递实体需要有Model：</li>
+</ul>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Task</span> </span>&#123;  </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> id;</span><br><span class="line">    <span class="keyword">private</span> String text;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Task</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Task</span><span class="params">(<span class="keyword">long</span> id, String text)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.id = id;</span><br><span class="line">        <span class="keyword">this</span>.text = text;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>客户端调用：</li>
+</ul>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Task task = <span class="keyword">new</span> Task(<span class="number">1</span>, <span class="string">&quot;my task title&quot;</span>);  </span><br><span class="line">Call&lt;Task&gt; call = taskService.createTask(task);  </span><br><span class="line">call.enqueue(<span class="keyword">new</span> Callback&lt;Task&gt;() &#123;&#125;); </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>这样，服务端得到的是JOSN数据：</li>
+</ul>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;id&quot;</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="string">&quot;text&quot;</span>: <span class="string">&quot;my task title&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+<p>到此，这篇博客为止</p>
+<h2 id="题外话："><a href="#题外话：" class="headerlink" title="题外话："></a>题外话：</h2><p>其实retrofit在5月份实习的时候就接触了，之前为什么不写 博客了，因为网上的 使用教程很多，觉得没有必要。到后面学习的时候，发现retrofit的使用时 比较灵活的，并且使用方法也是相对较多的，于是，就写了retrofit这系列的使用博客。</p>
+<p><strong><a target="_blank" rel="noopener" href="http://blog.csdn.net/gdutxiaoxu/article/details/52745491">转载请注明博客地址：</a><a target="_blank" rel="noopener" href="http://blog.csdn.net/gdutxiaoxu/article/details/52745491">http://blog.csdn.net/gdutxiaoxu/article/details/52745491</a></strong></p>
+<p><strong><a target="_blank" rel="noopener" href="https://github.com/gdutxiaoxu/RetrofitDemo.git">源码下载地址：</a><a target="_blank" rel="noopener" href="https://github.com/gdutxiaoxu/RetrofitDemo.git">https://github.com/gdutxiaoxu/RetrofitDemo.git</a></strong></p>
+<p><strong><a target="_blank" rel="noopener" href="http://square.github.io/retrofit/">参考官网地址</a><a target="_blank" rel="noopener" href="http://square.github.io/retrofit/">http://square.github.io/retrofit/</a></strong></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2016/12/08/Retrofit%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B%EF%BC%88%E4%B8%80%EF%BC%89-Retrofit%E5%85%A5%E9%97%A8%E8%AF%A6%E8%A7%A3/" data-id="cknlo8wqs000d79ojc8m4ffub" data-title=" Retrofit使用教程（一）- Retrofit入门详解" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Retrofit/" rel="tag">Retrofit</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/12/08/Android-%E5%90%AF%E5%8A%A8%E7%B3%BB%E7%BB%9F%E7%9B%B8%E6%9C%BA%EF%BC%8C%E7%9B%B8%E5%86%8C%EF%BC%8C%E8%A3%81%E5%89%AA%E5%9B%BE%E7%89%87%E5%8F%8A6-0%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Android 启动系统相机，相册，裁剪图片及6.0权限管理
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/12/08/%E5%B8%B8%E7%94%A8%E7%9A%84%E8%87%AA%E5%AE%9A%E4%B9%89View%E4%BE%8B%E5%AD%90%E4%B8%80-FlowLayout/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">常用的自定义View例子一(FlowLayout)</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/6-0%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/" rel="tag">6.0权限管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FlowLayout/" rel="tag">FlowLayout</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Retrofit/" rel="tag">Retrofit</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%AF%E5%8A%A8%E7%9B%B8%E5%86%8C/" rel="tag">启动相册</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%AF%E5%8A%A8%E7%B3%BB%E7%BB%9F%E7%9B%B8%E6%9C%BA/" rel="tag">启动系统相机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B5%81%E5%B8%83%E5%BC%8F%E5%B8%83%E5%B1%80/" rel="tag">流布式布局</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8E%A7%E4%BB%B6/" rel="tag">自定义控件</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/6-0%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/" style="font-size: 10px;">6.0权限管理</a> <a href="/tags/FlowLayout/" style="font-size: 10px;">FlowLayout</a> <a href="/tags/Retrofit/" style="font-size: 10px;">Retrofit</a> <a href="/tags/%E5%90%AF%E5%8A%A8%E7%9B%B8%E5%86%8C/" style="font-size: 10px;">启动相册</a> <a href="/tags/%E5%90%AF%E5%8A%A8%E7%B3%BB%E7%BB%9F%E7%9B%B8%E6%9C%BA/" style="font-size: 10px;">启动系统相机</a> <a href="/tags/%E6%B5%81%E5%B8%83%E5%BC%8F%E5%B8%83%E5%B1%80/" style="font-size: 10px;">流布式布局</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 10px;">网络</a> <a href="/tags/%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8E%A7%E4%BB%B6/" style="font-size: 10px;">自定义控件</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/12/09/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/08/Android-%E5%90%AF%E5%8A%A8%E7%B3%BB%E7%BB%9F%E7%9B%B8%E6%9C%BA%EF%BC%8C%E7%9B%B8%E5%86%8C%EF%BC%8C%E8%A3%81%E5%89%AA%E5%9B%BE%E7%89%87%E5%8F%8A6-0%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/">Android 启动系统相机，相册，裁剪图片及6.0权限管理</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/08/Retrofit%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B%EF%BC%88%E4%B8%80%EF%BC%89-Retrofit%E5%85%A5%E9%97%A8%E8%AF%A6%E8%A7%A3/"> Retrofit使用教程（一）- Retrofit入门详解</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/08/%E5%B8%B8%E7%94%A8%E7%9A%84%E8%87%AA%E5%AE%9A%E4%B9%89View%E4%BE%8B%E5%AD%90%E4%B8%80-FlowLayout/">常用的自定义View例子一(FlowLayout)</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/08/360%E9%9D%A2%E8%AF%95%E5%BF%83%E5%BE%97%EF%BC%88Android/">360面试心得（Android)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
