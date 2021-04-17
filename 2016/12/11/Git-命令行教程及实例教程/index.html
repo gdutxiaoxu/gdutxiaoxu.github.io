@@ -5,59 +5,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 5.4.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/gdutxiaoxu/gdutxiaoxu.github.io/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/gdutxiaoxu/gdutxiaoxu.github.io/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/gdutxiaoxu/gdutxiaoxu.github.io/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/gdutxiaoxu/gdutxiaoxu.github.io/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/gdutxiaoxu/gdutxiaoxu.github.io/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/gdutxiaoxu/gdutxiaoxu.github.io/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"github.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"github.com","root":"/gdutxiaoxu/gdutxiaoxu.github.io/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="前言：前几天在写博客  手把手教你用Hexo + github 搭建自己博客的时候，经常需要用到一些git操作，截了好多图，于是就想干脆整理成一系列的git 教程，总结如下
-
-Git下载及配置环境变量
-Git 命令行教程及实例教程
-Git ssh 配置及使用
- git ssh 配置多个账户
-
-
-本篇博客主要讲解以下问题：
-
-Git 常用命令
-创建新仓库
-检出仓库
-添加与提交
-推送改动
-分支
-更新与">
+  <meta name="description" content="前言：前几天在写博客  手把手教你用Hexo + github 搭建自己博客的时候，经常需要用到一些git操作，截了好多图，于是就想干脆整理成一系列的git 教程，总结如下  Git下载及配置环境变量 Git 命令行教程及实例教程 Git ssh 配置及使用  git ssh 配置多个账户   本篇博客主要讲解以下问题：  Git 常用命令 创建新仓库 检出仓库 添加与提交 推送改动 分支 更新与">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Git 命令行教程及实例教程">
 <meta property="og:url" content="hhttps://github.com/gdutxiaoxu/gdutxiaoxu.github.io/2016/12/11/Git-命令行教程及实例教程/index.html">
 <meta property="og:site_name" content="程序员徐公">
-<meta property="og:description" content="前言：前几天在写博客  手把手教你用Hexo + github 搭建自己博客的时候，经常需要用到一些git操作，截了好多图，于是就想干脆整理成一系列的git 教程，总结如下
-
-Git下载及配置环境变量
-Git 命令行教程及实例教程
-Git ssh 配置及使用
- git ssh 配置多个账户
-
-
-本篇博客主要讲解以下问题：
-
-Git 常用命令
-创建新仓库
-检出仓库
-添加与提交
-推送改动
-分支
-更新与">
+<meta property="og:description" content="前言：前几天在写博客  手把手教你用Hexo + github 搭建自己博客的时候，经常需要用到一些git操作，截了好多图，于是就想干脆整理成一系列的git 教程，总结如下  Git下载及配置环境变量 Git 命令行教程及实例教程 Git ssh 配置及使用  git ssh 配置多个账户   本篇博客主要讲解以下问题：  Git 常用命令 创建新仓库 检出仓库 添加与提交 推送改动 分支 更新与">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://ww2.sinaimg.cn/large/9fe4afa0gw1famnvghkwrj20p008wgmd.jpg">
 <meta property="og:image" content="http://ww4.sinaimg.cn/large/9fe4afa0gw1faljxemku5j20bo0as0tv.jpg">
 <meta property="og:image" content="http://ww2.sinaimg.cn/large/9fe4afa0gw1faljww56v8j20ci0a975c.jpg">
@@ -70,26 +39,11 @@ Git 常用命令
 <meta property="og:image" content="http://ww3.sinaimg.cn/large/9fe4afa0gw1famx238wqpj20j504bq3j.jpg">
 <meta property="og:image" content="http://ww1.sinaimg.cn/mw690/9fe4afa0jw1famvugz6enj211y0lcju0.jpg">
 <meta property="og:image" content="http://ww3.sinaimg.cn/mw690/9fe4afa0jw1famvwicxhuj20c20gpdhr.jpg">
-<meta property="og:updated_time" content="2016-12-11T08:34:08.013Z">
+<meta property="article:published_time" content="2016-12-11T08:26:32.000Z">
+<meta property="article:modified_time" content="2016-12-11T08:34:08.013Z">
+<meta property="article:author" content="徐公">
+<meta property="article:tag" content="git">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Git 命令行教程及实例教程">
-<meta name="twitter:description" content="前言：前几天在写博客  手把手教你用Hexo + github 搭建自己博客的时候，经常需要用到一些git操作，截了好多图，于是就想干脆整理成一系列的git 教程，总结如下
-
-Git下载及配置环境变量
-Git 命令行教程及实例教程
-Git ssh 配置及使用
- git ssh 配置多个账户
-
-
-本篇博客主要讲解以下问题：
-
-Git 常用命令
-创建新仓库
-检出仓库
-添加与提交
-推送改动
-分支
-更新与">
 <meta name="twitter:image" content="http://ww2.sinaimg.cn/large/9fe4afa0gw1famnvghkwrj20p008wgmd.jpg">
 
 <link rel="canonical" href="hhttps://github.com/gdutxiaoxu/gdutxiaoxu.github.io/2016/12/11/Git-命令行教程及实例教程/">
@@ -154,7 +108,7 @@ Git 常用命令
 
   <div class="site-meta">
 
-    <a href="/" class="brand" rel="start">
+    <a href="/gdutxiaoxu/gdutxiaoxu.github.io/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">程序员徐公</h1>
       <span class="logo-line-after"><i></i></span>
@@ -175,22 +129,22 @@ Git 常用命令
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/gdutxiaoxu/gdutxiaoxu.github.io/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+    <a href="/gdutxiaoxu/gdutxiaoxu.github.io/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+    <a href="/gdutxiaoxu/gdutxiaoxu.github.io/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+    <a href="/gdutxiaoxu/gdutxiaoxu.github.io/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
   </ul>
@@ -224,7 +178,7 @@ Git 常用命令
     <link itemprop="mainEntityOfPage" href="hhttps://github.com/gdutxiaoxu/gdutxiaoxu.github.io/2016/12/11/Git-命令行教程及实例教程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/gdutxiaoxu/gdutxiaoxu.github.io/images/avatar.gif">
       <meta itemprop="name" content="徐公">
       <meta itemprop="description" content="「Android学习+面试指南」一份涵盖大部分 Android 程序员所需要掌握的核心知识">
     </span>
@@ -433,7 +387,7 @@ Git 常用命令
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/git/" rel="tag"># git</a>
+              <a href="/gdutxiaoxu/gdutxiaoxu.github.io/tags/git/" rel="tag"># git</a>
           </div>
 
         
@@ -442,11 +396,11 @@ Git 常用命令
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2016/12/11/Git下载及配置环境变量/" rel="prev" title="Git下载及配置环境变量">
+    <a href="/gdutxiaoxu/gdutxiaoxu.github.io/2016/12/11/Git%E4%B8%8B%E8%BD%BD%E5%8F%8A%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/" rel="prev" title="Git下载及配置环境变量">
       <i class="fa fa-chevron-left"></i> Git下载及配置环境变量
     </a></div>
       <div class="post-nav-item">
-    <a href="/2016/12/11/Git-ssh-配置及使用/" rel="next" title="Git ssh 配置及使用">
+    <a href="/gdutxiaoxu/gdutxiaoxu.github.io/2016/12/11/Git-ssh-%E9%85%8D%E7%BD%AE%E5%8F%8A%E4%BD%BF%E7%94%A8/" rel="next" title="Git ssh 配置及使用">
       Git ssh 配置及使用 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -507,7 +461,7 @@ Git 常用命令
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Git-常用命令常用命令"><span class="nav-number">1.</span> <span class="nav-text">Git 常用命令常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建新仓库"><span class="nav-number">1.1.</span> <span class="nav-text">创建新仓库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#检出仓库"><span class="nav-number">1.2.</span> <span class="nav-text">检出仓库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加与提交"><span class="nav-number">1.3.</span> <span class="nav-text">添加与提交</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#推送改动"><span class="nav-number">1.4.</span> <span class="nav-text">推送改动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分支"><span class="nav-number">1.5.</span> <span class="nav-text">分支</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更新与合并"><span class="nav-number">1.6.</span> <span class="nav-text">更新与合并</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#标签"><span class="nav-number">1.7.</span> <span class="nav-text">标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#替换本地改动"><span class="nav-number">1.8.</span> <span class="nav-text">替换本地改动</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#有用的贴士"><span class="nav-number">2.</span> <span class="nav-text">有用的贴士</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Git实例教程"><span class="nav-number">3.</span> <span class="nav-text">Git实例教程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#github账号的注册与Repo的创建"><span class="nav-number">3.1.</span> <span class="nav-text">github账号的注册与Repo的创建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实例教程"><span class="nav-number">3.2.</span> <span class="nav-text">实例教程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意事项："><span class="nav-number">3.3.</span> <span class="nav-text">注意事项：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#操作小技巧"><span class="nav-number">4.</span> <span class="nav-text">操作小技巧</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Git-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">1.</span> <span class="nav-text">Git 常用命令常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%96%B0%E4%BB%93%E5%BA%93"><span class="nav-number">1.1.</span> <span class="nav-text">创建新仓库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A3%80%E5%87%BA%E4%BB%93%E5%BA%93"><span class="nav-number">1.2.</span> <span class="nav-text">检出仓库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E4%B8%8E%E6%8F%90%E4%BA%A4"><span class="nav-number">1.3.</span> <span class="nav-text">添加与提交</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A8%E9%80%81%E6%94%B9%E5%8A%A8"><span class="nav-number">1.4.</span> <span class="nav-text">推送改动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%94%AF"><span class="nav-number">1.5.</span> <span class="nav-text">分支</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E4%B8%8E%E5%90%88%E5%B9%B6"><span class="nav-number">1.6.</span> <span class="nav-text">更新与合并</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE"><span class="nav-number">1.7.</span> <span class="nav-text">标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%BF%E6%8D%A2%E6%9C%AC%E5%9C%B0%E6%94%B9%E5%8A%A8"><span class="nav-number">1.8.</span> <span class="nav-text">替换本地改动</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%89%E7%94%A8%E7%9A%84%E8%B4%B4%E5%A3%AB"><span class="nav-number">2.</span> <span class="nav-text">有用的贴士</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Git%E5%AE%9E%E4%BE%8B%E6%95%99%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">Git实例教程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#github%E8%B4%A6%E5%8F%B7%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8ERepo%E7%9A%84%E5%88%9B%E5%BB%BA"><span class="nav-number">3.1.</span> <span class="nav-text">github账号的注册与Repo的创建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B%E6%95%99%E7%A8%8B"><span class="nav-number">3.2.</span> <span class="nav-text">实例教程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9%EF%BC%9A"><span class="nav-number">3.3.</span> <span class="nav-text">注意事项：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E5%B0%8F%E6%8A%80%E5%B7%A7"><span class="nav-number">4.</span> <span class="nav-text">操作小技巧</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -519,14 +473,14 @@ Git 常用命令
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/archives/">
+          <a href="/gdutxiaoxu/gdutxiaoxu.github.io/archives/">
         
           <span class="site-state-item-count">13</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/tags/">
+            <a href="/gdutxiaoxu/gdutxiaoxu.github.io/tags/">
           
         <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">标签</span></a>
@@ -561,7 +515,7 @@ Git 常用命令
   </span>
   <span class="author" itemprop="copyrightHolder">徐公</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
 
         
@@ -578,12 +532,20 @@ Git 常用命令
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
-<script src="/js/schemes/pisces.js"></script>
-<script src="/js/next-boot.js"></script>
+  <script src="/gdutxiaoxu/gdutxiaoxu.github.io/lib/anime.min.js"></script>
+  <script src="/gdutxiaoxu/gdutxiaoxu.github.io/lib/velocity/velocity.min.js"></script>
+  <script src="/gdutxiaoxu/gdutxiaoxu.github.io/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/gdutxiaoxu/gdutxiaoxu.github.io/js/utils.js"></script>
+
+<script src="/gdutxiaoxu/gdutxiaoxu.github.io/js/motion.js"></script>
+
+
+<script src="/gdutxiaoxu/gdutxiaoxu.github.io/js/schemes/pisces.js"></script>
+
+
+<script src="/gdutxiaoxu/gdutxiaoxu.github.io/js/next-boot.js"></script>
+
 
 
 

@@ -5,42 +5,37 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 5.4.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/gdutxiaoxu/gdutxiaoxu.github.io/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/gdutxiaoxu/gdutxiaoxu.github.io/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/gdutxiaoxu/gdutxiaoxu.github.io/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/gdutxiaoxu/gdutxiaoxu.github.io/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/gdutxiaoxu/gdutxiaoxu.github.io/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/gdutxiaoxu/gdutxiaoxu.github.io/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"github.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"github.com","root":"/gdutxiaoxu/gdutxiaoxu.github.io/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="使用CoordinatorLayout打造各种炫酷的效果
-自定义Behavior —— 仿知乎，FloatActionButton隐藏与展示
-前段时间写了一篇博客使用CoordinatorLayout打造各种炫酷的效果,主要介绍了APPBarLayout和CollapsingToolbarLayout的基本用法，AppBarLayout主要用来实现在滚动的时候ToolBar的 隐藏于展示，Coll">
+  <meta name="description" content="使用CoordinatorLayout打造各种炫酷的效果 自定义Behavior —— 仿知乎，FloatActionButton隐藏与展示 前段时间写了一篇博客使用CoordinatorLayout打造各种炫酷的效果,主要介绍了APPBarLayout和CollapsingToolbarLayout的基本用法，AppBarLayout主要用来实现在滚动的时候ToolBar的 隐藏于展示，Coll">
 <meta property="og:type" content="article">
 <meta property="og:title" content="自定义Behavior —— 仿知乎，FloatActionButton隐藏与展示">
 <meta property="og:url" content="hhttps://github.com/gdutxiaoxu/gdutxiaoxu.github.io/2016/12/08/自定义Behavior-——-仿知乎，FloatActionButton隐藏与展示/index.html">
 <meta property="og:site_name" content="程序员徐公">
-<meta property="og:description" content="使用CoordinatorLayout打造各种炫酷的效果
-自定义Behavior —— 仿知乎，FloatActionButton隐藏与展示
-前段时间写了一篇博客使用CoordinatorLayout打造各种炫酷的效果,主要介绍了APPBarLayout和CollapsingToolbarLayout的基本用法，AppBarLayout主要用来实现在滚动的时候ToolBar的 隐藏于展示，Coll">
+<meta property="og:description" content="使用CoordinatorLayout打造各种炫酷的效果 自定义Behavior —— 仿知乎，FloatActionButton隐藏与展示 前段时间写了一篇博客使用CoordinatorLayout打造各种炫酷的效果,主要介绍了APPBarLayout和CollapsingToolbarLayout的基本用法，AppBarLayout主要用来实现在滚动的时候ToolBar的 隐藏于展示，Coll">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2050203-f12821aa91a41c79.jpg?imageMogr2/auto-orient/strip">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2050203-afd17ba4e0ffde71.jpg?imageMogr2/auto-orient/strip">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2050203-29feb55fbedd7f2e.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2050203-455f05edf132a3d9.jpg?imageMogr2/auto-orient/strip">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2050203-f50b9c3d22a393f8.jpg?imageMogr2/auto-orient/strip">
-<meta property="og:updated_time" content="2016-12-08T12:03:24.877Z">
+<meta property="article:published_time" content="2016-12-08T05:03:58.000Z">
+<meta property="article:modified_time" content="2016-12-08T12:03:24.877Z">
+<meta property="article:author" content="徐公">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="自定义Behavior —— 仿知乎，FloatActionButton隐藏与展示">
-<meta name="twitter:description" content="使用CoordinatorLayout打造各种炫酷的效果
-自定义Behavior —— 仿知乎，FloatActionButton隐藏与展示
-前段时间写了一篇博客使用CoordinatorLayout打造各种炫酷的效果,主要介绍了APPBarLayout和CollapsingToolbarLayout的基本用法，AppBarLayout主要用来实现在滚动的时候ToolBar的 隐藏于展示，Coll">
 <meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/2050203-f12821aa91a41c79.jpg?imageMogr2/auto-orient/strip">
 
 <link rel="canonical" href="hhttps://github.com/gdutxiaoxu/gdutxiaoxu.github.io/2016/12/08/自定义Behavior-——-仿知乎，FloatActionButton隐藏与展示/">
@@ -105,7 +100,7 @@
 
   <div class="site-meta">
 
-    <a href="/" class="brand" rel="start">
+    <a href="/gdutxiaoxu/gdutxiaoxu.github.io/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">程序员徐公</h1>
       <span class="logo-line-after"><i></i></span>
@@ -126,22 +121,22 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/gdutxiaoxu/gdutxiaoxu.github.io/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+    <a href="/gdutxiaoxu/gdutxiaoxu.github.io/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+    <a href="/gdutxiaoxu/gdutxiaoxu.github.io/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+    <a href="/gdutxiaoxu/gdutxiaoxu.github.io/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
   </ul>
@@ -175,7 +170,7 @@
     <link itemprop="mainEntityOfPage" href="hhttps://github.com/gdutxiaoxu/gdutxiaoxu.github.io/2016/12/08/自定义Behavior-——-仿知乎，FloatActionButton隐藏与展示/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/gdutxiaoxu/gdutxiaoxu.github.io/images/avatar.gif">
       <meta itemprop="name" content="徐公">
       <meta itemprop="description" content="「Android学习+面试指南」一份涵盖大部分 Android 程序员所需要掌握的核心知识">
     </span>
@@ -337,11 +332,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2016/12/08/使用CoordinatorLayout打造各种炫酷的效果/" rel="prev" title="使用CoordinatorLayout打造各种炫酷的效果">
+    <a href="/gdutxiaoxu/gdutxiaoxu.github.io/2016/12/08/%E4%BD%BF%E7%94%A8CoordinatorLayout%E6%89%93%E9%80%A0%E5%90%84%E7%A7%8D%E7%82%AB%E9%85%B7%E7%9A%84%E6%95%88%E6%9E%9C/" rel="prev" title="使用CoordinatorLayout打造各种炫酷的效果">
       <i class="fa fa-chevron-left"></i> 使用CoordinatorLayout打造各种炫酷的效果
     </a></div>
       <div class="post-nav-item">
-    <a href="/2016/12/08/360面试心得（Android/" rel="next" title="360面试心得（Android)">
+    <a href="/gdutxiaoxu/gdutxiaoxu.github.io/2016/12/08/360%E9%9D%A2%E8%AF%95%E5%BF%83%E5%BE%97%EF%BC%88Android/" rel="next" title="360面试心得（Android)">
       360面试心得（Android) <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -402,7 +397,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#下面让我们一起来看一下怎样实现仿知乎的效果"><span class="nav-number">1.</span> <span class="nav-text">下面让我们一起来看一下怎样实现仿知乎的效果</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#思路分析"><span class="nav-number">1.1.</span> <span class="nav-text">思路分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Behavior简介"><span class="nav-number">2.</span> <span class="nav-text">Behavior简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#怎样自定义Behavior"><span class="nav-number">3.</span> <span class="nav-text">怎样自定义Behavior</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#首先我们先看第一组是怎样实现的？"><span class="nav-number">3.1.</span> <span class="nav-text">首先我们先看第一组是怎样实现的？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二种思路"><span class="nav-number">3.2.</span> <span class="nav-text">第二种思路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#两种实现方法的对比和总结"><span class="nav-number">4.</span> <span class="nav-text">两种实现方法的对比和总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义-Behavior-实现-FloatingActionButton-的显示与隐藏"><span class="nav-number">5.</span> <span class="nav-text">自定义 Behavior 实现 FloatingActionButton 的显示与隐藏</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#布局代码"><span class="nav-number">5.1.</span> <span class="nav-text">布局代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义behavior-代码"><span class="nav-number">5.2.</span> <span class="nav-text">自定义behavior 代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#题外话"><span class="nav-number">6.</span> <span class="nav-text">题外话</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8B%E9%9D%A2%E8%AE%A9%E6%88%91%E4%BB%AC%E4%B8%80%E8%B5%B7%E6%9D%A5%E7%9C%8B%E4%B8%80%E4%B8%8B%E6%80%8E%E6%A0%B7%E5%AE%9E%E7%8E%B0%E4%BB%BF%E7%9F%A5%E4%B9%8E%E7%9A%84%E6%95%88%E6%9E%9C"><span class="nav-number">1.</span> <span class="nav-text">下面让我们一起来看一下怎样实现仿知乎的效果</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF%E5%88%86%E6%9E%90"><span class="nav-number">1.1.</span> <span class="nav-text">思路分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Behavior%E7%AE%80%E4%BB%8B"><span class="nav-number">2.</span> <span class="nav-text">Behavior简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%8E%E6%A0%B7%E8%87%AA%E5%AE%9A%E4%B9%89Behavior"><span class="nav-number">3.</span> <span class="nav-text">怎样自定义Behavior</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A6%96%E5%85%88%E6%88%91%E4%BB%AC%E5%85%88%E7%9C%8B%E7%AC%AC%E4%B8%80%E7%BB%84%E6%98%AF%E6%80%8E%E6%A0%B7%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F"><span class="nav-number">3.1.</span> <span class="nav-text">首先我们先看第一组是怎样实现的？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E7%A7%8D%E6%80%9D%E8%B7%AF"><span class="nav-number">3.2.</span> <span class="nav-text">第二种思路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%A4%E7%A7%8D%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95%E7%9A%84%E5%AF%B9%E6%AF%94%E5%92%8C%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">两种实现方法的对比和总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89-Behavior-%E5%AE%9E%E7%8E%B0-FloatingActionButton-%E7%9A%84%E6%98%BE%E7%A4%BA%E4%B8%8E%E9%9A%90%E8%97%8F"><span class="nav-number">5.</span> <span class="nav-text">自定义 Behavior 实现 FloatingActionButton 的显示与隐藏</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%83%E5%B1%80%E4%BB%A3%E7%A0%81"><span class="nav-number">5.1.</span> <span class="nav-text">布局代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89behavior-%E4%BB%A3%E7%A0%81"><span class="nav-number">5.2.</span> <span class="nav-text">自定义behavior 代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E5%A4%96%E8%AF%9D"><span class="nav-number">6.</span> <span class="nav-text">题外话</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -414,14 +409,14 @@
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/archives/">
+          <a href="/gdutxiaoxu/gdutxiaoxu.github.io/archives/">
         
           <span class="site-state-item-count">13</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/tags/">
+            <a href="/gdutxiaoxu/gdutxiaoxu.github.io/tags/">
           
         <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">标签</span></a>
@@ -456,7 +451,7 @@
   </span>
   <span class="author" itemprop="copyrightHolder">徐公</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
 
         
@@ -473,12 +468,20 @@
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
-<script src="/js/schemes/pisces.js"></script>
-<script src="/js/next-boot.js"></script>
+  <script src="/gdutxiaoxu/gdutxiaoxu.github.io/lib/anime.min.js"></script>
+  <script src="/gdutxiaoxu/gdutxiaoxu.github.io/lib/velocity/velocity.min.js"></script>
+  <script src="/gdutxiaoxu/gdutxiaoxu.github.io/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/gdutxiaoxu/gdutxiaoxu.github.io/js/utils.js"></script>
+
+<script src="/gdutxiaoxu/gdutxiaoxu.github.io/js/motion.js"></script>
+
+
+<script src="/gdutxiaoxu/gdutxiaoxu.github.io/js/schemes/pisces.js"></script>
+
+
+<script src="/gdutxiaoxu/gdutxiaoxu.github.io/js/next-boot.js"></script>
+
 
 
 

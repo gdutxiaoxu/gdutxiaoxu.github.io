@@ -5,29 +5,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 5.4.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/gdutxiaoxu/gdutxiaoxu.github.io/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/gdutxiaoxu/gdutxiaoxu.github.io/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/gdutxiaoxu/gdutxiaoxu.github.io/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/gdutxiaoxu/gdutxiaoxu.github.io/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/gdutxiaoxu/gdutxiaoxu.github.io/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/gdutxiaoxu/gdutxiaoxu.github.io/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"github.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"github.com","root":"/gdutxiaoxu/gdutxiaoxu.github.io/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="使用CoordinatorLayout打造各种炫酷的效果文章首发地址CSDN：http://blog.csdn.net/gdutxiaoxu/article/details/52858598
-CoordinatorLayout简介CoordinatorLayout是在 Google IO/15 大会发布的，遵循Material 风格，包含在 support Library中，结合AppbarLay">
+  <meta name="description" content="使用CoordinatorLayout打造各种炫酷的效果文章首发地址CSDN：http:&#x2F;&#x2F;blog.csdn.net&#x2F;gdutxiaoxu&#x2F;article&#x2F;details&#x2F;52858598 CoordinatorLayout简介CoordinatorLayout是在 Google IO&#x2F;15 大会发布的，遵循Material 风格，包含在 support Library中，结合AppbarLay">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用CoordinatorLayout打造各种炫酷的效果">
 <meta property="og:url" content="hhttps://github.com/gdutxiaoxu/gdutxiaoxu.github.io/2016/12/08/使用CoordinatorLayout打造各种炫酷的效果/index.html">
 <meta property="og:site_name" content="程序员徐公">
-<meta property="og:description" content="使用CoordinatorLayout打造各种炫酷的效果文章首发地址CSDN：http://blog.csdn.net/gdutxiaoxu/article/details/52858598
-CoordinatorLayout简介CoordinatorLayout是在 Google IO/15 大会发布的，遵循Material 风格，包含在 support Library中，结合AppbarLay">
+<meta property="og:description" content="使用CoordinatorLayout打造各种炫酷的效果文章首发地址CSDN：http:&#x2F;&#x2F;blog.csdn.net&#x2F;gdutxiaoxu&#x2F;article&#x2F;details&#x2F;52858598 CoordinatorLayout简介CoordinatorLayout是在 Google IO&#x2F;15 大会发布的，遵循Material 风格，包含在 support Library中，结合AppbarLay">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2050203-4d4cb377e3dcedd3.gif?imageMogr2/auto-orient/strip">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2050203-86a54fca00c4fcd1.jpg?imageMogr2/auto-orient/strip">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2050203-a79b74ec2206bfb7.gif?imageMogr2/auto-orient/strip">
@@ -40,11 +39,10 @@ CoordinatorLayout简介CoordinatorLayout是在 Google IO/15 大会发布的，�
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2050203-a79b74ec2206bfb7.gif?imageMogr2/auto-orient/strip">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2050203-a8eb621189c05a30.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2050203-e52dcc2e2560c4b1.gif?imageMogr2/auto-orient/strip">
-<meta property="og:updated_time" content="2016-12-08T12:03:24.870Z">
+<meta property="article:published_time" content="2016-12-08T04:24:55.000Z">
+<meta property="article:modified_time" content="2016-12-08T12:03:24.870Z">
+<meta property="article:author" content="徐公">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="使用CoordinatorLayout打造各种炫酷的效果">
-<meta name="twitter:description" content="使用CoordinatorLayout打造各种炫酷的效果文章首发地址CSDN：http://blog.csdn.net/gdutxiaoxu/article/details/52858598
-CoordinatorLayout简介CoordinatorLayout是在 Google IO/15 大会发布的，遵循Material 风格，包含在 support Library中，结合AppbarLay">
 <meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/2050203-4d4cb377e3dcedd3.gif?imageMogr2/auto-orient/strip">
 
 <link rel="canonical" href="hhttps://github.com/gdutxiaoxu/gdutxiaoxu.github.io/2016/12/08/使用CoordinatorLayout打造各种炫酷的效果/">
@@ -109,7 +107,7 @@ CoordinatorLayout简介CoordinatorLayout是在 Google IO/15 大会发布的，�
 
   <div class="site-meta">
 
-    <a href="/" class="brand" rel="start">
+    <a href="/gdutxiaoxu/gdutxiaoxu.github.io/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">程序员徐公</h1>
       <span class="logo-line-after"><i></i></span>
@@ -130,22 +128,22 @@ CoordinatorLayout简介CoordinatorLayout是在 Google IO/15 大会发布的，�
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/gdutxiaoxu/gdutxiaoxu.github.io/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+    <a href="/gdutxiaoxu/gdutxiaoxu.github.io/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+    <a href="/gdutxiaoxu/gdutxiaoxu.github.io/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+    <a href="/gdutxiaoxu/gdutxiaoxu.github.io/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
   </ul>
@@ -179,7 +177,7 @@ CoordinatorLayout简介CoordinatorLayout是在 Google IO/15 大会发布的，�
     <link itemprop="mainEntityOfPage" href="hhttps://github.com/gdutxiaoxu/gdutxiaoxu.github.io/2016/12/08/使用CoordinatorLayout打造各种炫酷的效果/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/gdutxiaoxu/gdutxiaoxu.github.io/images/avatar.gif">
       <meta itemprop="name" content="徐公">
       <meta itemprop="description" content="「Android学习+面试指南」一份涵盖大部分 Android 程序员所需要掌握的核心知识">
     </span>
@@ -401,7 +399,7 @@ CoordinatorLayout简介CoordinatorLayout是在 Google IO/15 大会发布的，�
     <div class="post-nav">
       <div class="post-nav-item"></div>
       <div class="post-nav-item">
-    <a href="/2016/12/08/自定义Behavior-——-仿知乎，FloatActionButton隐藏与展示/" rel="next" title="自定义Behavior —— 仿知乎，FloatActionButton隐藏与展示">
+    <a href="/gdutxiaoxu/gdutxiaoxu.github.io/2016/12/08/%E8%87%AA%E5%AE%9A%E4%B9%89Behavior-%E2%80%94%E2%80%94-%E4%BB%BF%E7%9F%A5%E4%B9%8E%EF%BC%8CFloatActionButton%E9%9A%90%E8%97%8F%E4%B8%8E%E5%B1%95%E7%A4%BA/" rel="next" title="自定义Behavior —— 仿知乎，FloatActionButton隐藏与展示">
       自定义Behavior —— 仿知乎，FloatActionButton隐藏与展示 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -462,7 +460,7 @@ CoordinatorLayout简介CoordinatorLayout是在 Google IO/15 大会发布的，�
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#使用CoordinatorLayout打造各种炫酷的效果"><span class="nav-number">1.</span> <span class="nav-text">使用CoordinatorLayout打造各种炫酷的效果</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CoordinatorLayout简介"><span class="nav-number">1.1.</span> <span class="nav-text">CoordinatorLayout简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CoordinatorLayout简介通常用来-干什么"><span class="nav-number">1.2.</span> <span class="nav-text">CoordinatorLayout简介通常用来 干什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下面我们一起先来看一下我们实现的效果图"><span class="nav-number">1.3.</span> <span class="nav-text">下面我们一起先来看一下我们实现的效果图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#结合ToolBar"><span class="nav-number">1.3.1.</span> <span class="nav-text">结合ToolBar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结合ViewPager"><span class="nav-number">1.3.2.</span> <span class="nav-text">结合ViewPager</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结合ViewPager的视觉特差"><span class="nav-number">1.3.3.</span> <span class="nav-text">结合ViewPager的视觉特差</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AppBarLayout"><span class="nav-number">1.4.</span> <span class="nav-text">AppBarLayout</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#注意事项"><span class="nav-number">1.4.1.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#首先我们先来看一下我们-效果图一是怎样实现的"><span class="nav-number">1.5.</span> <span class="nav-text">首先我们先来看一下我们 效果图一是怎样实现的</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#代码"><span class="nav-number">1.5.1.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#思路-分析"><span class="nav-number">1.5.2.</span> <span class="nav-text">思路 分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结合ViewPager-1"><span class="nav-number">1.6.</span> <span class="nav-text">结合ViewPager</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#布局代码如下"><span class="nav-number">1.6.1.</span> <span class="nav-text">布局代码如下</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#思路分析"><span class="nav-number">1.6.2.</span> <span class="nav-text">思路分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#下面我们一起来看一下-TabLayout是怎样结合ViewPager直线-导航器的效果的"><span class="nav-number">1.6.3.</span> <span class="nav-text">下面我们一起来看一下 TabLayout是怎样结合ViewPager直线 导航器的效果的</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CollapsingToolbarLayout"><span class="nav-number">1.7.</span> <span class="nav-text">CollapsingToolbarLayout</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结合ViewPager的视觉特差-1"><span class="nav-number">1.8.</span> <span class="nav-text">结合ViewPager的视觉特差</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#布局代码"><span class="nav-number">1.8.1.</span> <span class="nav-text">布局代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#效果图如下"><span class="nav-number">1.8.2.</span> <span class="nav-text">效果图如下</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#思路解析"><span class="nav-number">1.8.3.</span> <span class="nav-text">思路解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拓展"><span class="nav-number">1.8.4.</span> <span class="nav-text">拓展</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">1.9.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#题外话"><span class="nav-number">1.10.</span> <span class="nav-text">题外话</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8CoordinatorLayout%E6%89%93%E9%80%A0%E5%90%84%E7%A7%8D%E7%82%AB%E9%85%B7%E7%9A%84%E6%95%88%E6%9E%9C"><span class="nav-number">1.</span> <span class="nav-text">使用CoordinatorLayout打造各种炫酷的效果</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CoordinatorLayout%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">CoordinatorLayout简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CoordinatorLayout%E7%AE%80%E4%BB%8B%E9%80%9A%E5%B8%B8%E7%94%A8%E6%9D%A5-%E5%B9%B2%E4%BB%80%E4%B9%88"><span class="nav-number">1.2.</span> <span class="nav-text">CoordinatorLayout简介通常用来 干什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8B%E9%9D%A2%E6%88%91%E4%BB%AC%E4%B8%80%E8%B5%B7%E5%85%88%E6%9D%A5%E7%9C%8B%E4%B8%80%E4%B8%8B%E6%88%91%E4%BB%AC%E5%AE%9E%E7%8E%B0%E7%9A%84%E6%95%88%E6%9E%9C%E5%9B%BE"><span class="nav-number">1.3.</span> <span class="nav-text">下面我们一起先来看一下我们实现的效果图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E5%90%88ToolBar"><span class="nav-number">1.3.1.</span> <span class="nav-text">结合ToolBar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E5%90%88ViewPager"><span class="nav-number">1.3.2.</span> <span class="nav-text">结合ViewPager</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E5%90%88ViewPager%E7%9A%84%E8%A7%86%E8%A7%89%E7%89%B9%E5%B7%AE"><span class="nav-number">1.3.3.</span> <span class="nav-text">结合ViewPager的视觉特差</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AppBarLayout"><span class="nav-number">1.4.</span> <span class="nav-text">AppBarLayout</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">1.4.1.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A6%96%E5%85%88%E6%88%91%E4%BB%AC%E5%85%88%E6%9D%A5%E7%9C%8B%E4%B8%80%E4%B8%8B%E6%88%91%E4%BB%AC-%E6%95%88%E6%9E%9C%E5%9B%BE%E4%B8%80%E6%98%AF%E6%80%8E%E6%A0%B7%E5%AE%9E%E7%8E%B0%E7%9A%84"><span class="nav-number">1.5.</span> <span class="nav-text">首先我们先来看一下我们 效果图一是怎样实现的</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">1.5.1.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF-%E5%88%86%E6%9E%90"><span class="nav-number">1.5.2.</span> <span class="nav-text">思路 分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E5%90%88ViewPager-1"><span class="nav-number">1.6.</span> <span class="nav-text">结合ViewPager</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%83%E5%B1%80%E4%BB%A3%E7%A0%81%E5%A6%82%E4%B8%8B"><span class="nav-number">1.6.1.</span> <span class="nav-text">布局代码如下</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF%E5%88%86%E6%9E%90"><span class="nav-number">1.6.2.</span> <span class="nav-text">思路分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E9%9D%A2%E6%88%91%E4%BB%AC%E4%B8%80%E8%B5%B7%E6%9D%A5%E7%9C%8B%E4%B8%80%E4%B8%8B-TabLayout%E6%98%AF%E6%80%8E%E6%A0%B7%E7%BB%93%E5%90%88ViewPager%E7%9B%B4%E7%BA%BF-%E5%AF%BC%E8%88%AA%E5%99%A8%E7%9A%84%E6%95%88%E6%9E%9C%E7%9A%84"><span class="nav-number">1.6.3.</span> <span class="nav-text">下面我们一起来看一下 TabLayout是怎样结合ViewPager直线 导航器的效果的</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CollapsingToolbarLayout"><span class="nav-number">1.7.</span> <span class="nav-text">CollapsingToolbarLayout</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E5%90%88ViewPager%E7%9A%84%E8%A7%86%E8%A7%89%E7%89%B9%E5%B7%AE-1"><span class="nav-number">1.8.</span> <span class="nav-text">结合ViewPager的视觉特差</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%83%E5%B1%80%E4%BB%A3%E7%A0%81"><span class="nav-number">1.8.1.</span> <span class="nav-text">布局代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%88%E6%9E%9C%E5%9B%BE%E5%A6%82%E4%B8%8B"><span class="nav-number">1.8.2.</span> <span class="nav-text">效果图如下</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF%E8%A7%A3%E6%9E%90"><span class="nav-number">1.8.3.</span> <span class="nav-text">思路解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%93%E5%B1%95"><span class="nav-number">1.8.4.</span> <span class="nav-text">拓展</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.9.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E5%A4%96%E8%AF%9D"><span class="nav-number">1.10.</span> <span class="nav-text">题外话</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -474,14 +472,14 @@ CoordinatorLayout简介CoordinatorLayout是在 Google IO/15 大会发布的，�
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/archives/">
+          <a href="/gdutxiaoxu/gdutxiaoxu.github.io/archives/">
         
           <span class="site-state-item-count">13</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/tags/">
+            <a href="/gdutxiaoxu/gdutxiaoxu.github.io/tags/">
           
         <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">标签</span></a>
@@ -516,7 +514,7 @@ CoordinatorLayout简介CoordinatorLayout是在 Google IO/15 大会发布的，�
   </span>
   <span class="author" itemprop="copyrightHolder">徐公</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
 
         
@@ -533,12 +531,20 @@ CoordinatorLayout简介CoordinatorLayout是在 Google IO/15 大会发布的，�
   </div>
 
   
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
-<script src="/js/schemes/pisces.js"></script>
-<script src="/js/next-boot.js"></script>
+  <script src="/gdutxiaoxu/gdutxiaoxu.github.io/lib/anime.min.js"></script>
+  <script src="/gdutxiaoxu/gdutxiaoxu.github.io/lib/velocity/velocity.min.js"></script>
+  <script src="/gdutxiaoxu/gdutxiaoxu.github.io/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/gdutxiaoxu/gdutxiaoxu.github.io/js/utils.js"></script>
+
+<script src="/gdutxiaoxu/gdutxiaoxu.github.io/js/motion.js"></script>
+
+
+<script src="/gdutxiaoxu/gdutxiaoxu.github.io/js/schemes/pisces.js"></script>
+
+
+<script src="/gdutxiaoxu/gdutxiaoxu.github.io/js/next-boot.js"></script>
+
 
 
 
