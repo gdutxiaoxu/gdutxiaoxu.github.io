@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="zh-CN"><head>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
@@ -8,10 +10,10 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
   <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
+<link rel="stylesheet" href="/css/main.css">
 
 
-
-
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
@@ -86,13 +88,13 @@
   </style>
 </noscript>
 
-<script>function loadCss(l){var d=document,h=d.head,s=d.createElement('link');s.rel='stylesheet';s.href=l;!function e(f){if (d.body)return f();setTimeout(function(){e(f)})}(function(){h.appendChild(s);});}loadCss('/style.css');</script></head>
+</head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage">
+<body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
     <div class="headband"></div>
 
-    <header class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
     <div class="toggle" aria-label="切换导航栏">
@@ -170,16 +172,16 @@
     
   
   
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://gdutxiaoxu.gitee.io/2016/12/12/%E4%BD%A0%E7%9C%9F%E7%9A%84%E4%BA%86%E8%A7%A3View%E7%9A%84%E5%9D%90%E6%A0%87%E5%90%97%EF%BC%9F/">
 
-    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="徐公">
-      <meta itemprop="description" content="「Android学习+面试指南」助你升职加薪">
+      <meta itemprop="description" content="「Android学习+面试指南」助你升职加薪#用于搜索引擎搜索到的描述信息">
     </span>
 
-    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="程序员徐公">
     </span>
       <header class="post-header">
@@ -204,21 +206,7 @@
                 <time title="修改时间：2016-12-24 10:57:35" itemprop="dateModified" datetime="2016-12-24T10:57:35+08:00">2016-12-24</time>
               </span>
 
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span></span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 ≈</span>
-              <span>NaN:aN</span>
-            </span>
+          
 
         </div>
       </header>
@@ -244,16 +232,16 @@
 <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p><img src="http://ww2.sinaimg.cn/large/9fe4afa0gw1faog7dpkajj20a90i70ty.jpg" alt=""></p>
 <p> 简单说明一下（上图Activity采用默认Style，状态栏和标题栏都会显示）：最大的草绿色区域是屏幕界面，红色次大区域我们称之为“应用界面区域”，最小紫色的区域我们称之为“View绘制区域”；屏幕顶端、应用界面区之外的那部分显示手机电池网络运营商信息的为“状态栏”，应用区域顶端、View绘制区外部显示Activity名称的部分我们称为“标题栏”。</p>
 <p>从这张图片我们可以看到<br>在Android中，当ActionBar存在的情况下，</p>
-<figure class="highlight stata"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">屏幕的 高度=状态栏+应用区域的高度=状态栏的 高度+（标题栏的 高度+<span class="keyword">View</span> 绘制区域的高度）</div></pre></td></tr></tbody></table></figure>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">屏幕的 高度=状态栏+应用区域的高度=状态栏的 高度+（标题栏的 高度+<span class="keyword">View</span> 绘制区域的高度）</div></pre></td></tr></table></figure>
 <p>当ActionBar不存在的情况下</p>
-<figure class="highlight stata"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">屏幕的高度=状态栏+应用区域的高度=状态栏的 高度+（<span class="keyword">View</span> 绘制区域的 高度）</div></pre></td></tr></tbody></table></figure>
-<h2 id="View-的-getLeft（）和getRight（）和-getTop（）-和getBottom（）"><a href="#View-的-getLeft（）和getRight（）和-getTop（）-和getBottom（）" class="headerlink" title="View 的 getLeft（）和getRight（）和  getTop（） 和getBottom（）"></a>View 的 getLeft（）和getRight（）和  getTop（） 和getBottom（）</h2><figure class="highlight sml"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="type">View</span>.getLeft<span class="literal">()</span> ;</div><div class="line"><span class="type">View</span>.getTop<span class="literal">()</span> ;</div><div class="line"><span class="type">View</span>.getBottom<span class="literal">()</span>;</div><div class="line"><span class="type">View</span>.getRight<span class="literal">()</span> ;</div></pre></td></tr></tbody></table></figure>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">屏幕的高度=状态栏+应用区域的高度=状态栏的 高度+（<span class="keyword">View</span> 绘制区域的 高度）</div></pre></td></tr></table></figure>
+<h2 id="View-的-getLeft（）和getRight（）和-getTop（）-和getBottom（）"><a href="#View-的-getLeft（）和getRight（）和-getTop（）-和getBottom（）" class="headerlink" title="View 的 getLeft（）和getRight（）和  getTop（） 和getBottom（）"></a>View 的 getLeft（）和getRight（）和  getTop（） 和getBottom（）</h2><figure class="highlight sml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="type">View</span>.getLeft<span class="literal">()</span> ;</div><div class="line"><span class="type">View</span>.getTop<span class="literal">()</span> ;</div><div class="line"><span class="type">View</span>.getBottom<span class="literal">()</span>;</div><div class="line"><span class="type">View</span>.getRight<span class="literal">()</span> ;</div></pre></td></tr></table></figure>
 <p>top是左上角纵坐标，left是左上角横坐标，right是右下角横坐标，bottom是右下角纵坐标,都是相对于它的<strong>直接父View</strong>而言的，而不是相对于<strong>屏幕</strong>而言的。这一点要区分清楚。那那个坐标是相对于屏幕而言的呢，以及要怎样获取相对于屏幕的坐标呢？</p>
 <p>目前View里面的变量还没有一个是相对于屏幕而言的，但是我们可以获取到相对于屏幕的坐标。一般来说，我们要获取View的坐标和高度 等，都必须等到View绘制完毕以后才能获取的到，在Activity 的 onCreate（）方法 里面 是获取不到的，必须 等到View绘制完毕以后才能获取地到View的响应的坐标，一般来说，主要 有以下两种方法。</p>
 <p>第一种方法，onWindowFocusChanged（）方法里面进行调用</p>
-<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">   <span class="meta">@Override</span></div><div class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onWindowFocusChanged</span><span class="params">(<span class="keyword">boolean</span> hasFocus)</span> </span>{</div><div class="line">  <span class="keyword">super</span>.onWindowFocusChanged(hasFocus); </div><div class="line">  <span class="comment">//确保只会调用一次</span></div><div class="line">   <span class="keyword">if</span>(first){</div><div class="line">     first=<span class="keyword">false</span>;</div><div class="line">     <span class="keyword">final</span> <span class="keyword">int</span>[] location = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];     </div><div class="line">     mView.getLocationOnScreen(location);</div><div class="line">     <span class="keyword">int</span> x1 = location[<span class="number">0</span>]  ;</div><div class="line">     <span class="keyword">int</span> y1 = location[<span class="number">1</span>]  ;</div><div class="line">     Log.i(TAG, <span class="string">"onCreate: x1="</span> +x1);</div><div class="line">     Log.i(TAG, <span class="string">"onCreate: y1="</span> +y1);</div><div class="line">   }</div><div class="line">}</div></pre></td></tr></tbody></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">   <span class="meta">@Override</span></div><div class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onWindowFocusChanged</span><span class="params">(<span class="keyword">boolean</span> hasFocus)</span> </span>&#123;</div><div class="line">  <span class="keyword">super</span>.onWindowFocusChanged(hasFocus); </div><div class="line">  <span class="comment">//确保只会调用一次</span></div><div class="line">   <span class="keyword">if</span>(first)&#123;</div><div class="line">     first=<span class="keyword">false</span>;</div><div class="line">     <span class="keyword">final</span> <span class="keyword">int</span>[] location = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];     </div><div class="line">     mView.getLocationOnScreen(location);</div><div class="line">     <span class="keyword">int</span> x1 = location[<span class="number">0</span>]  ;</div><div class="line">     <span class="keyword">int</span> y1 = location[<span class="number">1</span>]  ;</div><div class="line">     Log.i(TAG, <span class="string">"onCreate: x1="</span> +x1);</div><div class="line">     Log.i(TAG, <span class="string">"onCreate: y1="</span> +y1);</div><div class="line">   &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>第二种方法，在视图树绘制完成的时候进行测量</p>
-<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">mView.getViewTreeObserver().addOnGlobalLayoutListener(<span class="keyword">new</span> ViewTreeObserver</div><div class="line">        .OnGlobalLayoutListener() {</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onGlobalLayout</span><span class="params">()</span> </span>{</div><div class="line">        <span class="comment">//   移除监听器，确保只会调用一次，否则在视图树发挥改变的时候又会调用</span></div><div class="line">        mView.getViewTreeObserver().removeGlobalOnLayoutListener(<span class="keyword">this</span>);</div><div class="line">        <span class="keyword">final</span> <span class="keyword">int</span>[] location = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</div><div class="line">        mView.getLocationOnScreen(location);</div><div class="line">        <span class="keyword">int</span> x1 = location[<span class="number">0</span>];</div><div class="line">        <span class="keyword">int</span> y1 = location[<span class="number">1</span>];</div><div class="line">        Log.i(TAG, <span class="string">"onCreate: x1="</span> + x1);</div><div class="line">        Log.i(TAG, <span class="string">"onCreate: y1="</span> + y1);</div><div class="line">    }</div><div class="line">});</div></pre></td></tr></tbody></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">mView.getViewTreeObserver().addOnGlobalLayoutListener(<span class="keyword">new</span> ViewTreeObserver</div><div class="line">        .OnGlobalLayoutListener() &#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onGlobalLayout</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="comment">//   移除监听器，确保只会调用一次，否则在视图树发挥改变的时候又会调用</span></div><div class="line">        mView.getViewTreeObserver().removeGlobalOnLayoutListener(<span class="keyword">this</span>);</div><div class="line">        <span class="keyword">final</span> <span class="keyword">int</span>[] location = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</div><div class="line">        mView.getLocationOnScreen(location);</div><div class="line">        <span class="keyword">int</span> x1 = location[<span class="number">0</span>];</div><div class="line">        <span class="keyword">int</span> y1 = location[<span class="number">1</span>];</div><div class="line">        Log.i(TAG, <span class="string">"onCreate: x1="</span> + x1);</div><div class="line">        Log.i(TAG, <span class="string">"onCreate: y1="</span> + y1);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
 <h2 id="View-的-getY（），-getTranslationY-和-getTop（）-之间的联"><a href="#View-的-getY（），-getTranslationY-和-getTop（）-之间的联" class="headerlink" title="View 的 getＹ（）， getTranslationY() 和 getTop（） 之间的联"></a>View 的 getＹ（）， getTranslationY() 和 getTop（） 之间的联</h2><p>getＹ（）</p>
 <blockquote>
 <p>Added in API level 14<br>The visual y position of this view, in pixels.(返回的是View视觉上的图标，即我们眼睛看到位置的Y坐标，注意也是相对于<strong>直接父View</strong>而言的默认值跟getTop（）相同，别急，下面会解释）</p>
@@ -263,29 +251,29 @@
 <p>Added in API level 14<br>The vertical position of this view relative to its top position, in pixels.(竖直方向上相对于top的偏移量，默认值为0）</p>
 </blockquote>
 <p>那 getY（） 和 getTranslationY（） 和 getTop （） 到底有什么关系呢？</p>
-<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@ViewDebug</span>.ExportedProperty(category = <span class="string">"drawing"</span>)</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">getY</span><span class="params">()</span> </span>{</div><div class="line">   <span class="keyword">return</span> mTop + getTranslationY();</div><div class="line">}</div><div class="line"></div><div class="line">    <span class="meta">@ViewDebug</span>.ExportedProperty(category = <span class="string">"drawing"</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">getTranslationY</span><span class="params">()</span> </span>{</div><div class="line">        <span class="keyword">return</span> mRenderNode.getTranslationY();</div><div class="line">    }</div><div class="line">    <span class="meta">@ViewDebug</span>.<span class="function">CapturedViewProperty</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">getTop</span><span class="params">()</span> {</div><div class="line">        <span class="keyword">return</span> mTop;</div><div class="line">    }</div></pre></td></tr></tbody></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@ViewDebug</span>.ExportedProperty(category = <span class="string">"drawing"</span>)</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">getY</span><span class="params">()</span> </span>&#123;</div><div class="line">   <span class="keyword">return</span> mTop + getTranslationY();</div><div class="line">&#125;</div><div class="line"></div><div class="line">    <span class="meta">@ViewDebug</span>.ExportedProperty(category = <span class="string">"drawing"</span>)</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">getTranslationY</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> mRenderNode.getTranslationY();</div><div class="line">    &#125;</div><div class="line">    <span class="meta">@ViewDebug</span>.<span class="function">CapturedViewProperty</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">getTop</span><span class="params">()</span> &#123;</div><div class="line">        <span class="keyword">return</span> mTop;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
 <p>从以上的源码我们可以知道 getY（）= getTranslationY（）+ getTop （），而 getTranslationY（） 的默认值是0，除非我们通过 setTranlationY（） 来改变它，这也就是我们上面上到的 getY 默认值跟 getTop（）相同</p>
 <p>那我们要怎样改变 top值 和 Y 值呢？ 很明显就是调用相应的set方法 ，即 setY（） 和setTop（） ，就可以改变他们 的值。</p>
 <h2 id="View-的-getScroolY-和-View-的-scrollTo-和-scrollBy（）"><a href="#View-的-getScroolY-和-View-的-scrollTo-和-scrollBy（）" class="headerlink" title="View 的  getScroolY  和 View 的 scrollTo() 和 scrollBy（）"></a>View 的  getScroolY  和 View 的 scrollTo() 和 scrollBy（）</h2><p>getScrollY是一个比较特别的函数，因为它涉及一个值叫mScrollY，简单说，getScrollY一般得到的都是0，除非你调用过scrollTo或scrollBy这两个函数来改变它。</p>
 <h3 id="scrollTo-和-scrollBy（）"><a href="#scrollTo-和-scrollBy（）" class="headerlink" title="scrollTo() 和 scrollBy（）"></a>scrollTo() 和 scrollBy（）</h3><p>从字面意思我们可以知道 scrollTo() 是滑动到哪里的意思 ，scrollBy（）是相对当前的位置滑动了多少。当然这一点在源码中也是可以体现出来的</p>
-<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">scrollTo</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>{</div><div class="line">    <span class="keyword">if</span> (mScrollX != x || mScrollY != y) {</div><div class="line">        <span class="keyword">int</span> oldX = mScrollX;</div><div class="line">        <span class="keyword">int</span> oldY = mScrollY;</div><div class="line">        mScrollX = x;</div><div class="line">        mScrollY = y;</div><div class="line">        invalidateParentCaches();</div><div class="line">        onScrollChanged(mScrollX, mScrollY, oldX, oldY);</div><div class="line">        <span class="keyword">if</span> (!awakenScrollBars()) {</div><div class="line">            postInvalidateOnAnimation();</div><div class="line">        }</div><div class="line">    }</div><div class="line">}</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">scrollBy</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>{</div><div class="line">    scrollTo(mScrollX + x, mScrollY + y);</div><div class="line">}</div></pre></td></tr></tbody></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">scrollTo</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (mScrollX != x || mScrollY != y) &#123;</div><div class="line">        <span class="keyword">int</span> oldX = mScrollX;</div><div class="line">        <span class="keyword">int</span> oldY = mScrollY;</div><div class="line">        mScrollX = x;</div><div class="line">        mScrollY = y;</div><div class="line">        invalidateParentCaches();</div><div class="line">        onScrollChanged(mScrollX, mScrollY, oldX, oldY);</div><div class="line">        <span class="keyword">if</span> (!awakenScrollBars()) &#123;</div><div class="line">            postInvalidateOnAnimation();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">scrollBy</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</div><div class="line">    scrollTo(mScrollX + x, mScrollY + y);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>有几点需要注意的是</p>
 <ul>
 <li>不论是scrollTo或scrollBy，其实都是对View的内容进行滚动而不是对View本身，你可以做个小实验，一个LinearLayouy背景是黄色，里面放置一个子LinearLayout背景是蓝色，调用scrollTo或scrollBy，移动的永远是蓝色的子LinearLayout。</li>
 <li>还有就是scrollTo和scrollBy函数的参数和坐标系是“相反的”，比如scrollTo(-100,0)，View的内容是向X轴正方向移动的，这个相反打引号是因为并不是真正的相反，具体可以看源码，关于这两个函数的源码分析大家可以看<a href="http://blog.csdn.net/xplee0576/article/details/24242383?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="external">Android——源码角度分析View的scrollBy()和scrollTo()的参数正负问题</a>，一目了然。</li>
 </ul>
-<h2 id="View-的-width-和-height"><a href="#View-的-width-和-height" class="headerlink" title="View 的 width 和 height"></a>View 的 width 和 height</h2><figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@ViewDebug</span>.ExportedProperty(category = <span class="string">"layout"</span>)</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">getHeight</span><span class="params">()</span> </span>{</div><div class="line">    <span class="keyword">return</span> mBottom - mTop;</div><div class="line">}</div></pre></td></tr></tbody></table></figure>
+<h2 id="View-的-width-和-height"><a href="#View-的-width-和-height" class="headerlink" title="View 的 width 和 height"></a>View 的 width 和 height</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@ViewDebug</span>.ExportedProperty(category = <span class="string">"layout"</span>)</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">getHeight</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> mBottom - mTop;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>我们可以看到 Android的 height 是由 mBottom  和 mTop 共同得出的，那我们要怎样设置Android的高度呢？有人会说直接在xml里面设置 android:height=””  不就OK了，那我们如果要动态设置height的高度呢，怎么办？你可能会想到 setWidth（）方法？但是我们找遍了View的所有方法，都没有发现 setWidth（）方法，那要怎样动态设置height呢？其实有两种方法</p>
-<figure class="highlight processing"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"> <span class="built_in">int</span> <span class="built_in">width</span>=<span class="number">50</span>;</div><div class="line"><span class="built_in">int</span> <span class="built_in">height</span>=<span class="number">100</span>;</div><div class="line">ViewGroup.LayoutParams layoutParams = view.getLayoutParams();</div><div class="line"><span class="keyword">if</span>(layoutParams==<span class="keyword">null</span>){</div><div class="line">    layoutParams=<span class="keyword">new</span> ViewGroup.LayoutParams(<span class="built_in">width</span>,<span class="built_in">height</span>);</div><div class="line">}<span class="keyword">else</span>{</div><div class="line">    layoutParams.<span class="built_in">height</span>=<span class="built_in">height</span>;</div><div class="line">}</div><div class="line">view.setLayoutParams(layoutParams);</div></pre></td></tr></tbody></table></figure>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"> <span class="built_in">int</span> <span class="built_in">width</span>=<span class="number">50</span>;</div><div class="line"><span class="built_in">int</span> <span class="built_in">height</span>=<span class="number">100</span>;</div><div class="line">ViewGroup.LayoutParams layoutParams = view.getLayoutParams();</div><div class="line"><span class="keyword">if</span>(layoutParams==<span class="keyword">null</span>)&#123;</div><div class="line">    layoutParams=<span class="keyword">new</span> ViewGroup.LayoutParams(<span class="built_in">width</span>,<span class="built_in">height</span>);</div><div class="line">&#125;<span class="keyword">else</span>&#123;</div><div class="line">    layoutParams.<span class="built_in">height</span>=<span class="built_in">height</span>;</div><div class="line">&#125;</div><div class="line">view.setLayoutParams(layoutParams);</div></pre></td></tr></table></figure>
 <p>第二种方法，单独地改变top或者bottom的值，这种方法不推荐使用</p>
 <p>至于width，它跟height基本一样，只不过它是有mRight 和mLeft 共同决定而已。</p>
 <p>需要注意的是，平时我们在执行动画的过程，不推荐使用LayoutParams来改变View的状态，因为改变LayoutParams会调用requestLayout（）方法，会标记当前View及父容器，同时逐层向上提交，直到ViewRootImpl处理该事件，ViewRootImpl会调用三大流程，从measure开始，对于每一个含有标记位的view及其子View都会进行测量、布局、绘制，性能较差，源码体现如下：关于requestLayout （）方法的更多分析可以查看这一篇博客<a href="http://blog.csdn.net/a553181867/article/details/51583060" target="_blank" rel="external">Android View 深度分析requestLayout、invalidate与postInvalidate</a></p>
-<figure class="highlight cs"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setLayoutParams</span>(<span class="params">ViewGroup.LayoutParams <span class="keyword">params</span></span>) </span>{</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">params</span> == <span class="literal">null</span>) {</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">"Layout parameters cannot be null"</span>);</div><div class="line">    }</div><div class="line">    mLayoutParams = <span class="keyword">params</span>;</div><div class="line">    resolveLayoutParams();</div><div class="line">    <span class="keyword">if</span> (mParent instanceof ViewGroup) {</div><div class="line">        ((ViewGroup) mParent).onSetLayoutParams(<span class="keyword">this</span>, <span class="keyword">params</span>);</div><div class="line">    }</div><div class="line">    requestLayout();</div><div class="line">}</div></pre></td></tr></tbody></table></figure>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setLayoutParams</span>(<span class="params">ViewGroup.LayoutParams <span class="keyword">params</span></span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">params</span> == <span class="literal">null</span>) &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">"Layout parameters cannot be null"</span>);</div><div class="line">    &#125;</div><div class="line">    mLayoutParams = <span class="keyword">params</span>;</div><div class="line">    resolveLayoutParams();</div><div class="line">    <span class="keyword">if</span> (mParent instanceof ViewGroup) &#123;</div><div class="line">        ((ViewGroup) mParent).onSetLayoutParams(<span class="keyword">this</span>, <span class="keyword">params</span>);</div><div class="line">    &#125;</div><div class="line">    requestLayout();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>因此我们如果在api 14 以后 ，在动画执行过程中，要改变View的状态，推荐使用setTranslationY（）和setTranslationX（0等方法，而 尽量避免改变LayoutParams.因为性能嫌贵来说较差。</p>
 <h2 id="event-getY-和-event-getRawY"><a href="#event-getY-和-event-getRawY" class="headerlink" title="event.getY() 和  event.getRawY()"></a>event.getY() 和  event.getRawY()</h2><p> 要区分于MotionEvent.getRawX() 和MotionEvent.getX();,</p>
 <p>在public boolean onTouch(View view, MotionEvent event) 中，当你触到控件时，x,y是相对于该控件左上点（控件本身）的相对位置。 而rawx,rawy始终是相对于屏幕的位置。getX()是表示Widget相对于自身左上角的x坐标,而getRawX()是表示相对于屏幕左上角的x坐标值 (注意:这个屏幕左上角是手机屏幕左上角,不管activity是否有titleBar或是否全屏幕)。</p>
 <p><img src="http://ww4.sinaimg.cn/large/9fe4afa0jw1faplvwpqj3j207c06aaa5.jpg" alt=""></p>
-<h2 id="扩展，怎样获取状态栏（StatusBar）和标题栏（titleBar）的高度"><a href="#扩展，怎样获取状态栏（StatusBar）和标题栏（titleBar）的高度" class="headerlink" title="扩展，怎样获取状态栏（StatusBar）和标题栏（titleBar）的高度"></a>扩展，怎样获取状态栏（StatusBar）和标题栏（titleBar）的高度</h2><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"> public void onWindowFocusChanged(boolean hasFocus) {</div><div class="line">    super.onWindowFocusChanged(hasFocus);</div><div class="line"></div><div class="line">    //屏幕</div><div class="line">    DisplayMetrics dm = new DisplayMetrics();</div><div class="line">    getWindowManager().getDefaultDisplay().getMetrics(dm);</div><div class="line">    Log.e(TAG, "屏幕高:" + dm.heightPixels);</div><div class="line"></div><div class="line">    //应用区域</div><div class="line">    Rect outRect1 = new Rect();</div><div class="line">    getWindow().getDecorView().getWindowVisibleDisplayFrame(outRect1);</div><div class="line">    //这个也就是状态栏的 高度</div><div class="line">    Log.e(TAG, "应用区顶部" + outRect1.top);</div><div class="line">    </div><div class="line">    Log.e(TAG, "应用区高" + outRect1.height());</div><div class="line">    </div><div class="line">    // 这个方法必须在有actionBar的情况下才能获取到状态栏的高度</div><div class="line">    //View绘制区域</div><div class="line">    Rect outRect2 = new Rect();</div><div class="line">    getWindow().findViewById(Window.ID_ANDROID_CONTENT).getDrawingRect(outRect2);</div><div class="line">    Log.e(TAG, "View绘制区域顶部-错误方法：" + outRect2.top);   //不能像上边一样由outRect2.top获取，这种方式获得的top是0，可能是bug吧</div><div class="line">    Log.e(TAG, "View绘制区域高度：" + outRect2.height());</div><div class="line"></div><div class="line">    int viewTop = getWindow().findViewById(Window.ID_ANDROID_CONTENT).getTop();   //要用这种方法</div><div class="line">    Log.e(TAG, "View绘制区域顶部-正确方法：" + viewTop);</div><div class="line"></div><div class="line">    int titleBarHeight=viewTop;</div><div class="line"></div><div class="line">    Log.d(TAG, "onWindowFocusChanged: 标题栏高度titleBarHeight=" +titleBarHeight);</div><div class="line"></div><div class="line">}</div></pre></td></tr></tbody></table></figure>
+<h2 id="扩展，怎样获取状态栏（StatusBar）和标题栏（titleBar）的高度"><a href="#扩展，怎样获取状态栏（StatusBar）和标题栏（titleBar）的高度" class="headerlink" title="扩展，怎样获取状态栏（StatusBar）和标题栏（titleBar）的高度"></a>扩展，怎样获取状态栏（StatusBar）和标题栏（titleBar）的高度</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"> public void onWindowFocusChanged(boolean hasFocus) &#123;</div><div class="line">    super.onWindowFocusChanged(hasFocus);</div><div class="line"></div><div class="line">    //屏幕</div><div class="line">    DisplayMetrics dm = new DisplayMetrics();</div><div class="line">    getWindowManager().getDefaultDisplay().getMetrics(dm);</div><div class="line">    Log.e(TAG, &quot;屏幕高:&quot; + dm.heightPixels);</div><div class="line"></div><div class="line">    //应用区域</div><div class="line">    Rect outRect1 = new Rect();</div><div class="line">    getWindow().getDecorView().getWindowVisibleDisplayFrame(outRect1);</div><div class="line">    //这个也就是状态栏的 高度</div><div class="line">    Log.e(TAG, &quot;应用区顶部&quot; + outRect1.top);</div><div class="line">    </div><div class="line">    Log.e(TAG, &quot;应用区高&quot; + outRect1.height());</div><div class="line">    </div><div class="line">    // 这个方法必须在有actionBar的情况下才能获取到状态栏的高度</div><div class="line">    //View绘制区域</div><div class="line">    Rect outRect2 = new Rect();</div><div class="line">    getWindow().findViewById(Window.ID_ANDROID_CONTENT).getDrawingRect(outRect2);</div><div class="line">    Log.e(TAG, &quot;View绘制区域顶部-错误方法：&quot; + outRect2.top);   //不能像上边一样由outRect2.top获取，这种方式获得的top是0，可能是bug吧</div><div class="line">    Log.e(TAG, &quot;View绘制区域高度：&quot; + outRect2.height());</div><div class="line"></div><div class="line">    int viewTop = getWindow().findViewById(Window.ID_ANDROID_CONTENT).getTop();   //要用这种方法</div><div class="line">    Log.e(TAG, &quot;View绘制区域顶部-正确方法：&quot; + viewTop);</div><div class="line"></div><div class="line">    int titleBarHeight=viewTop;</div><div class="line"></div><div class="line">    Log.d(TAG, &quot;onWindowFocusChanged: 标题栏高度titleBarHeight=&quot; +titleBarHeight);</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>这里我们需要注意的 是在ActionBar存在的情况下，通过这种方法我们才能够得出titleBar的高度，否则是无法得到的，因为viewTop 为0.</p>
 <hr>
 <p>这篇博客到此为止，关于更多自定义View 的一些例子，可以看我以下的博客 </p>
@@ -397,9 +385,9 @@
       <!--/noindex-->
 
       <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
   <p class="site-author-name" itemprop="name">徐公</p>
-  <div class="site-description" itemprop="description">「Android学习+面试指南」助你升职加薪</div>
+  <div class="site-description" itemprop="description">「Android学习+面试指南」助你升职加薪#用于搜索引擎搜索到的描述信息</div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
@@ -427,11 +415,11 @@
       </div>
 
       <div class="wechat_OA">
-        <br>
+        <br/>
         <span>扫一扫，欢迎关注我的公众号</span>
         <br>
           <!-- 这里添加你的二维码图片 -->
-        <img src="https://gitee.com/gdutxiaoxu/blog-picture/raw/master/21/01/qrcode_for_gh_f0b7a2d93f70_430%20(2).jpg">
+        <img src ="https://gitee.com/gdutxiaoxu/blog-picture/raw/master/21/01/qrcode_for_gh_f0b7a2d93f70_430%20(2).jpg">
       </div>
 
     </div>
@@ -450,26 +438,14 @@
 
 <div class="copyright">
   
-  © 
+  &copy; 
   <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">徐公</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-area"></i>
-    </span>
-      <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">NaNm</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-      <span class="post-meta-item-text">站点阅读时长 ≈</span>
-    <span title="站点阅读时长">NaN:aN</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> &amp; <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
 
         
@@ -486,50 +462,25 @@
   </div>
 
   
-  
-  
-  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
 
 
+<script src="/js/schemes/pisces.js"></script>
 
 
-
-
-
-
-
-
-
-
-
-
-  
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<script src="/js/next-boot.js"></script>
 
 
 
 
   
-
-  
-
-
-
-<script src="/bundle.js"></script><script>
+  <script>
     (function(){
       var canonicalURL, curProtocol;
       //Get the <link> tag
@@ -553,8 +504,10 @@
 	    if (!canonicalURL) canonicalURL = window.location.href;
 	    //Assign script content. Replace current URL with the canonical URL
       !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
-  ;
+  </script>
 
+
+<script>
 (function(){
     var bp = document.createElement('script');
     var curProtocol = window.location.protocol.split(':')[0];
@@ -567,4 +520,25 @@
     var s = document.getElementsByTagName("script")[0];
     s.parentNode.insertBefore(bp, s);
 })();
-</script></body></html>
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

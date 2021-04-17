@@ -1,4 +1,6 @@
-<!DOCTYPE html><html lang="zh-CN"><head>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
@@ -8,22 +10,22 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
   <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
+<link rel="stylesheet" href="/css/main.css">
 
 
-
-
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"gdutxiaoxu.gitee.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="使用CoordinatorLayout打造各种炫酷的效果文章首发地址CSDN：http://blog.csdn.net/gdutxiaoxu/article/details/52858598 CoordinatorLayout简介CoordinatorLayout是在 Google IO/15 大会发布的，遵循Material 风格，包含在 support Library中，结合AppbarLay">
+  <meta name="description" content="使用CoordinatorLayout打造各种炫酷的效果文章首发地址CSDN：http:&#x2F;&#x2F;blog.csdn.net&#x2F;gdutxiaoxu&#x2F;article&#x2F;details&#x2F;52858598 CoordinatorLayout简介CoordinatorLayout是在 Google IO&#x2F;15 大会发布的，遵循Material 风格，包含在 support Library中，结合AppbarLay">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用CoordinatorLayout打造各种炫酷的效果">
 <meta property="og:url" content="https://gdutxiaoxu.gitee.io/2016/12/08/%E4%BD%BF%E7%94%A8CoordinatorLayout%E6%89%93%E9%80%A0%E5%90%84%E7%A7%8D%E7%82%AB%E9%85%B7%E7%9A%84%E6%95%88%E6%9E%9C/index.html">
 <meta property="og:site_name" content="程序员徐公">
-<meta property="og:description" content="使用CoordinatorLayout打造各种炫酷的效果文章首发地址CSDN：http://blog.csdn.net/gdutxiaoxu/article/details/52858598 CoordinatorLayout简介CoordinatorLayout是在 Google IO/15 大会发布的，遵循Material 风格，包含在 support Library中，结合AppbarLay">
+<meta property="og:description" content="使用CoordinatorLayout打造各种炫酷的效果文章首发地址CSDN：http:&#x2F;&#x2F;blog.csdn.net&#x2F;gdutxiaoxu&#x2F;article&#x2F;details&#x2F;52858598 CoordinatorLayout简介CoordinatorLayout是在 Google IO&#x2F;15 大会发布的，遵循Material 风格，包含在 support Library中，结合AppbarLay">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2050203-4d4cb377e3dcedd3.gif?imageMogr2/auto-orient/strip">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2050203-86a54fca00c4fcd1.jpg?imageMogr2/auto-orient/strip">
@@ -96,13 +98,13 @@
   </style>
 </noscript>
 
-<script>function loadCss(l){var d=document,h=d.head,s=d.createElement('link');s.rel='stylesheet';s.href=l;!function e(f){if (d.body)return f();setTimeout(function(){e(f)})}(function(){h.appendChild(s);});}loadCss('/style.css');</script></head>
+</head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage">
+<body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
     <div class="headband"></div>
 
-    <header class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
     <div class="toggle" aria-label="切换导航栏">
@@ -180,16 +182,16 @@
     
   
   
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://gdutxiaoxu.gitee.io/2016/12/08/%E4%BD%BF%E7%94%A8CoordinatorLayout%E6%89%93%E9%80%A0%E5%90%84%E7%A7%8D%E7%82%AB%E9%85%B7%E7%9A%84%E6%95%88%E6%9E%9C/">
 
-    <span hidden="" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="徐公">
-      <meta itemprop="description" content="「Android学习+面试指南」助你升职加薪">
+      <meta itemprop="description" content="「Android学习+面试指南」助你升职加薪#用于搜索引擎搜索到的描述信息">
     </span>
 
-    <span hidden="" itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="程序员徐公">
     </span>
       <header class="post-header">
@@ -208,21 +210,7 @@
               <time title="创建时间：2016-12-08 12:24:55 / 修改时间：20:03:24" itemprop="dateCreated datePublished" datetime="2016-12-08T12:24:55+08:00">2016-12-08</time>
             </span>
 
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span></span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 ≈</span>
-              <span>NaN:aN</span>
-            </span>
+          
 
         </div>
       </header>
@@ -317,26 +305,26 @@
 <ul>
 <li>方法一</li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">setScrollFlags(int)</div></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">setScrollFlags(int)</div></pre></td></tr></table></figure>
 <ul>
 <li>方法二</li>
 </ul>
-<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">app:layout_scrollFlags=<span class="string">"scroll|enterAlways"</span></div></pre></td></tr></tbody></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">app:layout_scrollFlags=<span class="string">"scroll|enterAlways"</span></div></pre></td></tr></table></figure>
 <h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><p>AppBarLayout必须作为CoordinatorLayout的直接子View，否则它的大部分功能将不会生效，如layout_scrollFlags等。</p>
-<h2 id="首先我们先来看一下我们-效果图一是怎样实现的"><a href="#首先我们先来看一下我们-效果图一是怎样实现的" class="headerlink" title="首先我们先来看一下我们 效果图一是怎样实现的"></a>首先我们先来看一下我们 效果图一是怎样实现的</h2><h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line">&lt;android.support.design.widget.CoordinatorLayout</div><div class="line">    android:id="@+id/main_content"</div><div class="line">    xmlns:android="http://schemas.android.com/apk/res/android"</div><div class="line">    xmlns:app="http://schemas.android.com/apk/res-auto"</div><div class="line">    android:layout_width="match_parent"</div><div class="line">    android:layout_height="match_parent"&gt;</div><div class="line"></div><div class="line">    &lt;android.support.design.widget.AppBarLayout</div><div class="line">        android:id="@+id/appbar"</div><div class="line">        android:layout_width="match_parent"</div><div class="line">        android:layout_height="wrap_content"</div><div class="line">        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"&gt;</div><div class="line"></div><div class="line">        &lt;android.support.v7.widget.Toolbar</div><div class="line">            android:id="@+id/toolbar"</div><div class="line">            android:layout_width="match_parent"</div><div class="line">            android:layout_height="?attr/actionBarSize"</div><div class="line">            android:background="?attr/colorPrimary"</div><div class="line">            app:layout_scrollFlags="scroll|enterAlways"</div><div class="line">            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/&gt;</div><div class="line"></div><div class="line">       .</div><div class="line"></div><div class="line"></div><div class="line">    &lt;/android.support.design.widget.AppBarLayout&gt;</div><div class="line"></div><div class="line">    &lt;android.support.v7.widget.RecyclerView</div><div class="line">        android:id="@+id/recyclerView"</div><div class="line">        android:layout_width="match_parent"</div><div class="line">        android:layout_height="match_parent"</div><div class="line">        app:layout_behavior="@string/appbar_scrolling_view_behavior"/&gt;</div><div class="line"></div><div class="line">    &lt;android.support.design.widget.FloatingActionButton</div><div class="line">        android:id="@+id/fab"</div><div class="line">        android:layout_width="wrap_content"</div><div class="line">        android:layout_height="wrap_content"</div><div class="line">        android:layout_gravity="end|bottom"</div><div class="line">        android:layout_margin="15dp"</div><div class="line">        android:src="@drawable/add_2"/&gt;</div><div class="line"></div><div class="line">&lt;/android.support.design.widget.CoordinatorLayout&gt;</div></pre></td></tr></tbody></table></figure>
+<h2 id="首先我们先来看一下我们-效果图一是怎样实现的"><a href="#首先我们先来看一下我们-效果图一是怎样实现的" class="headerlink" title="首先我们先来看一下我们 效果图一是怎样实现的"></a>首先我们先来看一下我们 效果图一是怎样实现的</h2><h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line">&lt;android.support.design.widget.CoordinatorLayout</div><div class="line">    android:id="@+id/main_content"</div><div class="line">    xmlns:android="http://schemas.android.com/apk/res/android"</div><div class="line">    xmlns:app="http://schemas.android.com/apk/res-auto"</div><div class="line">    android:layout_width="match_parent"</div><div class="line">    android:layout_height="match_parent"&gt;</div><div class="line"></div><div class="line">    &lt;android.support.design.widget.AppBarLayout</div><div class="line">        android:id="@+id/appbar"</div><div class="line">        android:layout_width="match_parent"</div><div class="line">        android:layout_height="wrap_content"</div><div class="line">        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"&gt;</div><div class="line"></div><div class="line">        &lt;android.support.v7.widget.Toolbar</div><div class="line">            android:id="@+id/toolbar"</div><div class="line">            android:layout_width="match_parent"</div><div class="line">            android:layout_height="?attr/actionBarSize"</div><div class="line">            android:background="?attr/colorPrimary"</div><div class="line">            app:layout_scrollFlags="scroll|enterAlways"</div><div class="line">            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/&gt;</div><div class="line"></div><div class="line">       .</div><div class="line"></div><div class="line"></div><div class="line">    &lt;/android.support.design.widget.AppBarLayout&gt;</div><div class="line"></div><div class="line">    &lt;android.support.v7.widget.RecyclerView</div><div class="line">        android:id="@+id/recyclerView"</div><div class="line">        android:layout_width="match_parent"</div><div class="line">        android:layout_height="match_parent"</div><div class="line">        app:layout_behavior="@string/appbar_scrolling_view_behavior"/&gt;</div><div class="line"></div><div class="line">    &lt;android.support.design.widget.FloatingActionButton</div><div class="line">        android:id="@+id/fab"</div><div class="line">        android:layout_width="wrap_content"</div><div class="line">        android:layout_height="wrap_content"</div><div class="line">        android:layout_gravity="end|bottom"</div><div class="line">        android:layout_margin="15dp"</div><div class="line">        android:src="@drawable/add_2"/&gt;</div><div class="line"></div><div class="line">&lt;/android.support.design.widget.CoordinatorLayout&gt;</div></pre></td></tr></table></figure>
 <h3 id="思路-分析"><a href="#思路-分析" class="headerlink" title="思路 分析"></a>思路 分析</h3><p><img src="http://upload-images.jianshu.io/upload_images/2050203-fc0a06c21c9c288a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
 <p>从图中我们可以知道 layout_scrollFlags=”scroll|enterAlways，<br>前面已经说到layout_scrollFlags=scroll的时候，这个View会 跟着 滚动 事件响应，<br>layout_scrollFlags=“enterAlways”的时候 这个View会响应下拉事件<br>所以呈现出来的结果应该是我们在上拉的时候toolBar 会隐藏，下拉的时候toolBar会出来</p>
 <p>那如果当我们的toolBar 等于  app:layout_scrollFlags=”scroll|snap”的时候 ，<br>layout_scrollFlags=scroll的时候，这个View会 跟着 滚动 事件响应，<br>layout_scrollFlags=“snap”的时候 在Scroll滑动事件结束以前 ，如果这个View部分可见，那么这个View会停在最接近当前View的位置。<br><em>综上呈现的效果如下</em>，代码见ToolBarSampleSnar的布局文件</p>
 <p><img src="http://upload-images.jianshu.io/upload_images/2050203-59fa7433560accaa.gif?imageMogr2/auto-orient/strip" alt=""></p>
-<h2 id="结合ViewPager-1"><a href="#结合ViewPager-1" class="headerlink" title="结合ViewPager"></a>结合ViewPager</h2><h3 id="布局代码如下"><a href="#布局代码如下" class="headerlink" title="布局代码如下"></a>布局代码如下</h3><figure class="highlight"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line">&lt;android.support.design.widget.CoordinatorLayout</div><div class="line">    android:id="@+id/main_content"</div><div class="line">    xmlns:android="http://schemas.android.com/apk/res/android"</div><div class="line">    xmlns:app="http://schemas.android.com/apk/res-auto"</div><div class="line">    android:layout_width="match_parent"</div><div class="line">    android:layout_height="match_parent"&gt;</div><div class="line"></div><div class="line">    &lt;android.support.design.widget.AppBarLayout</div><div class="line">        android:layout_width="match_parent"</div><div class="line">        android:layout_height="250dp"&gt;</div><div class="line"></div><div class="line"></div><div class="line">        &lt;ImageView android:layout_width="match_parent"</div><div class="line">                   android:layout_height="200dp"</div><div class="line">                   android:background="?attr/colorPrimary"</div><div class="line">                   android:scaleType="fitXY"</div><div class="line">                   android:src="@drawable/tangyan"</div><div class="line">                   app:layout_scrollFlags="scroll|enterAlways"/&gt;</div><div class="line"></div><div class="line">        &lt;android.support.design.widget.TabLayout</div><div class="line">            android:id="@+id/tabs"</div><div class="line">            android:layout_width="match_parent"</div><div class="line">            android:layout_height="wrap_content"</div><div class="line">            android:layout_alignParentBottom="true"</div><div class="line">            android:background="?attr/colorPrimary"</div><div class="line">            app:tabIndicatorColor="@color/colorAccent"</div><div class="line">            app:tabIndicatorHeight="4dp"</div><div class="line">            app:tabSelectedTextColor="#000"</div><div class="line">            app:tabTextColor="#fff"/&gt;</div><div class="line"></div><div class="line">    &lt;/android.support.design.widget.AppBarLayout&gt;</div><div class="line"></div><div class="line"></div><div class="line">    &lt;android.support.v4.view.ViewPager</div><div class="line"></div><div class="line">        android:id="@+id/viewpager"</div><div class="line">        android:layout_width="match_parent"</div><div class="line">        android:layout_height="match_parent"</div><div class="line">        app:layout_behavior="@string/appbar_scrolling_view_behavior"/&gt;</div><div class="line"></div><div class="line">    &lt;android.support.design.widget.FloatingActionButton</div><div class="line">        android:id="@+id/fab"</div><div class="line">        android:layout_width="wrap_content"</div><div class="line">        android:layout_height="wrap_content"</div><div class="line">        android:layout_gravity="end|bottom"</div><div class="line">        android:layout_margin="15dp"</div><div class="line">        android:src="@drawable/add_2"/&gt;</div><div class="line"></div><div class="line">&lt;/android.support.design.widget.CoordinatorLayout&gt;</div></pre></td></tr></tbody></table></figure>
+<h2 id="结合ViewPager-1"><a href="#结合ViewPager-1" class="headerlink" title="结合ViewPager"></a>结合ViewPager</h2><h3 id="布局代码如下"><a href="#布局代码如下" class="headerlink" title="布局代码如下"></a>布局代码如下</h3><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line">&lt;android.support.design.widget.CoordinatorLayout</div><div class="line">    android:id="@+id/main_content"</div><div class="line">    xmlns:android="http://schemas.android.com/apk/res/android"</div><div class="line">    xmlns:app="http://schemas.android.com/apk/res-auto"</div><div class="line">    android:layout_width="match_parent"</div><div class="line">    android:layout_height="match_parent"&gt;</div><div class="line"></div><div class="line">    &lt;android.support.design.widget.AppBarLayout</div><div class="line">        android:layout_width="match_parent"</div><div class="line">        android:layout_height="250dp"&gt;</div><div class="line"></div><div class="line"></div><div class="line">        &lt;ImageView android:layout_width="match_parent"</div><div class="line">                   android:layout_height="200dp"</div><div class="line">                   android:background="?attr/colorPrimary"</div><div class="line">                   android:scaleType="fitXY"</div><div class="line">                   android:src="@drawable/tangyan"</div><div class="line">                   app:layout_scrollFlags="scroll|enterAlways"/&gt;</div><div class="line"></div><div class="line">        &lt;android.support.design.widget.TabLayout</div><div class="line">            android:id="@+id/tabs"</div><div class="line">            android:layout_width="match_parent"</div><div class="line">            android:layout_height="wrap_content"</div><div class="line">            android:layout_alignParentBottom="true"</div><div class="line">            android:background="?attr/colorPrimary"</div><div class="line">            app:tabIndicatorColor="@color/colorAccent"</div><div class="line">            app:tabIndicatorHeight="4dp"</div><div class="line">            app:tabSelectedTextColor="#000"</div><div class="line">            app:tabTextColor="#fff"/&gt;</div><div class="line"></div><div class="line">    &lt;/android.support.design.widget.AppBarLayout&gt;</div><div class="line"></div><div class="line"></div><div class="line">    &lt;android.support.v4.view.ViewPager</div><div class="line"></div><div class="line">        android:id="@+id/viewpager"</div><div class="line">        android:layout_width="match_parent"</div><div class="line">        android:layout_height="match_parent"</div><div class="line">        app:layout_behavior="@string/appbar_scrolling_view_behavior"/&gt;</div><div class="line"></div><div class="line">    &lt;android.support.design.widget.FloatingActionButton</div><div class="line">        android:id="@+id/fab"</div><div class="line">        android:layout_width="wrap_content"</div><div class="line">        android:layout_height="wrap_content"</div><div class="line">        android:layout_gravity="end|bottom"</div><div class="line">        android:layout_margin="15dp"</div><div class="line">        android:src="@drawable/add_2"/&gt;</div><div class="line"></div><div class="line">&lt;/android.support.design.widget.CoordinatorLayout&gt;</div></pre></td></tr></table></figure>
 <h3 id="思路分析"><a href="#思路分析" class="headerlink" title="思路分析"></a>思路分析</h3><p><img src="http://upload-images.jianshu.io/upload_images/2050203-bd26f390981d045b.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
 <p>其实相对于前 一个例子，只是把 摆放RecyclerView 的位置替换成ViewPager而已，为了有页面导航器的效果，再使用 TabLayout而已，而TabLayout 在我们滑动的时候最终会停靠在 最顶部，是因为我们没有设置其layout_scrollFlags，即TabLayout是静态的</p>
 <p>运行以后，即可看到以下的结果</p>
 <p><img src="http://upload-images.jianshu.io/upload_images/2050203-86a54fca00c4fcd1.jpg?imageMogr2/auto-orient/strip" alt="ViewPager"></p>
 <h3 id="下面我们一起来看一下-TabLayout是怎样结合ViewPager直线-导航器的效果的"><a href="#下面我们一起来看一下-TabLayout是怎样结合ViewPager直线-导航器的效果的" class="headerlink" title="下面我们一起来看一下 TabLayout是怎样结合ViewPager直线 导航器的效果的"></a>下面我们一起来看一下 TabLayout是怎样结合ViewPager直线 导航器的效果的</h3><p>代码注释 里面已经解释地很清楚了 ，这里我就不解释了</p>
-<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ViewPagerSample</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>{</div><div class="line"></div><div class="line">    ViewPager mViewPager;</div><div class="line">    List&lt;Fragment&gt; mFragments;</div><div class="line"></div><div class="line">    String[] mTitles = <span class="keyword">new</span> String[]{</div><div class="line">            <span class="string">"主页"</span>, <span class="string">"微博"</span>, <span class="string">"相册"</span></div><div class="line">    };</div><div class="line">    <span class="keyword">private</span> TabLayout mTabLayout;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>{</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_third);</div><div class="line">        <span class="comment">// 第一步，初始化ViewPager和TabLayout</span></div><div class="line">        mViewPager = (ViewPager) findViewById(R.id.viewpager);</div><div class="line">        mTabLayout = (TabLayout) findViewById(R.id.tabs);</div><div class="line">        setupViewPager();</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setupViewPager</span><span class="params">()</span> </span>{</div><div class="line"></div><div class="line">        mFragments = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; mTitles.length; i++) {</div><div class="line">            ListFragment listFragment = ListFragment.newInstance(mTitles[i]);</div><div class="line">            mFragments.add(listFragment);</div><div class="line">        }</div><div class="line">        <span class="comment">// 第二步：为ViewPager设置适配器</span></div><div class="line">        BaseFragmentAdapter adapter =</div><div class="line">                <span class="keyword">new</span> BaseFragmentAdapter(getSupportFragmentManager(), mFragments, mTitles);</div><div class="line"></div><div class="line">        mViewPager.setAdapter(adapter);</div><div class="line">        <span class="comment">//  第三步：将ViewPager与TableLayout 绑定在一起</span></div><div class="line">        mTabLayout.setupWithViewPager(mViewPager);</div><div class="line">    }</div><div class="line"></div><div class="line"></div><div class="line">}</div></pre></td></tr></tbody></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ViewPagerSample</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</div><div class="line"></div><div class="line">    ViewPager mViewPager;</div><div class="line">    List&lt;Fragment&gt; mFragments;</div><div class="line"></div><div class="line">    String[] mTitles = <span class="keyword">new</span> String[]&#123;</div><div class="line">            <span class="string">"主页"</span>, <span class="string">"微博"</span>, <span class="string">"相册"</span></div><div class="line">    &#125;;</div><div class="line">    <span class="keyword">private</span> TabLayout mTabLayout;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        setContentView(R.layout.activity_third);</div><div class="line">        <span class="comment">// 第一步，初始化ViewPager和TabLayout</span></div><div class="line">        mViewPager = (ViewPager) findViewById(R.id.viewpager);</div><div class="line">        mTabLayout = (TabLayout) findViewById(R.id.tabs);</div><div class="line">        setupViewPager();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setupViewPager</span><span class="params">()</span> </span>&#123;</div><div class="line"></div><div class="line">        mFragments = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; mTitles.length; i++) &#123;</div><div class="line">            ListFragment listFragment = ListFragment.newInstance(mTitles[i]);</div><div class="line">            mFragments.add(listFragment);</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 第二步：为ViewPager设置适配器</span></div><div class="line">        BaseFragmentAdapter adapter =</div><div class="line">                <span class="keyword">new</span> BaseFragmentAdapter(getSupportFragmentManager(), mFragments, mTitles);</div><div class="line"></div><div class="line">        mViewPager.setAdapter(adapter);</div><div class="line">        <span class="comment">//  第三步：将ViewPager与TableLayout 绑定在一起</span></div><div class="line">        mTabLayout.setupWithViewPager(mViewPager);</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>如果我们想更改Indicator的相关样式，我们可以在布局文件里面使用</p>
-<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;android.support.design.widget.TabLayout</div><div class="line">    android:id=<span class="string">"@+id/tabs"</span></div><div class="line">    android:layout_width=<span class="string">"match_parent"</span></div><div class="line">    android:layout_height=<span class="string">"wrap_content"</span></div><div class="line">    android:layout_alignParentBottom=<span class="string">"true"</span></div><div class="line">    android:background=<span class="string">"?attr/colorPrimary"</span></div><div class="line">    app:tabIndicatorColor=<span class="string">"@color/colorAccent"</span></div><div class="line">    app:tabIndicatorHeight=<span class="string">"4dp"</span></div><div class="line">    app:tabSelectedTextColor=<span class="string">"#000"</span></div><div class="line">    app:tabTextColor=<span class="string">"#fff"</span>/&gt;</div></pre></td></tr></tbody></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;android.support.design.widget.TabLayout</div><div class="line">    android:id=<span class="string">"@+id/tabs"</span></div><div class="line">    android:layout_width=<span class="string">"match_parent"</span></div><div class="line">    android:layout_height=<span class="string">"wrap_content"</span></div><div class="line">    android:layout_alignParentBottom=<span class="string">"true"</span></div><div class="line">    android:background=<span class="string">"?attr/colorPrimary"</span></div><div class="line">    app:tabIndicatorColor=<span class="string">"@color/colorAccent"</span></div><div class="line">    app:tabIndicatorHeight=<span class="string">"4dp"</span></div><div class="line">    app:tabSelectedTextColor=<span class="string">"#000"</span></div><div class="line">    app:tabTextColor=<span class="string">"#fff"</span>/&gt;</div></pre></td></tr></table></figure>
 <p><strong>如果你不想使用Google 帮我们 封装好的控件的话，你也可以自己自定义一个控件，你可以参考我的这一篇博客<a href="http://blog.csdn.net/gdutxiaoxu/article/details/52081609" target="_blank" rel="external">仿网易新闻的顶部导航指示器</a></strong></p>
 <hr>
 <p>在看例子结合ViewPager的视觉特差之前 ，我们需要先了解CollapsingToolbarLayout这个控件</p>
@@ -375,12 +363,12 @@
 </table>
 <p>我们有两种方法可以设置这个常量,</p>
 <p>方法一：在代码中使用这个方法</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">setCollapseMode(int collapseMode)</div></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">setCollapseMode(int collapseMode)</div></pre></td></tr></table></figure>
 <p>方法 二：在布局文件中使用自定义属性 </p>
-<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">app:layout_collapseMode=<span class="string">"pin"</span></div></pre></td></tr></tbody></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">app:layout_collapseMode=<span class="string">"pin"</span></div></pre></td></tr></table></figure>
 <p>到此 ，CollapsingToolbarLayout的一些重要属性已经讲解完毕，下面我们一起来看一下我们是怎样结合ViewPager实现视差效果的</p>
 <hr>
-<h2 id="结合ViewPager的视觉特差-1"><a href="#结合ViewPager的视觉特差-1" class="headerlink" title="结合ViewPager的视觉特差"></a>结合ViewPager的视觉特差</h2><h3 id="布局代码"><a href="#布局代码" class="headerlink" title="布局代码"></a>布局代码</h3><figure class="highlight"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"></div><div class="line">&lt;android.support.design.widget.CoordinatorLayout</div><div class="line">    xmlns:android="http://schemas.android.com/apk/res/android"</div><div class="line">    xmlns:app="http://schemas.android.com/apk/res-auto"</div><div class="line">    android:layout_width="match_parent"</div><div class="line">    android:layout_height="match_parent"</div><div class="line">    android:background="@android:color/background_light"</div><div class="line">    android:fitsSystemWindows="true"</div><div class="line">&gt;</div><div class="line"></div><div class="line">    &lt;android.support.design.widget.AppBarLayout</div><div class="line">        android:id="@+id/main.appbar"</div><div class="line">        android:layout_width="match_parent"</div><div class="line">        android:layout_height="300dp"</div><div class="line">        android:fitsSystemWindows="true"</div><div class="line">        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"</div><div class="line">    &gt;</div><div class="line"></div><div class="line">        &lt;android.support.design.widget.CollapsingToolbarLayout</div><div class="line">            android:id="@+id/main.collapsing"</div><div class="line">            android:layout_width="match_parent"</div><div class="line">            android:layout_height="250dp"</div><div class="line">            android:fitsSystemWindows="true"</div><div class="line">            app:contentScrim="?attr/colorPrimary"</div><div class="line">            app:expandedTitleMarginEnd="64dp"</div><div class="line">            app:expandedTitleMarginStart="48dp"</div><div class="line">            app:layout_scrollFlags="scroll|exitUntilCollapsed"</div><div class="line">        &gt;</div><div class="line"></div><div class="line">            &lt;ImageView</div><div class="line">                android:id="@+id/main.backdrop"</div><div class="line">                android:layout_width="match_parent"</div><div class="line">                android:layout_height="match_parent"</div><div class="line">                android:fitsSystemWindows="true"</div><div class="line">                android:scaleType="centerCrop"</div><div class="line">                android:src="@drawable/tangyan"</div><div class="line">                app:layout_collapseMode="parallax"</div><div class="line">            /&gt;</div><div class="line"></div><div class="line">            &lt;android.support.v7.widget.Toolbar</div><div class="line">                android:id="@+id/toolbar"</div><div class="line">                android:layout_width="match_parent"</div><div class="line">                android:layout_height="?attr/actionBarSize"</div><div class="line">                app:layout_collapseMode="pin"</div><div class="line">                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"</div><div class="line">            /&gt;</div><div class="line">        &lt;/android.support.design.widget.CollapsingToolbarLayout&gt;</div><div class="line"></div><div class="line">        &lt;android.support.design.widget.TabLayout</div><div class="line">            android:id="@+id/tabs"</div><div class="line">            android:layout_width="match_parent"</div><div class="line">            android:layout_height="wrap_content"</div><div class="line">            android:layout_alignParentBottom="true"</div><div class="line">            android:background="?attr/colorPrimary"</div><div class="line">            app:tabIndicatorColor="@color/colorAccent"</div><div class="line">            app:tabIndicatorHeight="4dp"</div><div class="line">            app:tabSelectedTextColor="#000"</div><div class="line">            app:tabTextColor="#fff"/&gt;</div><div class="line">    &lt;/android.support.design.widget.AppBarLayout&gt;</div><div class="line"></div><div class="line"></div><div class="line">    &lt;android.support.v4.view.ViewPager</div><div class="line">            android:id="@+id/viewpager"</div><div class="line">            android:layout_width="match_parent"</div><div class="line">            android:layout_height="match_parent"</div><div class="line">            app:layout_behavior="@string/appbar_scrolling_view_behavior"&gt;</div><div class="line"></div><div class="line">    &lt;/android.support.v4.view.ViewPager&gt;</div><div class="line"></div><div class="line"></div><div class="line">    &lt;android.support.design.widget.FloatingActionButton</div><div class="line">        android:id="@+id/fab"</div><div class="line">        android:layout_width="wrap_content"</div><div class="line">        android:layout_height="wrap_content"</div><div class="line">        android:layout_gravity="end|bottom"</div><div class="line">        android:layout_margin="15dp"</div><div class="line">        android:src="@drawable/add_2"/&gt;</div><div class="line"></div><div class="line">&lt;/android.support.design.widget.CoordinatorLayout&gt;</div></pre></td></tr></tbody></table></figure>
+<h2 id="结合ViewPager的视觉特差-1"><a href="#结合ViewPager的视觉特差-1" class="headerlink" title="结合ViewPager的视觉特差"></a>结合ViewPager的视觉特差</h2><h3 id="布局代码"><a href="#布局代码" class="headerlink" title="布局代码"></a>布局代码</h3><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"></div><div class="line">&lt;android.support.design.widget.CoordinatorLayout</div><div class="line">    xmlns:android="http://schemas.android.com/apk/res/android"</div><div class="line">    xmlns:app="http://schemas.android.com/apk/res-auto"</div><div class="line">    android:layout_width="match_parent"</div><div class="line">    android:layout_height="match_parent"</div><div class="line">    android:background="@android:color/background_light"</div><div class="line">    android:fitsSystemWindows="true"</div><div class="line">&gt;</div><div class="line"></div><div class="line">    &lt;android.support.design.widget.AppBarLayout</div><div class="line">        android:id="@+id/main.appbar"</div><div class="line">        android:layout_width="match_parent"</div><div class="line">        android:layout_height="300dp"</div><div class="line">        android:fitsSystemWindows="true"</div><div class="line">        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"</div><div class="line">    &gt;</div><div class="line"></div><div class="line">        &lt;android.support.design.widget.CollapsingToolbarLayout</div><div class="line">            android:id="@+id/main.collapsing"</div><div class="line">            android:layout_width="match_parent"</div><div class="line">            android:layout_height="250dp"</div><div class="line">            android:fitsSystemWindows="true"</div><div class="line">            app:contentScrim="?attr/colorPrimary"</div><div class="line">            app:expandedTitleMarginEnd="64dp"</div><div class="line">            app:expandedTitleMarginStart="48dp"</div><div class="line">            app:layout_scrollFlags="scroll|exitUntilCollapsed"</div><div class="line">        &gt;</div><div class="line"></div><div class="line">            &lt;ImageView</div><div class="line">                android:id="@+id/main.backdrop"</div><div class="line">                android:layout_width="match_parent"</div><div class="line">                android:layout_height="match_parent"</div><div class="line">                android:fitsSystemWindows="true"</div><div class="line">                android:scaleType="centerCrop"</div><div class="line">                android:src="@drawable/tangyan"</div><div class="line">                app:layout_collapseMode="parallax"</div><div class="line">            /&gt;</div><div class="line"></div><div class="line">            &lt;android.support.v7.widget.Toolbar</div><div class="line">                android:id="@+id/toolbar"</div><div class="line">                android:layout_width="match_parent"</div><div class="line">                android:layout_height="?attr/actionBarSize"</div><div class="line">                app:layout_collapseMode="pin"</div><div class="line">                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"</div><div class="line">            /&gt;</div><div class="line">        &lt;/android.support.design.widget.CollapsingToolbarLayout&gt;</div><div class="line"></div><div class="line">        &lt;android.support.design.widget.TabLayout</div><div class="line">            android:id="@+id/tabs"</div><div class="line">            android:layout_width="match_parent"</div><div class="line">            android:layout_height="wrap_content"</div><div class="line">            android:layout_alignParentBottom="true"</div><div class="line">            android:background="?attr/colorPrimary"</div><div class="line">            app:tabIndicatorColor="@color/colorAccent"</div><div class="line">            app:tabIndicatorHeight="4dp"</div><div class="line">            app:tabSelectedTextColor="#000"</div><div class="line">            app:tabTextColor="#fff"/&gt;</div><div class="line">    &lt;/android.support.design.widget.AppBarLayout&gt;</div><div class="line"></div><div class="line"></div><div class="line">    &lt;android.support.v4.view.ViewPager</div><div class="line">            android:id="@+id/viewpager"</div><div class="line">            android:layout_width="match_parent"</div><div class="line">            android:layout_height="match_parent"</div><div class="line">            app:layout_behavior="@string/appbar_scrolling_view_behavior"&gt;</div><div class="line"></div><div class="line">    &lt;/android.support.v4.view.ViewPager&gt;</div><div class="line"></div><div class="line"></div><div class="line">    &lt;android.support.design.widget.FloatingActionButton</div><div class="line">        android:id="@+id/fab"</div><div class="line">        android:layout_width="wrap_content"</div><div class="line">        android:layout_height="wrap_content"</div><div class="line">        android:layout_gravity="end|bottom"</div><div class="line">        android:layout_margin="15dp"</div><div class="line">        android:src="@drawable/add_2"/&gt;</div><div class="line"></div><div class="line">&lt;/android.support.design.widget.CoordinatorLayout&gt;</div></pre></td></tr></table></figure>
 <h3 id="效果图如下"><a href="#效果图如下" class="headerlink" title="效果图如下"></a>效果图如下</h3><p><img src="http://upload-images.jianshu.io/upload_images/2050203-a79b74ec2206bfb7.gif?imageMogr2/auto-orient/strip" alt=""></p>
 <h3 id="思路解析"><a href="#思路解析" class="headerlink" title="思路解析"></a>思路解析</h3><p><img src="http://upload-images.jianshu.io/upload_images/2050203-a8eb621189c05a30.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
 <ul>
@@ -505,9 +493,9 @@
       <!--/noindex-->
 
       <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
   <p class="site-author-name" itemprop="name">徐公</p>
-  <div class="site-description" itemprop="description">「Android学习+面试指南」助你升职加薪</div>
+  <div class="site-description" itemprop="description">「Android学习+面试指南」助你升职加薪#用于搜索引擎搜索到的描述信息</div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
@@ -535,11 +523,11 @@
       </div>
 
       <div class="wechat_OA">
-        <br>
+        <br/>
         <span>扫一扫，欢迎关注我的公众号</span>
         <br>
           <!-- 这里添加你的二维码图片 -->
-        <img src="https://gitee.com/gdutxiaoxu/blog-picture/raw/master/21/01/qrcode_for_gh_f0b7a2d93f70_430%20(2).jpg">
+        <img src ="https://gitee.com/gdutxiaoxu/blog-picture/raw/master/21/01/qrcode_for_gh_f0b7a2d93f70_430%20(2).jpg">
       </div>
 
     </div>
@@ -558,26 +546,14 @@
 
 <div class="copyright">
   
-  © 
+  &copy; 
   <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">徐公</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-area"></i>
-    </span>
-      <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">NaNm</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-      <span class="post-meta-item-text">站点阅读时长 ≈</span>
-    <span title="站点阅读时长">NaN:aN</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> &amp; <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
 
         
@@ -594,50 +570,25 @@
   </div>
 
   
-  
-  
-  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
 
 
+<script src="/js/schemes/pisces.js"></script>
 
 
-
-
-
-
-
-
-
-
-
-
-  
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<script src="/js/next-boot.js"></script>
 
 
 
 
   
-
-  
-
-
-
-<script src="/bundle.js"></script><script>
+  <script>
     (function(){
       var canonicalURL, curProtocol;
       //Get the <link> tag
@@ -661,8 +612,10 @@
 	    if (!canonicalURL) canonicalURL = window.location.href;
 	    //Assign script content. Replace current URL with the canonical URL
       !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
-  ;
+  </script>
 
+
+<script>
 (function(){
     var bp = document.createElement('script');
     var curProtocol = window.location.protocol.split(':')[0];
@@ -675,4 +628,25 @@
     var s = document.getElementsByTagName("script")[0];
     s.parentNode.insertBefore(bp, s);
 })();
-</script></body></html>
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
