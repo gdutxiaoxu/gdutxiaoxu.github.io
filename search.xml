@@ -13,6 +13,432 @@
 ]]></content>
   </entry>
   <entry>
+    <title>Android LiveData 源码分析</title>
+    <url>/2019/01/14/Android%20livedata%20%E6%BA%90%E7%A0%81%E8%A7%A3%E5%89%96/</url>
+    <content><![CDATA[<h2 id="说在前面"><a href="#说在前面" class="headerlink" title="说在前面"></a>说在前面</h2><p>本次推出 Android  Architecture Components 系列文章，目前写好了四篇，主要是关于 lifecycle，livedata 的使用和源码分析，其余的 Navigation， Paging library，Room，WorkMannager 等春节结束之后会更新，欢迎关注我的公众号，有更新的话会第一时间会在公众号上面通知。</p>
+<p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/86660746">Android lifecycle 使用详解</a></p>
+<p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/86660760">Android LiveData 使用详解</a></p>
+<p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/86660766">Android lifecyle 源码解剖</a></p>
+<p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/86660776">Android livedata 源码解剖</a></p>
+<p><a href="https://github.com/gdutxiaoxu/ArchiteComponentsSample">github sample 地址： ArchiteComponentsSample</a></p>
+<p><strong>Android 技术人，一位不羁的码农。</strong></p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/81273649f00c4d30340a268b8613286b.png" alt="Android 技术人"></p>
+<hr>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在前面三篇博客中，我们已经介绍了 lifecycle 的使用及原理，livedata ,ViewModel 的常用用法，今天，让我们一起来学习 livedata  的原理。</p>
+<p>我们先来回顾一下 LiveData  的特点：</p>
+<p>LiveData 是一个可以被观察的数据持有类，它可以感知 Activity、Fragment或Service 等组件的生命周期。</p>
+<ol>
+<li>它可以做到在组件处于激活状态的时候才会回调相应的方法，从而刷新相应的 UI。</li>
+<li>不用担心发生内存泄漏</li>
+<li>当 config 导致 activity 重新创建的时候，不需要手动取处理数据的储存和恢复。内部已经帮我们封装好了。</li>
+<li>当 Actiivty 不是处于激活状态的时候，如果你想 livedata setValue 之后立即回调 obsever 的 onChange 方法，而不是等到 Activity 处于激活状态的时候才回调 obsever 的 onChange 方法，你可以使用 observeForever 方法，但是你必须在 onDestroy 的时候 removeObserver</li>
+</ol>
+<p>下面，让我们一步步解剖它</p>
+<hr>
+<h2 id="原理分析"><a href="#原理分析" class="headerlink" title="原理分析"></a>原理分析</h2><p>我们知道 livedata 的使用很简单，它是采用观察者模式实现的</p>
+<ol>
+<li>添加观察者</li>
+<li>在数据改变的时候设置 value，这样会回调 Observer 的 onChanged 方法</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">MutableLiveData&lt;<span class="built_in">String</span>&gt; nameEvent = mTestViewModel.getNameEvent();</span><br><span class="line">nameEvent.observe(<span class="built_in">this</span>, <span class="keyword">new</span> Observer&lt;<span class="built_in">String</span>&gt;() &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public <span class="keyword">void</span> <span class="function"><span class="title">onChanged</span>(<span class="params">@Nullable <span class="built_in">String</span> s</span>)</span> &#123;</span><br><span class="line">        Log.i(TAG, <span class="string">&quot;onChanged: s = &quot;</span> + s);</span><br><span class="line">        mTvName.setText(s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="observe-方法"><a href="#observe-方法" class="headerlink" title="observe 方法"></a>observe 方法</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">@MainThread</span><br><span class="line">public <span class="keyword">void</span> <span class="function"><span class="title">observe</span>(<span class="params">@NonNull LifecycleOwner owner, @NonNull Observer&lt;T&gt; observer</span>)</span> &#123;</span><br><span class="line">    <span class="comment">// 判断是否已经销毁</span></span><br><span class="line">    <span class="keyword">if</span> (owner.getLifecycle().getCurrentState() == DESTROYED) &#123;</span><br><span class="line">        <span class="comment">// ignore</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    LifecycleBoundObserver wrapper = <span class="keyword">new</span> LifecycleBoundObserver(owner, observer);</span><br><span class="line">    ObserverWrapper existing = mObservers.putIfAbsent(observer, wrapper);</span><br><span class="line">	<span class="comment">// observer 已经添加过了，并且缓存的 observer 跟 owner 的 observer 不一致，状态异常，抛出异常</span></span><br><span class="line">    <span class="keyword">if</span> (existing != <span class="literal">null</span> &amp;&amp; !existing.isAttachedTo(owner)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;Cannot add the same observer&quot;</span></span><br><span class="line">                + <span class="string">&quot; with different lifecycles&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">// 已经添加过 Observer 了，返回回去</span></span><br><span class="line">    <span class="keyword">if</span> (existing != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 添加 observer</span></span><br><span class="line">    owner.getLifecycle().addObserver(wrapper);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>首先，我们先来看一下它的 observe 方法，首先通过 owner.getLifecycle().getCurrentState() 获取状态，判断是否已经被销毁，如果已经被销毁，直接返回。接着用 LifecycleBoundObserver 包装起来。然后从缓存的 mObservers 中读取 observer，如果有，证明已经添加过了。</p>
+<p>observe 方法，小结起来就是</p>
+<ol>
+<li>判断是否已经销毁，如果销毁，直接移除</li>
+<li>用 LifecycleBoundObserver 包装传递进来的 observer</li>
+<li>是否已经添加过，添加过，直接返回</li>
+<li>将包装后的 LifecycleBoundObserver 添加进去</li>
+</ol>
+<p>因此，当 owner 你（Activity 或者 fragment） 生命周期变化的时候，会回调 LifecycleBoundObserver 的 onStateChanged 方法，onStateChanged 方法又会回调  observer 的 onChange 方法</p>
+<h3 id="LifecycleBoundObserver"><a href="#LifecycleBoundObserver" class="headerlink" title="LifecycleBoundObserver"></a>LifecycleBoundObserver</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LifecycleBoundObserver</span> <span class="keyword">extends</span> <span class="title">ObserverWrapper</span> <span class="title">implements</span> <span class="title">GenericLifecycleObserver</span> </span>&#123;</span><br><span class="line">    @NonNull final LifecycleOwner mOwner;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="title">LifecycleBoundObserver</span>(<span class="params">@NonNull LifecycleOwner owner, Observer&lt;T&gt; observer</span>)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(observer);</span><br><span class="line">        mOwner = owner;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    boolean <span class="function"><span class="title">shouldBeActive</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> mOwner.getLifecycle().getCurrentState().isAtLeast(STARTED);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public <span class="keyword">void</span> <span class="function"><span class="title">onStateChanged</span>(<span class="params">LifecycleOwner source, Lifecycle.Event event</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (mOwner.getLifecycle().getCurrentState() == DESTROYED) &#123;</span><br><span class="line">            removeObserver(mObserver);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        activeStateChanged(shouldBeActive());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    boolean <span class="function"><span class="title">isAttachedTo</span>(<span class="params">LifecycleOwner owner</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> mOwner == owner;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    <span class="keyword">void</span> <span class="function"><span class="title">detachObserver</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        mOwner.getLifecycle().removeObserver(<span class="built_in">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>我们来看一下 LifecycleBoundObserver，继承 ObserverWrapper，实现了 GenericLifecycleObserver 接口。而 GenericLifecycleObserver 接口又实现了 LifecycleObserver 接口。 它包装了我们外部的 observer，有点类似于代理模式。</p>
+<p>GenericLifecycleObserver#onStateChanged</p>
+<p>Activity 回调周期变化的时候，会回调 onStateChanged ，会先判断 mOwner.getLifecycle().getCurrentState() 是否已经 destroy 了，如果。已经 destroy，直接移除观察者。<strong>这也就是为什么我们不需要手动 remove observer 的原因</strong>。</p>
+<p>如果不是销毁状态，会调用 activeStateChanged 方法 ，携带的参数为 shouldBeActive() 返回的值。<br>而当 lifecycle 的 state 为 started 或者 resume 的时候，shouldBeActive 方法的返回值为 true，即表示激活。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">activeStateChanged</span><span class="params">(<span class="keyword">boolean</span> newActive)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">if</span> (newActive == mActive) &#123;</span><br><span class="line">       <span class="keyword">return</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">// immediately set active state, so we&#x27;d never dispatch anything to inactive</span></span><br><span class="line">   <span class="comment">// owner</span></span><br><span class="line">   mActive = newActive;</span><br><span class="line">   <span class="keyword">boolean</span> wasInactive = LiveData.<span class="keyword">this</span>.mActiveCount == <span class="number">0</span>;</span><br><span class="line">   LiveData.<span class="keyword">this</span>.mActiveCount += mActive ? <span class="number">1</span> : -<span class="number">1</span>;</span><br><span class="line">   <span class="keyword">if</span> (wasInactive &amp;&amp; mActive) &#123;</span><br><span class="line">       onActive();</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">if</span> (LiveData.<span class="keyword">this</span>.mActiveCount == <span class="number">0</span> &amp;&amp; !mActive) &#123;</span><br><span class="line">       onInactive();</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">if</span> (mActive) &#123;</span><br><span class="line">       dispatchingValue(<span class="keyword">this</span>);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>}</p>
+<p>activeStateChanged 方法中，，当 newActive 为 true，并且不等于上一次的值，会增加 LiveData 的 mActiveCount 计数。接着可以看到，onActive 会在 mActiveCount 为 1 时触发，onInactive 方法则只会在 mActiveCount 为 0 时触发。<strong>即回调 onActive 方法的时候活跃的 observer 恰好为 1，回调 onInactive 方法的时候，没有一个 Observer 处于激活状态。</strong></p>
+<p>当 mActive 为 true 时，会促发 dispatchingValue 方法。</p>
+<p>dispatchingValue</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dispatchingValue</span><span class="params">(<span class="meta">@Nullable</span> ObserverWrapper initiator)</span> </span>&#123;</span><br><span class="line">   <span class="comment">// 如果正在处理，直接返回</span></span><br><span class="line">    <span class="keyword">if</span> (mDispatchingValue) &#123;</span><br><span class="line">        mDispatchInvalidated = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    mDispatchingValue = <span class="keyword">true</span>;</span><br><span class="line">	</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        mDispatchInvalidated = <span class="keyword">false</span>;</span><br><span class="line">		<span class="comment">// initiator 不为 null，调用 considerNotify 方法</span></span><br><span class="line">        <span class="keyword">if</span> (initiator != <span class="keyword">null</span>) &#123;</span><br><span class="line">            considerNotify(initiator);</span><br><span class="line">            initiator = <span class="keyword">null</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123; <span class="comment">// 为 null 的时候，遍历所有的 obsever，进行分发</span></span><br><span class="line">            <span class="keyword">for</span> (Iterator&lt;Map.Entry&lt;Observer&lt;T&gt;, ObserverWrapper&gt;&gt; iterator =</span><br><span class="line">                    mObservers.iteratorWithAdditions(); iterator.hasNext(); ) &#123;</span><br><span class="line">                considerNotify(iterator.next().getValue());</span><br><span class="line">                <span class="keyword">if</span> (mDispatchInvalidated) &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">while</span> (mDispatchInvalidated);</span><br><span class="line">	<span class="comment">// 分发完成，设置为 false</span></span><br><span class="line">    mDispatchingValue = <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中 mDispatchingValue, mDispatchInvalidated 只在 dispatchingValue 方法中使用，显然这两个变量是为了防止重复分发相同的内容。当 initiator 不为 null，只处理当前 observer，为 null 的时候，遍历所有的 obsever，进行分发</p>
+<p>considerNotify 方法</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">private void considerNotify(ObserverWrapper observer) &#123;</span><br><span class="line">   &#x2F;&#x2F; 如果状态不是在活跃中，直接返回</span><br><span class="line">    if (!observer.mActive) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;&#x2F; Check latest state b4 dispatch. Maybe it changed state but we didn&#39;t get the event yet.</span><br><span class="line">    &#x2F;&#x2F;</span><br><span class="line">    &#x2F;&#x2F; we still first check observer.active to keep it as the entrance for events. So even if</span><br><span class="line">    &#x2F;&#x2F; the observer moved to an active state, if we&#39;ve not received that event, we better not</span><br><span class="line">    &#x2F;&#x2F; notify for a more predictable notification order.</span><br><span class="line">    if (!observer.shouldBeActive()) &#123;</span><br><span class="line">        observer.activeStateChanged(false);</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">    if (observer.mLastVersion &gt;&#x3D; mVersion) &#123;</span><br><span class="line">	&#x2F;&#x2F; 数据已经是最新，返回</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">	&#x2F;&#x2F; 将上一次的版本号置为最新版本号</span><br><span class="line">    observer.mLastVersion &#x3D; mVersion;</span><br><span class="line">    &#x2F;&#x2F;noinspection unchecked</span><br><span class="line">	&#x2F;&#x2F; 调用外部的 mObserver 的 onChange 方法</span><br><span class="line">    observer.mObserver.onChanged((T) mData);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>  如果状态不是在活跃中，直接返回，这也就是为什么当我们的 Activity 处于 onPause， onStop， onDestroy 的时候，不会回调 observer 的 onChange 方法的原因。</li>
+<li>  判断数据是否是最新，如果是最新，返回，不处理</li>
+<li>数据不是最新，回调 mObserver.onChanged 方法。并将 mData 传递过去</li>
+</ol>
+<h3 id="setValue"><a href="#setValue" class="headerlink" title="setValue"></a>setValue</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">@MainThread</span><br><span class="line">protected <span class="keyword">void</span> <span class="function"><span class="title">setValue</span>(<span class="params">T value</span>)</span> &#123;</span><br><span class="line">    assertMainThread(<span class="string">&quot;setValue&quot;</span>);</span><br><span class="line">    mVersion++;</span><br><span class="line">    mData = value;</span><br><span class="line">    dispatchingValue(<span class="literal">null</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>setValue 方法中，首先，断言是主线程，接着  mVersion + 1; 并将 value 赋值给 mData，接着调用 dispatchingValue 方法。dispatchingValue 传递 null，代表处理所有 的 observer。</p>
+<p><strong>这个时候如果我们依附的 activity 处于 onPause 或者 onStop 的时候，虽然在 dispatchingValue 方法中直接返回，不会调用 observer 的 onChange 方法。但是当所依附的 activity 重新回到前台的时候，会促发  LifecycleBoundObserver onStateChange 方法，onStateChange 又会调用 dispatchingValue 方法，在该方法中，因为 mLastVersion &lt; mVersion。所以会回调 obsever 的 onChange 方法，这也就是 LiveData 设计得比较巧妙的一个地方</strong></p>
+<p>同理，当 activity 处于后台的时候，您多次调用 livedata 的 setValue 方法，最终只会回调 livedata observer 的 onChange 方法一次。</p>
+<h3 id="postValue"><a href="#postValue" class="headerlink" title="postValue"></a>postValue</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">protected <span class="keyword">void</span> <span class="function"><span class="title">postValue</span>(<span class="params">T value</span>)</span> &#123;</span><br><span class="line">   boolean postTask;</span><br><span class="line">   <span class="comment">// 锁住</span></span><br><span class="line">   synchronized (mDataLock) &#123;</span><br><span class="line">      <span class="comment">// 当前没有人在处理 post 任务</span></span><br><span class="line">       postTask = mPendingData == NOT_SET;</span><br><span class="line">       mPendingData = value;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">if</span> (!postTask) &#123;</span><br><span class="line">       <span class="keyword">return</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   AppToolkitTaskExecutor.getInstance().postToMainThread(mPostValueRunnable);</span><br><span class="line">&#125;</span><br><span class="line">private final Runnable mPostValueRunnable = <span class="keyword">new</span> <span class="function"><span class="title">Runnable</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">   @Override</span><br><span class="line">   public <span class="keyword">void</span> <span class="function"><span class="title">run</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">       <span class="built_in">Object</span> newValue;</span><br><span class="line">       synchronized (mDataLock) &#123;</span><br><span class="line">           newValue = mPendingData;</span><br><span class="line">		   <span class="comment">// 处理完毕之后将 mPendingData 置为 NOT_SET</span></span><br><span class="line">           mPendingData = NOT_SET;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">//noinspection unchecked</span></span><br><span class="line">       setValue((T) newValue);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>首先，采用同步机制，通过 postTask = mPendingData == NOT_SET 有没有人在处理任务。 true，没人在处理任务， false ，有人在处理任务，有人在处理任务的话，直接返回</li>
+<li>调用  AppToolkitTaskExecutor.getInstance().postToMainThread 到主线程执行 mPostValueRunnable 任务。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@MainThread</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">observeForever</span><span class="params">(<span class="meta">@NonNull</span> Observer&lt;T&gt; observer)</span> </span>&#123;</span><br><span class="line">    AlwaysActiveObserver wrapper = <span class="keyword">new</span> AlwaysActiveObserver(observer);</span><br><span class="line">    ObserverWrapper existing = mObservers.putIfAbsent(observer, wrapper);</span><br><span class="line">    <span class="keyword">if</span> (existing != <span class="keyword">null</span> &amp;&amp; existing <span class="keyword">instanceof</span> LiveData.LifecycleBoundObserver) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;Cannot add the same observer&quot;</span></span><br><span class="line">                + <span class="string">&quot; with different lifecycles&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (existing != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    wrapper.activeStateChanged(<span class="keyword">true</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">AlwaysActiveObserver</span> <span class="keyword">extends</span> <span class="title">ObserverWrapper</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    AlwaysActiveObserver(Observer&lt;T&gt; observer) &#123;</span><br><span class="line">        <span class="keyword">super</span>(observer);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">shouldBeActive</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>因为 AlwaysActiveObserver 没有实现 GenericLifecycleObserver 方法接口，所以在 Activity o生命周期变化的时候，不会回调 onStateChange 方法。从而也不会主动 remove 掉 observer。因为我们的 obsever 被 remove 掉是依赖于 Activity 生命周期变化的时候，回调 GenericLifecycleObserver 的 onStateChange 方法。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li>liveData 当我们 addObserver 的时候，会用 LifecycleBoundObserver 包装 observer，而 LifecycleBoundObserver 可以感应生命周期，当 activity 生命周期变化的时候，如果不是处于激活状态，判断是否需要 remove 生命周期，需要 remove，不需要，直接返回</li>
+<li>当处于激活状态的时候，会判断是不是 mVersion最新版本，不是的话需要将上一次缓存的数据通知相应的 observer，并将 mLastVsersion 置为最新</li>
+<li>当我们调用 setValue 的时候，mVersion +1，如果处于激活状态，直接处理，如果不是处理激活状态，返回，等到下次处于激活状态的时候，在进行相应的处理</li>
+<li>如果你想 livedata setValue 之后立即回调数据，而不是等到生命周期变化的时候才回调数据，你可以使用 observeForever 方法，但是你必须在 onDestroy 的时候 removeObserver。因为 AlwaysActiveObserver 没有实现 GenericLifecycleObserver 接口，不能感应生命周期。</li>
+</ol>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/6010e8b1224400ad1cf93012b51df699.png"></p>
+<h2 id="题外话"><a href="#题外话" class="headerlink" title="题外话"></a>题外话</h2><p>Android  Architecture Components    已经写了四篇文章了，其余的 Navigation， Paging library，Room，WorkMannager 等春节结束之后再更新了，欢迎关注我的公众号，有更新的话会第一时间在公众好上面更新。</p>
+]]></content>
+      <tags>
+        <tag>Android LiveData</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Android LiveData 使用详解</title>
+    <url>/2019/01/13/Android%20LiveData%20%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/</url>
+    <content><![CDATA[<h2 id="说在前面"><a href="#说在前面" class="headerlink" title="说在前面"></a>说在前面</h2><p>本次推出 Android  Architecture Components 系列文章，目前写好了四篇，主要是关于 lifecycle，livedata 的使用和源码分析，其余的 Navigation， Paging library，Room，WorkMannager 等春节结束之后会更新，欢迎关注我的公众号，有更新的话会第一时间会在公众号上面通知。</p>
+<p>目录大概如下</p>
+<blockquote>
+<p>1 LiveData 基本使用<br>2 自定义 Livedata<br>3  Livedata 共享数据<br>4 Livedata  小结</p>
+</blockquote>
+<p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/86660746">Android lifecycle 使用详解</a></p>
+<p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/86660760">Android LiveData 使用详解</a></p>
+<p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/86660766">Android lifecyle 源码解剖</a></p>
+<p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/86660776">Android livedata 源码解剖</a></p>
+<p><a href="https://github.com/gdutxiaoxu/ArchiteComponentsSample">github sample 地址： ArchiteComponentsSample</a></p>
+<p><strong>程序员徐公，一位不羁的码农。</strong></p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/4e6df41528ff27a085a266dd18b707a8.png"></p>
+<hr>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在上一篇博客中，我们讲解了 lifecycle 的使用及优点。这篇博客让我们一起来了解一下 LiveData 是怎样使用的？</p>
+<hr>
+<h2 id="为什么要引进-LiveData"><a href="#为什么要引进-LiveData" class="headerlink" title="为什么要引进 LiveData"></a>为什么要引进 LiveData</h2><p>LiveData 是一个可以被观察的数据持有类，它可以感知 Activity、Fragment或Service 等组件的生命周期。简单来说，他主要有一下优点。</p>
+<ol>
+<li><strong>它可以做到在组件处于激活状态的时候才会回调相应的方法，从而刷新相应的 UI</strong>。</li>
+<li><strong>不用担心发生内存泄漏</strong></li>
+<li><strong>当 config 导致 activity 重新创建的时候，不需要手动取处理数据的储存和恢复。它已经帮我们封装好了</strong>。</li>
+<li>当 Actiivty 不是处于激活状态的时候，如果你想 livedata setValue 之后立即回调  obsever 的 onChange 方法，而不是等到 Activity 处于激活状态的时候才回调 obsever 的 onChange 方法，你可以使用 observeForever 方法，但是你必须在 onDestroy 的时候 removeObserver。</li>
+</ol>
+<p>回想一下，在你的项目中，是不是经常会碰到这样的问题，当网络请求结果回来的时候，你经常需要判断 Activity 或者 Fragment 是否已经 Destroy， 如果不是 destroy，才更新 UI。</p>
+<p>而当你如果使用 Livedata 的话，因为它是在 Activity 处于 onStart 或者 onResume 的状态时，他才会进行相应的回调，因而可以很好得处理这个问题，不必写一大堆的 activity.isDestroyed()。接下来，让我们一起来看一下 LiveData  的使用</p>
+<hr>
+<h2 id="LiveData-使用"><a href="#LiveData-使用" class="headerlink" title="LiveData 使用"></a>LiveData 使用</h2><h3 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h3><ol>
+<li>引入相关的依赖包</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// ViewModel and LiveData</span></span><br><span class="line">implementation <span class="string">&quot;android.arch.lifecycle:extensions:1.1.0&quot;</span></span><br><span class="line"><span class="comment">// alternatively, just ViewModel</span></span><br><span class="line">implementation <span class="string">&quot;android.arch.lifecycle:viewmodel:1.1.0&quot;</span></span><br><span class="line"><span class="comment">// alternatively, just LiveData</span></span><br><span class="line">implementation <span class="string">&quot;android.arch.lifecycle:livedata:1.1.0&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>在代码中使用</li>
+</ol>
+<p>LiveData 是一个抽象类，它的实现子类有 <strong>MutableLiveData</strong> ，<strong>MediatorLiveData</strong>。在实际使用中，用得比较多的是 MutableLiveData。他常常结合 ViewModel 一起使用。下面，让我们一起来看一下怎样使用它？</p>
+<p>首先，我们先写一个类继承我们的 ViewModel，里面持有 mNameEvent。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">TestViewModel</span> <span class="keyword">extends</span> <span class="title">ViewModel</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    private MutableLiveData&lt;<span class="built_in">String</span>&gt; mNameEvent = <span class="keyword">new</span> MutableLiveData&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    public MutableLiveData&lt;<span class="built_in">String</span>&gt; <span class="function"><span class="title">getNameEvent</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> mNameEvent;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接着，我们在 Activity 中创建  ViewModel，并监听 ViewModel 里面 mNameEvent 数据的变化，当数据改变的时候，我们打印相应的 log，并设置给 textView，显示在界面上。这样我们就完成了对 mNameEvent 数据源的观察。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">mTestViewModel = ViewModelProviders.of(<span class="keyword">this</span>).get(TestViewModel.class);</span><br><span class="line">MutableLiveData&lt;String&gt; nameEvent = mTestViewModel.getNameEvent();</span><br><span class="line">nameEvent.observe(<span class="keyword">this</span>, <span class="keyword">new</span> Observer&lt;String&gt;() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onChanged</span><span class="params">(<span class="meta">@Nullable</span> String s)</span> </span>&#123;</span><br><span class="line">        Log.i(TAG, <span class="string">&quot;onChanged: s = &quot;</span> + s);</span><br><span class="line">        mTvName.setText(s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>最后当我们数据源改变的时候，我们需要调用 livedata 的 setValue 或者 postvalue 方法。他们之间的区别是， 调用 setValue 方法，Observer 的 onChanged 方法会在调用 serValue 方法的线程回调。而<br>postvalue 方法，Observer 的 onChanged 方法将会在主线程回调。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">mTestViewModel.getNameEvent().setValue(name);</span><br></pre></td></tr></table></figure>
+
+<p>可能部分同学有这样的疑问了，<strong>我们的 ViewModel 是通过 ViewModelProviders.of(this).get(TestViewModel.class); 方法创建出来的，如果我们要携带参数，怎么办？</strong></p>
+<p>其实，官方也替我们考虑好了，同样是调用 ViewModelProvider of(@NonNull Fragment fragment, @Nullable Factory factory) 方法，只不过，需要多传递一个 factory 参数。</p>
+<p>Factory 是一个接口，它只有一个 create 方法。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Factory</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Creates a new instance of the given &#123;<span class="doctag">@code</span> Class&#125;.</span></span><br><span class="line"><span class="comment">     * &lt;p&gt;</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> modelClass a &#123;<span class="doctag">@code</span> Class&#125; whose instance is requested</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> &lt;T&gt;        The type parameter for the ViewModel.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> a newly created ViewModel</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@NonNull</span></span><br><span class="line">    &lt;T extends ViewModel&gt; <span class="function">T <span class="title">create</span><span class="params">(<span class="meta">@NonNull</span> Class&lt;T&gt; modelClass)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在实际当中，我们的做法是：实现 Factory 接口，重写 create 方法，在create 方法里面调用相应的构造函数，返回相应的实例。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestViewModel</span> <span class="keyword">extends</span> <span class="title">ViewModel</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String mKey;</span><br><span class="line">    <span class="keyword">private</span> MutableLiveData&lt;String&gt; mNameEvent = <span class="keyword">new</span> MutableLiveData&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MutableLiveData&lt;String&gt; <span class="title">getNameEvent</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mNameEvent;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TestViewModel</span><span class="params">(String key)</span> </span>&#123;</span><br><span class="line">        mKey = key;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Factory</span> <span class="keyword">implements</span> <span class="title">ViewModelProvider</span>.<span class="title">Factory</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> String mKey;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Factory</span><span class="params">(String key)</span> </span>&#123;</span><br><span class="line">            mKey = key;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> &lt;T extends ViewModel&gt; <span class="function">T <span class="title">create</span><span class="params">(Class&lt;T&gt; modelClass)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> (T) <span class="keyword">new</span> TestViewModel(mKey);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getKey</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mKey;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ViewModelProviders.of(this, new TestViewModel.Factory(mkey)).get(TestViewModel.class)</p>
+<hr>
+<h2 id="自定义-Livedata"><a href="#自定义-Livedata" class="headerlink" title="自定义 Livedata"></a>自定义 Livedata</h2><p>Livedata 主要有几个方法</p>
+<ol>
+<li>observe</li>
+<li>onActive</li>
+<li>onInactive </li>
+<li>observeForever </li>
+</ol>
+<p> void observe (LifecycleOwner owner,     Observer<T> observer)</p>
+<blockquote>
+<p>Adds the given observer to the observers list within the lifespan of the given owner. The events are dispatched on the main thread. If LiveData already has data set, it will be delivered to the observer.</p>
+</blockquote>
+<p>void onActive ()</p>
+<blockquote>
+<p>Called when the number of active observers change to 1 from 0.<br>This callback can be used to know that this LiveData is being used thus should be kept up to date.</p>
+</blockquote>
+<p>当回调该方法的时候，表示该 liveData 正在背使用，因此应该保持最新</p>
+<p> void onInactive ()</p>
+<blockquote>
+<p>Called when the number of active observers change from 1 to 0.<br>This does not mean that there are no observers left, there may still be observers but their lifecycle states aren’t STARTED or RESUMED (like an Activity in the back stack).<br>You can check if there are observers via hasObservers().</p>
+</blockquote>
+<p>当该方法回调时，表示他所有的 obervers 没有一个状态处理 STARTED 或者 RESUMED，注意，这不代表没有 observers。</p>
+<p>Void observeForever </p>
+<p>跟 observe 方法不太一样的是，它在 Activity 处于 onPause ，onStop， onDestroy 的时候，都可以回调 obsever 的 onChange 方法，但是有一点需要注意的是，我们必须手动 remove obsever，否则会发生内存泄漏。</p>
+<p>这里我们以观察网络状态变化为例子讲解</p>
+<ol>
+<li>首先我们自定义一个 Class NetworkLiveData，继承 LiveData，重写它的 onActive 方法和 onInactive 方法</li>
+<li>在 onActive 方法中，我们注册监听网络变化的广播，即ConnectivityManager.CONNECTIVITY_ACTION。在 onInactive 方法的时候，我们注销广播。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NetworkLiveData</span> <span class="keyword">extends</span> <span class="title">LiveData</span>&lt;<span class="title">NetworkInfo</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Context mContext;</span><br><span class="line">    <span class="keyword">static</span> NetworkLiveData mNetworkLiveData;</span><br><span class="line">    <span class="keyword">private</span> NetworkReceiver mNetworkReceiver;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> IntentFilter mIntentFilter;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">&quot;NetworkLiveData&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">NetworkLiveData</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">        mContext = context.getApplicationContext();</span><br><span class="line">        mNetworkReceiver = <span class="keyword">new</span> NetworkReceiver();</span><br><span class="line">        mIntentFilter = <span class="keyword">new</span> IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> NetworkLiveData <span class="title">getInstance</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (mNetworkLiveData == <span class="keyword">null</span>) &#123;</span><br><span class="line">            mNetworkLiveData = <span class="keyword">new</span> NetworkLiveData(context);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> mNetworkLiveData;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onActive</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onActive();</span><br><span class="line">        Log.d(TAG, <span class="string">&quot;onActive:&quot;</span>);</span><br><span class="line">        mContext.registerReceiver(mNetworkReceiver, mIntentFilter);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onInactive</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onInactive();</span><br><span class="line">        Log.d(TAG, <span class="string">&quot;onInactive: &quot;</span>);</span><br><span class="line">        mContext.unregisterReceiver(mNetworkReceiver);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">NetworkReceiver</span> <span class="keyword">extends</span> <span class="title">BroadcastReceiver</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReceive</span><span class="params">(Context context, Intent intent)</span> </span>&#123;</span><br><span class="line">            ConnectivityManager manager = (ConnectivityManager) context</span><br><span class="line">                    .getSystemService(Context.CONNECTIVITY_SERVICE);</span><br><span class="line">            NetworkInfo activeNetwork = manager.getActiveNetworkInfo();</span><br><span class="line">            getInstance(context).setValue(activeNetwork);</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样，当我们想监听网络变化的时候，我们只需要调用相应的 observe 方法即可，方便又快捷。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">NetworkLiveData.getInstance(<span class="built_in">this</span>).observe(<span class="built_in">this</span>, <span class="keyword">new</span> Observer&lt;NetworkInfo&gt;() &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public <span class="keyword">void</span> <span class="function"><span class="title">onChanged</span>(<span class="params">@Nullable NetworkInfo networkInfo</span>)</span> &#123;</span><br><span class="line">        Log.d(TAG, <span class="string">&quot;onChanged: networkInfo=&quot;</span> +networkInfo);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><a href="https://www.jianshu.com/p/4b7945475a6f">https://www.jianshu.com/p/4b7945475a6f</a></p>
+<h2 id="共享数据"><a href="#共享数据" class="headerlink" title="共享数据"></a>共享数据</h2><h3 id="Fragment-Activity-之间共享数据"><a href="#Fragment-Activity-之间共享数据" class="headerlink" title="Fragment Activity 之间共享数据"></a>Fragment Activity 之间共享数据</h3><p>我们回过头来再来看一下 ViewModelProvider 的 of 方法，他主要有四个方法，分别是</p>
+<ol>
+<li>ViewModelProvider of(@NonNull Fragment fragment)</li>
+<li>ViewModelProvider of(@NonNull FragmentActivity activity)</li>
+<li>ViewModelProvider of(@NonNull Fragment fragment, @Nullable Factory factory)</li>
+<li> ViewModelProvider of(@NonNull FragmentActivity activity, @Nullable Factory factory)</li>
+</ol>
+<p>1,2 方法之间的主要区别是传入 Fragment 或者 FragmentActivity。而我们知道，通过 ViewModel of 方法创建的 ViewModel 实例， 对于同一个 fragment 或者 fragmentActivity 实例，ViewModel 实例是相同的，因而我们可以利用该特点，在 Fragment 中创建  ViewModel  的时候，传入的是 Fragment 所依附的 Activity。因而他们的 ViewModel 实例是相同的，从而可以做到共享数据。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// LiveDataSampleActivity(TestFragment 依赖的 Activity）</span></span><br><span class="line">mTestViewModel = ViewModelProviders.of(<span class="built_in">this</span>, <span class="keyword">new</span> TestViewModel.Factory(mkey)).get(TestViewModel.class);</span><br><span class="line">MutableLiveData&lt;<span class="built_in">String</span>&gt; nameEvent = mTestViewModel.getNameEvent();</span><br><span class="line">nameEvent.observe(<span class="built_in">this</span>, <span class="keyword">new</span> Observer&lt;<span class="built_in">String</span>&gt;() &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public <span class="keyword">void</span> <span class="function"><span class="title">onChanged</span>(<span class="params">@Nullable <span class="built_in">String</span> s</span>)</span> &#123;</span><br><span class="line">        Log.i(TAG, <span class="string">&quot;onChanged: s = &quot;</span> + s);</span><br><span class="line">        mTvName.setText(s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// TestFragment 中</span></span><br><span class="line">mViewModel = ViewModelProviders.of(mActivity).get(TestViewModel.class);</span><br><span class="line">mViewModel.getNameEvent().observe(<span class="built_in">this</span>, <span class="keyword">new</span> Observer&lt;<span class="built_in">String</span>&gt;() &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public <span class="keyword">void</span> <span class="function"><span class="title">onChanged</span>(<span class="params">@Nullable <span class="built_in">String</span> s</span>)</span> &#123;</span><br><span class="line">        Log.d(TAG, <span class="string">&quot;onChanged: s =&quot;</span> + s + <span class="string">&quot; mViewModel.getKey() =&quot;</span> + mViewModel.getKey());</span><br><span class="line">        mTvName.setText(s);</span><br><span class="line">        boolean result = mViewModel == ((LiveDataSampleActivity) mListener).mTestViewModel;</span><br><span class="line">        Log.d(TAG, <span class="string">&quot;onChanged: s result =&quot;</span> + result);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>这样，LiveDataSampleActivity 和 TestFragment 中的 ViewModel 是同一个实例。即 Activity 和 Fragment 共享数据。</p>
+<h3 id="全局共享数据"><a href="#全局共享数据" class="headerlink" title="全局共享数据"></a>全局共享数据</h3><p>说到全局共享数据，我们想一下我们的应用全景，比如说我的账户数据，这个对于整个 App 来说，肯定是全局共享的。有时候，当我们的数据变化的时候，我们需要通知我们相应的界面，刷新 UI。如果用传统的方式来实现，那么我们一般才采取观察者的方式来实现，这样，当我们需要观察数据的时候，我们需要添加 observer，在界面销毁的时候，我们需要移除 observer。</p>
+<p>但是，如果我们用 LiveData 来实现的话，它内部逻辑都帮我们封装好了，我们只需要保证 AccountLiveData 是单例的就ok，在需要观察的地方调用 observer 方法即可。也不需要手动移除 observer，不会发生内存泄漏，方便快捷。</p>
+<p>这里 AccountLiveData 的实现就不贴出来了，可以参考上面的 NetworkLiveData 实现</p>
+<hr>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>这里说一点关于 LiveData 与 ViewModel 的应用场景，我尽量说得通俗一点，不要说得那么官方，这样对新手很难理解。</p>
+<p>觉得不错的，请点个赞，让我们看到你们的欢呼声。你们的支持就是我写作的最大动力。</p>
+<ol>
+<li> LiveData 内部已经实现了观察者模式，如果你的数据要同时通知几个界面，可以采取这种方式</li>
+<li> 我们知道 LiveData 数据变化的时候，会回调 Observer 的 onChange 方法，但是回调的前提是 lifecycleOwner（即所依附的 Activity 或者 Fragment） 处于 started 或者 resumed 状态，它才会回调，否则，必须等到 lifecycleOwner 切换到前台的时候，才回调。</li>
+<li>因此，这对性能方面确实是一个不小的提升。但是，对于你想做一些类似与在后台工作的（黑科技）， liveData 就不太适合了，你可以使用 observeForever  方法，或者自己实现观察者模式去吧。</li>
+</ol>
+<p><strong>Lifecycle，LiveData， ViewModel 的基本使用到此已经讲解完毕，想了解他们的实现原理的话可以阅读这两篇文章。</strong></p>
+<p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/86660766">Android lifecyle 源码解剖</a></p>
+<p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/86660776">Android livedata 源码解剖</a></p>
+<p><a href="https://github.com/gdutxiaoxu/ArchiteComponentsSample">github sample 地址： ArchiteComponentsSample</a></p>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><p><a href="https://mp.weixin.qq.com/s/xWYe-uxgXTPuitYcLgXYNg">Android 启动优化（一） - 有向无环图</a></p>
+<p><a href="https://mp.weixin.qq.com/s/ShfxD_Z7M_NuWYNodn-vqA">Android 启动优化（二） - 拓扑排序的原理以及解题思路</a></p>
+<p><a href="https://mp.weixin.qq.com/s/YRUpf9jKEwIHV0A4FqltXg">Android 启动优化（三）- AnchorTask 开源了</a></p>
+<p><a href="https://mp.weixin.qq.com/s/6RKco9JTm6ZrFyw99k9Rlg">Android 启动优化（四）- AnchorTask 是怎么实现的</a></p>
+<p><a href="https://mp.weixin.qq.com/s/0MsJa0ZepWkPUs-ymnVb-w">Android 启动优化（五）- AnchorTask 1.0.0 版本正式发布了</a></p>
+<p><a href="https://mp.weixin.qq.com/s/7_dQd2wGZYKWf9kHNlv2fg">Android 启动优化（六）- 深入理解布局优化</a></p>
+<p>这几篇文章从 0 到 1，讲解 DAG 有向无环图是怎么实现的，以及在 Android 启动优化的应用。</p>
+<p><strong>推荐理由：现在挺多文章一谈到启动优化，动不动就聊拓扑结构，这篇文章从数据结构到算法、到设计都给大家说清楚了，开源项目也有非常强的借鉴意义。</strong></p>
+<p><img src="https://img-blog.csdnimg.cn/20210414231709248.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2dkdXR4aWFveHU=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+]]></content>
+      <tags>
+        <tag>Android LiveData</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Android lifecyle 源码解剖</title>
+    <url>/2019/01/12/Android%20lifecyle%20%E6%BA%90%E7%A0%81%E8%A7%A3%E5%89%96/</url>
+    <content><![CDATA[<h2 id="说在前面"><a href="#说在前面" class="headerlink" title="说在前面"></a>说在前面</h2><p>本次推出 Android  Architecture Components 系列文章，目前写好了四篇，主要是关于 lifecycle，livedata 的使用和源码分析，其余的 Navigation， Paging library，Room，WorkMannager 等春节结束之后会更新，欢迎关注我的公众号，有更新的话会第一时间会在公众号上面通知。</p>
+<p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/86660746">Android lifecycle 使用详解</a></p>
+<p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/86660760">Android LiveData 使用详解</a></p>
+<p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/86660766">Android lifecyle 源码解剖</a></p>
+<p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/86660776">Android livedata 源码解剖</a></p>
+<p><a href="https://github.com/gdutxiaoxu/ArchiteComponentsSample">github sample 地址： ArchiteComponentsSample</a></p>
+<p><strong>徐公码字，一位不羁的码农。</strong></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAxOS8xMC84LzE2ZGFhZTAwZDUyNmMxNTM?x-oss-process=image/format,png"></p>
+<hr>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前两篇博客，我们已经讲解了 lifecycle ，liveData， ViewModel 的使用，这一篇博客，让我们一起来看一下 lifecycle 的原理。</p>
+<hr>
+<h2 id="从自定义的-lifecycle-说起"><a href="#从自定义的-lifecycle-说起" class="headerlink" title="从自定义的 lifecycle 说起"></a>从自定义的 lifecycle 说起</h2><p>首先我们先来复习一下，如果要自定义 lifecycle，我们要这样做。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">CustomLifecycleActivity</span> <span class="keyword">extends</span> <span class="title">FragmentActivity</span> <span class="title">implements</span> <span class="title">LifecycleOwner</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    private LifecycleRegistry mLifecycleRegistry;</span><br><span class="line"></span><br><span class="line">    private <span class="keyword">static</span> final <span class="built_in">String</span> TAG = <span class="string">&quot;CustomLifecycleActivity&quot;</span>;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected <span class="keyword">void</span> <span class="function"><span class="title">onCreate</span>(<span class="params">Bundle savedInstanceState</span>)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_custom_lifecycle);</span><br><span class="line">        mLifecycleRegistry = <span class="keyword">new</span> LifecycleRegistry(<span class="built_in">this</span>);</span><br><span class="line">        mLifecycleRegistry.markState(Lifecycle.State.CREATED);</span><br><span class="line">        getLifecycle().addObserver(<span class="keyword">new</span> <span class="function"><span class="title">GenericLifecycleObserver</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public <span class="keyword">void</span> <span class="function"><span class="title">onStateChanged</span>(<span class="params">LifecycleOwner source, Lifecycle.Event event</span>)</span> &#123;</span><br><span class="line">                Log.d(TAG, <span class="string">&quot;onStateChanged: event = &quot;</span> + event);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">	    @Override</span><br><span class="line">    protected <span class="keyword">void</span> <span class="function"><span class="title">onStart</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.onStart();</span><br><span class="line">        mLifecycleRegistry.markState(Lifecycle.State.STARTED);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected <span class="keyword">void</span> <span class="function"><span class="title">onResume</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.onResume();</span><br><span class="line">        mLifecycleRegistry.markState(Lifecycle.State.RESUMED);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected <span class="keyword">void</span> <span class="function"><span class="title">onDestroy</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.onDestroy();</span><br><span class="line">        mLifecycleRegistry.markState(Lifecycle.State.DESTROYED);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @NonNull</span><br><span class="line">    @Override</span><br><span class="line">    public Lifecycle <span class="function"><span class="title">getLifecycle</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> mLifecycleRegistry;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>第一步:先实现  LifecycleOwner 接口，并返回 mLifecycleRegistry</li>
+<li>第二步：在 Activity 生命周期变化的时候，调用   mLifecycleRegistry.markState() 方法标记相应的状态</li>
+<li>如果想添加 observer，调用 addObserver 方法添加观察者，这样会在 activity 生命周期变化的时候，回调 observer 的 onchange 方法。</li>
+</ol>
+<p>我们先来看一下 getLifecycle() 方法， getLifecycle() 它返回的是一个 Lifecycle 的实例，sdk 中默认的实现类为 LifecycleRegistry。</p>
+<p>接下来，我们一起来看一下它的 observer 方法。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public void addObserver(@NonNull LifecycleObserver observer) &#123;</span><br><span class="line">  &#x2F;&#x2F; 判断是否是 DESTROYED，如果是将初始状态置为 DESTROYED，否则为 INITIALIZED</span><br><span class="line">    State initialState &#x3D; mState &#x3D;&#x3D; DESTROYED ? DESTROYED : INITIALIZED;</span><br><span class="line"> &#x2F;&#x2F; ObserverWithState 包装</span><br><span class="line">    ObserverWithState statefulObserver &#x3D; new ObserverWithState(observer, initialState);</span><br><span class="line">	&#x2F;&#x2F;  将 observer 作为key，在缓存的 mObserverMap 中查找是否存在</span><br><span class="line">    ObserverWithState previous &#x3D; mObserverMap.putIfAbsent(observer, statefulObserver);</span><br><span class="line">  </span><br><span class="line">   &#x2F;&#x2F; 存在，直接返回回去，证明该 observer 已经添加过了。否则，证明还没有添加过该 observer</span><br><span class="line">    if (previous !&#x3D; null) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">	 </span><br><span class="line">    LifecycleOwner lifecycleOwner &#x3D; mLifecycleOwner.get();</span><br><span class="line">    if (lifecycleOwner &#x3D;&#x3D; null) &#123;</span><br><span class="line">        &#x2F;&#x2F; it is null we should be destroyed. Fallback quickly</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 这里 mAddingObserverCounter 为 0 ，mHandlingEvent 为 false</span><br><span class="line">    boolean isReentrance &#x3D; mAddingObserverCounter !&#x3D; 0 || mHandlingEvent;</span><br><span class="line">    State targetState &#x3D; calculateTargetState(observer);</span><br><span class="line">    mAddingObserverCounter++;</span><br><span class="line">    while ((statefulObserver.mState.compareTo(targetState) &lt; 0</span><br><span class="line">            &amp;&amp; mObserverMap.contains(observer))) &#123;</span><br><span class="line">        pushParentState(statefulObserver.mState);</span><br><span class="line">        statefulObserver.dispatchEvent(lifecycleOwner, upEvent(statefulObserver.mState));</span><br><span class="line">        popParentState();</span><br><span class="line">        &#x2F;&#x2F; mState &#x2F; subling may have been changed recalculate</span><br><span class="line">        targetState &#x3D; calculateTargetState(observer);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (!isReentrance) &#123;</span><br><span class="line">        &#x2F;&#x2F; we do sync only on the top level.</span><br><span class="line">        sync();</span><br><span class="line">    &#125;</span><br><span class="line">    mAddingObserverCounter--;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在 addObserver 方法中，它主要干这几件事情</p>
+<ol>
+<li>首先，先初始化状态， 判断当前 mState 是否是 DESTROYED，如果是将初始状态置为 DESTROYED，否则为 INITIALIZED，接着用 ObserverWithState 包装 observer 和 初始化状态 initialState</li>
+<li> 将 observer 作为 key，在缓存的 mObserverMap 中查找是否存在，如果存在，证明该 observer 已经添加过，直接返回回去，不必再进行处理。</li>
+<li> addObserver 方法中第 21 行 ， isReentrance 一般情况下为 false，什么情况 为 true，暂时未想到，</li>
+</ol>
+<p>接下来我们先来看 calculateTargetState 方法。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">private State calculateTargetState(LifecycleObserver observer) &#123;</span><br><span class="line">   &#x2F;&#x2F; 取出 mObserverMap 的上一个 entry，previous</span><br><span class="line">    Entry&lt;LifecycleObserver, ObserverWithState&gt; previous &#x3D; mObserverMap.ceil(observer);</span><br><span class="line"></span><br><span class="line">   &#x2F;&#x2F; 如果不为空，获取它的状态</span><br><span class="line">    State siblingState &#x3D; previous !&#x3D; null ? previous.getValue().mState : null;</span><br><span class="line">	&#x2F;&#x2F; 判断 mParentStates 是否为 null，不为 null，去最后的一个状态，否则，为 null</span><br><span class="line">    State parentState &#x3D; !mParentStates.isEmpty() ? mParentStates.get(mParentStates.size() - 1)</span><br><span class="line">            : null;</span><br><span class="line">    &#x2F;&#x2F; 取最小的状态</span><br><span class="line">    return min(min(mState, siblingState), parentState);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>首先，取出 mObserverMap 中上一个的 entry，该 LifecycleRegistry 实例如果是第一次调用 addObserver 实例的话，那么是 null，否则是上一个 observer 的 entry</li>
+<li>根据 previous 是否为 null，设置 siblingState 的值</li>
+<li>判断 mParentStates 是否为 null，不为 null，取 mParentStates 最后一次的状态</li>
+<li>取 mState, siblingState 最小的状态 a，再取  a 与 parentState 的状态 b</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public enum State &#123;</span><br><span class="line">   </span><br><span class="line">    DESTROYED,</span><br><span class="line"></span><br><span class="line">    INITIALIZED,</span><br><span class="line"></span><br><span class="line">    CREATED,</span><br><span class="line"></span><br><span class="line">    STARTED,</span><br><span class="line"></span><br><span class="line">    RESUMED;</span><br><span class="line"></span><br><span class="line">    public boolean isAtLeast(@NonNull State state) &#123;</span><br><span class="line">        return compareTo(state) &gt;&#x3D; 0;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>State 中，他们排序的顺序是 DESTROYED &lt; INITIALIZED &lt; CREATED &lt; STARTED &lt; RESUMED。</p>
+<p>我们知道，我们在 activity 的 onCreate 方法中初始化 LifecycleRegistry，并标记它的状态为 CREATED。当我们第一次在 onCreate 方法调用 addObserver 的时候，在 calculateTargetState 方法中，若是首次调用 previous 为 null，则 siblingState，parentState 为 null， 而 mState 为 CREATED，所以最终的状态为 CREATED，即 State targetState = calculateTargetState(observer); 中 targetState 为 CREATED</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 取最小的状态</span></span><br><span class="line"><span class="keyword">return</span> min(min(mState, siblingState), parentState);</span><br></pre></td></tr></table></figure>
+
+<p>看完 calculateTargetState 方法，我们回过头再来看一下 addObserver 方法。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public void addObserver(@NonNull LifecycleObserver observer) &#123;</span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">     &#x2F;&#x2F; 省略若干行</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 这里 mAddingObserverCounter 为 0 ，mHandlingEvent 为 false</span><br><span class="line">    boolean isReentrance &#x3D; mAddingObserverCounter !&#x3D; 0 || mHandlingEvent;</span><br><span class="line">    State targetState &#x3D; calculateTargetState(observer);</span><br><span class="line">    mAddingObserverCounter++;</span><br><span class="line">    while ((statefulObserver.mState.compareTo(targetState) &lt; 0</span><br><span class="line">            &amp;&amp; mObserverMap.contains(observer))) &#123;</span><br><span class="line">        pushParentState(statefulObserver.mState);</span><br><span class="line">        statefulObserver.dispatchEvent(lifecycleOwner, upEvent(statefulObserver.mState));</span><br><span class="line">        popParentState();</span><br><span class="line">        &#x2F;&#x2F; mState &#x2F; subling may have been changed recalculate</span><br><span class="line">        targetState &#x3D; calculateTargetState(observer);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (!isReentrance) &#123;</span><br><span class="line">        &#x2F;&#x2F; we do sync only on the top level.</span><br><span class="line">        sync();</span><br><span class="line">    &#125;</span><br><span class="line">    mAddingObserverCounter--;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这里 statefulObserver.mState 为 DESTROYED 或者 INITIALIZED，肯定比  CREATED 小。而 mObserverMap.contains(observer) 必定为 true，除非我们手动移除掉 mObserverMap。因而，会走进 while循环。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">pushParentState</span><span class="params">(State state)</span> </span>&#123;</span><br><span class="line">    mParentStates.add(state);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> ArrayList&lt;State&gt; mParentStates = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br></pre></td></tr></table></figure>
+<p>pushParentState(statefulObserver.mState);  很简单，只是将 statefulObserver 的状态添加到 mParentStates 集合中。</p>
+<p>继续往下走，接着会调用  statefulObserver.dispatchEvent(lifecycleOwner, upEvent(statefulObserver.mState)); </p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> Event <span class="title">upEvent</span><span class="params">(State state)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (state) &#123;</span><br><span class="line">        <span class="keyword">case</span> INITIALIZED:</span><br><span class="line">        <span class="keyword">case</span> DESTROYED:</span><br><span class="line">            <span class="keyword">return</span> ON_CREATE;</span><br><span class="line">        <span class="keyword">case</span> CREATED:</span><br><span class="line">            <span class="keyword">return</span> ON_START;</span><br><span class="line">        <span class="keyword">case</span> STARTED:</span><br><span class="line">            <span class="keyword">return</span> ON_RESUME;</span><br><span class="line">        <span class="keyword">case</span> RESUMED:</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;Unexpected state value &quot;</span> + state);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>upEvent 方法也很简单，只是返回它的下一个 event。这里因为他们的 state为 INITIALIZED，所以它会返回 ON_CREATE。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dispatchEvent</span><span class="params">(LifecycleOwner owner, Event event)</span> </span>&#123;</span><br><span class="line">    State newState = getStateAfter(event);</span><br><span class="line">    mState = min(mState, newState);</span><br><span class="line">    mLifecycleObserver.onStateChanged(owner, event);</span><br><span class="line">    mState = newState;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> State <span class="title">getStateAfter</span><span class="params">(Event event)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (event) &#123;</span><br><span class="line">        <span class="keyword">case</span> ON_CREATE:</span><br><span class="line">        <span class="keyword">case</span> ON_STOP:</span><br><span class="line">            <span class="keyword">return</span> CREATED;</span><br><span class="line">        <span class="keyword">case</span> ON_START:</span><br><span class="line">        <span class="keyword">case</span> ON_PAUSE:</span><br><span class="line">            <span class="keyword">return</span> STARTED;</span><br><span class="line">        <span class="keyword">case</span> ON_RESUME:</span><br><span class="line">            <span class="keyword">return</span> RESUMED;</span><br><span class="line">        <span class="keyword">case</span> ON_DESTROY:</span><br><span class="line">            <span class="keyword">return</span> DESTROYED;</span><br><span class="line">        <span class="keyword">case</span> ON_ANY:</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;Unexpected event value &quot;</span> + event);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 这里 event 为 ON_CREATE，所以 newState 也为 CREATED。   mState = min(mState, newState); mState newState，两者状态相同，所以 mState 也为 CREATED。接着回调 mLifecycleObserver 的 onStateChanged 方法。所以，这里，会收到我们的 onCreate 事件，与我们的预想相符。</p>
+<p><strong>但是我们并没有在 onStart，onResume, onPause , onStop 和 onDestroy 方法中调用 mLifecycleRegistry.handleLifecycleEvent 方法，它又是怎样促发 Observer 的 onStateChanged 方法的。这里先不揭晓，我们先来看一下 26.1.0 以后的 AppCompatActivity，待会你就明白了，会感叹 google 真的牛逼！</strong></p>
+<hr>
+<h2 id="从-26-1-0-以后-AppCompatActivity-的设计说起"><a href="#从-26-1-0-以后-AppCompatActivity-的设计说起" class="headerlink" title="从 26.1.0 以后 AppCompatActivity 的设计说起"></a>从 26.1.0 以后 AppCompatActivity 的设计说起</h2><p> 我们知道，在 26.1.0 以后，如果我们要使用 lifecycle，我们只需要调用以下的方法即可。</p>
+<h3 id="SupportActivity"><a href="#SupportActivity" class="headerlink" title="SupportActivity"></a>SupportActivity</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">getLifecycle().addObserver(<span class="keyword">new</span> <span class="function"><span class="title">GenericLifecycleObserver</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public <span class="keyword">void</span> <span class="function"><span class="title">onStateChanged</span>(<span class="params">LifecycleOwner source, Lifecycle.Event event</span>)</span> &#123;</span><br><span class="line">        Log.d(TAG, <span class="string">&quot;onStateChanged: event =&quot;</span> + event);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>跟踪 getLifecycle() 方法，它会跳转到 SupportActivity 的 getLifecycle 方法 中。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SupportActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> <span class="keyword">implements</span> <span class="title">LifecycleOwner</span>, <span class="title">Component</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> LifecycleRegistry mLifecycleRegistry = <span class="keyword">new</span> LifecycleRegistry(<span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(<span class="meta">@Nullable</span> Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        ReportFragment.injectIfNeededIn(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">	    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Lifecycle <span class="title">getLifecycle</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mLifecycleRegistry;</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 SupportActivity 中，它默认为我们初始化 mLifecycleRegistry，作为一个成员变量。接着，他在<br>onCreate 方法中调用了  ReportFragment.injectIfNeededIn(this); 方法。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReportFragment</span> <span class="keyword">extends</span> <span class="title">Fragment</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String REPORT_FRAGMENT_TAG = <span class="string">&quot;android.arch.lifecycle&quot;</span></span><br><span class="line">            + <span class="string">&quot;.LifecycleDispatcher.report_fragment_tag&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">injectIfNeededIn</span><span class="params">(Activity activity)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// ProcessLifecycleOwner should always correctly work and some activities may not extend</span></span><br><span class="line">        <span class="comment">// FragmentActivity from support lib, so we use framework fragments for activities</span></span><br><span class="line">        android.app.FragmentManager manager = activity.getFragmentManager();</span><br><span class="line">        <span class="keyword">if</span> (manager.findFragmentByTag(REPORT_FRAGMENT_TAG) == <span class="keyword">null</span>) &#123;</span><br><span class="line">            manager.beginTransaction().add(<span class="keyword">new</span> ReportFragment(), REPORT_FRAGMENT_TAG).commit();</span><br><span class="line">            <span class="comment">// Hopefully, we are the first to make a transaction.</span></span><br><span class="line">            manager.executePendingTransactions();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 injectIfNeededIn 方法中，它会判断我们是否已经添加 ReportFragment，没有的话，添加进去。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">ReportFragment</span> <span class="keyword">extends</span> <span class="title">Fragment</span> </span>&#123;</span><br><span class="line">    private <span class="keyword">static</span> final <span class="built_in">String</span> REPORT_FRAGMENT_TAG = <span class="string">&quot;android.arch.lifecycle&quot;</span></span><br><span class="line">            + <span class="string">&quot;.LifecycleDispatcher.report_fragment_tag&quot;</span>;</span><br><span class="line"></span><br><span class="line">    private ActivityInitializationListener mProcessListener;</span><br><span class="line"></span><br><span class="line">    private <span class="keyword">void</span> <span class="function"><span class="title">dispatchCreate</span>(<span class="params">ActivityInitializationListener listener</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (listener != <span class="literal">null</span>) &#123;</span><br><span class="line">            listener.onCreate();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private <span class="keyword">void</span> <span class="function"><span class="title">dispatchStart</span>(<span class="params">ActivityInitializationListener listener</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (listener != <span class="literal">null</span>) &#123;</span><br><span class="line">            listener.onStart();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private <span class="keyword">void</span> <span class="function"><span class="title">dispatchResume</span>(<span class="params">ActivityInitializationListener listener</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (listener != <span class="literal">null</span>) &#123;</span><br><span class="line">            listener.onResume();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">    @Override</span><br><span class="line">    public <span class="keyword">void</span> <span class="function"><span class="title">onActivityCreated</span>(<span class="params">Bundle savedInstanceState</span>)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.onActivityCreated(savedInstanceState);</span><br><span class="line">        dispatchCreate(mProcessListener);</span><br><span class="line">        dispatch(Lifecycle.Event.ON_CREATE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public <span class="keyword">void</span> <span class="function"><span class="title">onStart</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.onStart();</span><br><span class="line">        dispatchStart(mProcessListener);</span><br><span class="line">        dispatch(Lifecycle.Event.ON_START);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public <span class="keyword">void</span> <span class="function"><span class="title">onResume</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.onResume();</span><br><span class="line">        dispatchResume(mProcessListener);</span><br><span class="line">        dispatch(Lifecycle.Event.ON_RESUME);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public <span class="keyword">void</span> <span class="function"><span class="title">onPause</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.onPause();</span><br><span class="line">        dispatch(Lifecycle.Event.ON_PAUSE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public <span class="keyword">void</span> <span class="function"><span class="title">onStop</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.onStop();</span><br><span class="line">        dispatch(Lifecycle.Event.ON_STOP);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public <span class="keyword">void</span> <span class="function"><span class="title">onDestroy</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.onDestroy();</span><br><span class="line">        dispatch(Lifecycle.Event.ON_DESTROY);</span><br><span class="line">        <span class="comment">// just want to be sure that we won&#x27;t leak reference to an activity</span></span><br><span class="line">        mProcessListener = <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+<p>然后，它在 onCreat ，onStart， onResume， onPause， onStop， onDestroy 方法中分别调用 dispatch 方法进行分发生命周期。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">private <span class="keyword">void</span> <span class="function"><span class="title">dispatch</span>(<span class="params">Lifecycle.Event event</span>)</span> &#123;</span><br><span class="line">    Activity activity = getActivity();</span><br><span class="line">    <span class="keyword">if</span> (activity <span class="keyword">instanceof</span> LifecycleRegistryOwner) &#123;</span><br><span class="line">        ((LifecycleRegistryOwner) activity).getLifecycle().handleLifecycleEvent(event);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (activity <span class="keyword">instanceof</span> LifecycleOwner) &#123;</span><br><span class="line">        Lifecycle lifecycle = ((LifecycleOwner) activity).getLifecycle();</span><br><span class="line">        <span class="keyword">if</span> (lifecycle <span class="keyword">instanceof</span> LifecycleRegistry) &#123;</span><br><span class="line">            ((LifecycleRegistry) lifecycle).handleLifecycleEvent(event);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在 dispatch 方法中，会先判断 activity 是不是实现了 LifecycleRegistryOwner ，如果是，直接分发，不过不是，判断是否实现 LifecycleOwner，获取它的 lifecycle，调用它 的 handleLifecycleEvent 进行分发。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SupportActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> <span class="keyword">implements</span> <span class="title">LifecycleOwner</span>, <span class="title">Component</span> </span>&#123;</span><br><span class="line">   </span><br><span class="line">    <span class="keyword">private</span> LifecycleRegistry mLifecycleRegistry = <span class="keyword">new</span> LifecycleRegistry(<span class="keyword">this</span></span><br></pre></td></tr></table></figure>
+
+<p>而很明显，高版本的 SupportActivity 实现了 LifecycleOwner 接口，并写 LifecycleOwner.getLifecycle() 是 LifecycleRegistry </p>
+<h3 id="普通的-Activity"><a href="#普通的-Activity" class="headerlink" title="普通的 Activity"></a>普通的 Activity</h3><p>对于 26.1.0 以后的版本，你会发现，对于普通的 Activity，如果你想要使用 lifecycle，你只需要实现<br>LifecycleOwner 接口即可。当生命周期变化的时候，它也可以回调 Observer 的 onStateChanged 方法。</p>
+<p>回到我们前面的问题：</p>
+<p><strong>我们并没有在 onStart，onResume, onPause , onStop 和 onDestroy 方法中调用 mLifecycleRegistry.handleLifecycleEvent 方法，它又是怎样促发 onStateChanged 方法的</strong></p>
+<p><strong>我们猜想它也是通过 ReportFragment 实现的。</strong>但是在 Activity 的 onCreate 方法中，我们并没有发现它有添加 ReportFragment，我们在 As 全局搜一下，看哪些地方使用到 ReportFragment。如下图</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL3d3MS5zaW5haW1nLmNuL2xhcmdlLzlmZTRhZmEwZ3kxZnpoenFuam5nMGoyMGt6MDVlZ2xyLmpwZw?x-oss-process=image/format,png"></p>
+<p>从图中可以看到，有几个地方使用到他。我们先来看一下 LifecycleDispatcher</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LifecycleDispatcher</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    private <span class="keyword">static</span> final <span class="built_in">String</span> REPORT_FRAGMENT_TAG = <span class="string">&quot;android.arch.lifecycle&quot;</span></span><br><span class="line">            + <span class="string">&quot;.LifecycleDispatcher.report_fragment_tag&quot;</span>;</span><br><span class="line"></span><br><span class="line">    private <span class="keyword">static</span> AtomicBoolean sInitialized = <span class="keyword">new</span> AtomicBoolean(<span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">void</span> <span class="function"><span class="title">init</span>(<span class="params">Context context</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (sInitialized.getAndSet(<span class="literal">true</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">		<span class="comment">// 在 init 方法中，监听全局 activity 的创建，从而来添加 fragment</span></span><br><span class="line">        ((Application) context.getApplicationContext())</span><br><span class="line">                .registerActivityLifecycleCallbacks(<span class="keyword">new</span> DispatcherActivityCallback());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @SuppressWarnings(<span class="string">&quot;WeakerAccess&quot;</span>)</span><br><span class="line">    @VisibleForTesting</span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">DispatcherActivityCallback</span> <span class="keyword">extends</span> <span class="title">EmptyActivityLifecycleCallbacks</span> </span>&#123;</span><br><span class="line">        private final FragmentCallback mFragmentCallback;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="title">DispatcherActivityCallback</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">            mFragmentCallback = <span class="keyword">new</span> FragmentCallback();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public <span class="keyword">void</span> <span class="function"><span class="title">onActivityCreated</span>(<span class="params">Activity activity, Bundle savedInstanceState</span>)</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (activity <span class="keyword">instanceof</span> FragmentActivity) &#123;</span><br><span class="line">                ((FragmentActivity) activity).getSupportFragmentManager()</span><br><span class="line">                        .registerFragmentLifecycleCallbacks(mFragmentCallback, <span class="literal">true</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            ReportFragment.injectIfNeededIn(activity);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public <span class="keyword">void</span> <span class="function"><span class="title">onActivityStopped</span>(<span class="params">Activity activity</span>)</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (activity <span class="keyword">instanceof</span> FragmentActivity) &#123;</span><br><span class="line">                markState((FragmentActivity) activity, CREATED);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public <span class="keyword">void</span> <span class="function"><span class="title">onActivitySaveInstanceState</span>(<span class="params">Activity activity, Bundle outState</span>)</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (activity <span class="keyword">instanceof</span> FragmentActivity) &#123;</span><br><span class="line">                markState((FragmentActivity) activity, CREATED);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 省略若干代码</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，它 在 init 方法中，通过 context.getApplicationContext() .registerActivityLifecycleCallbacks 监听全局 activity 的创建，在 activity oncreate 的时候，调用 ReportFragment.injectIfNeededIn(activity) ，从而来添加 fragment，进而分发相应的事件。</p>
+<p>那 LifecycleDispatcher 的 init 方法又是在哪里调用的呢？ 我们全局搜索一下 </p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">ProcessLifecycleOwnerInitializer</span> <span class="keyword">extends</span> <span class="title">ContentProvider</span> </span>&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public boolean <span class="function"><span class="title">onCreate</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        LifecycleDispatcher.init(getContext());</span><br><span class="line">        ProcessLifecycleOwner.init(getContext());</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到它是在 ProcessLifecycleOwnerInitializer 的 onCreate 方法中调用的。而 ProcessLifecycleOwnerInitializer 是一个 ContentProvider。我们知道 ContentProvider 一般是在 AndroidManifest 中生命的。</p>
+<p>果然，在 extensions-1.1.1.aar 中，我们惊喜地发现，它在 Manifest 里面注册了。</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&lt;manifest xmlns:android=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span></span><br><span class="line">    <span class="keyword">package</span>=<span class="string">&quot;android.arch.lifecycle.extensions&quot;</span> &gt;</span><br><span class="line"></span><br><span class="line">    &lt;uses-sdk android:minSdkVersion=<span class="string">&quot;14&quot;</span> /&gt;</span><br><span class="line"></span><br><span class="line">    &lt;application&gt;</span><br><span class="line">        &lt;provider</span><br><span class="line">            android:name=<span class="string">&quot;android.arch.lifecycle.ProcessLifecycleOwnerInitializer&quot;</span></span><br><span class="line">            android:authorities=<span class="string">&quot;$&#123;applicationId&#125;.lifecycle-trojan&quot;</span></span><br><span class="line">            android:exported=<span class="string">&quot;false&quot;</span></span><br><span class="line">            android:multiprocess=<span class="string">&quot;true&quot;</span> /&gt;</span><br><span class="line">    &lt;/application&gt;</span><br><span class="line"></span><br><span class="line">&lt;/manifest&gt;</span><br></pre></td></tr></table></figure>
+
+<p>而 ContentProvider 的 onCreate 方法优先于 Application 的 onCreate 执行，所以在 Application 之前我们就调用了  ProcessLifecycleOwnerInitializer init 方法，监听了 Activity 的创建，当 Actiivty 创建的时候，会尝试为 Activity 添加 ReportFragment。而 ReportFragment 会在 Activity 生命周期变化的时候帮助我们分发生命周期。</p>
+<p>ContentProvider 的 onCreate 方法优先于 Application 的 onCreate 执行，可以查看这一篇博客 <a href="https://blog.csdn.net/long117long/article/details/66477562">Android系统中的Application和四大组件一些方法的启动顺序和一些坑</a></p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>ok，我们来梳理一下。</p>
+<p><strong>对于 26.1.0 以后的 SupportActivity</strong></p>
+<p>它在 Activity onCreate 的时候添加了 ReportFragment，这个 ReportFragment 相当于一个代理，它在 onActivityCreated 的时候  dispatch(Lifecycle.Event.ON_CREATE) 进行分发生命周期，onStart， onResume, onPause, onStop,  onDestroy 的时候也是如此。而 在  dispatch 中 它调用了 LifecycleRegistry handleLifecycleEvent 的方法。而 LifecycleRegistry 方法中经过一系列处理，它又调用了 observer 的 onStateChange 方法，去通知相应的 observer。</p>
+<p><strong>对于普通的 Activity</strong></p>
+<p>它利用了 ContentProvide 的特征，它是在 Application onCreate 之前初始化的，他在 ProcessLifecycleOwnerInitializer oncreate 的时候监听 Activity 的创建，在 Activity 创建的时候，判断是否已经添加过 ReportFragment，没有的话，添加进去。<em><strong>这是一个很巧妙的设计，隐式初始化了 lifecycle。</strong></em></p>
+<p>用流程图表示如下：</p>
+<p>该图片引用自  <a href="https://blog.csdn.net/zhuzp_blog/article/details/78871374">Android 架构组件（一）——Lifecycle</a></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL3d3MS5zaW5haW1nLmNuL213NjkwLzlmZTRhZmEwZ3kxZnppenp0OHVvdmoyMHlnMWthd240LmpwZw?x-oss-process=image/format,png"></p>
+<h3 id="Lifecycle-设计借鉴"><a href="#Lifecycle-设计借鉴" class="headerlink" title="Lifecycle 设计借鉴"></a>Lifecycle 设计借鉴</h3><ol>
+<li>利用 ProcessLifecycleOwnerInitializer contentProvider 来隐式加载</li>
+</ol>
+<p>想一下，如果 ProcessLifecycleOwnerInitializer 不利用 contentProvider 来隐式加载的话，对于 普通的 Activity，旧版本等，如果想使用 lifecycle，那必须在基类中，手动调用  ReportFragment.injectIfNeededIn(activity) 的方法。</p>
+<ol start="2">
+<li>利用 fragment 来分发生命周期</li>
+</ol>
+<p>利用  fragment 来分发生命周期有两个优点</p>
+<ul>
+<li>将逻辑从 Activity 中剥离出来，减少耦合，方便复用</li>
+<li>可以做到在 Activity onCreate 之后才回调 observer 的 CREATED Event 事件。如果是通过 Application registerActivityLifecycleCallbacks 方法来分发生命周期的话，因为 ActivityLifecycleCallbacks 的 onActivityCreated 是在 Activity oncreate 之前调用的。</li>
+</ul>
+<p>下一篇：<a href="https://blog.csdn.net/gdutxiaoxu/article/details/86660776">Android livedata 源码解剖</a></p>
+<p><strong>推荐阅读：</strong></p>
+<p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/81394050">java 代理模式详解</a><br><a href="https://blog.csdn.net/gdutxiaoxu/article/details/51824769">观察者设计模式 Vs 事件委托（java）</a><br><a href="https://blog.csdn.net/gdutxiaoxu/article/details/86498647">Android Fragment 的妙用 - 优雅地申请权限和处理 onActivityResult</a></p>
+]]></content>
+      <tags>
+        <tag>Android lifecycle</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Android lifecycle 使用详解</title>
+    <url>/2019/01/11/Android%20lifecycle%20%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/</url>
+    <content><![CDATA[<h2 id="说在前面"><a href="#说在前面" class="headerlink" title="说在前面"></a>说在前面</h2><p>本次推出 Android  Architecture Components 系列文章，目前写好了四篇，主要是关于 lifecycle，livedata 的使用和源码分析，其余的 Navigation， Paging library，Room，WorkMannager 等春节结束之后会更新，欢迎关注我的公众号，有更新的话会第一时间会在公众号上面通知。</p>
+<p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/86660746">Android lifecycle 使用详解</a></p>
+<p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/86660760">Android LiveData 使用详解</a></p>
+<p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/86660766">Android lifecyle 源码解剖</a></p>
+<p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/86660776">Android livedata 源码解剖</a></p>
+<p><a href="https://github.com/gdutxiaoxu/ArchiteComponentsSample">github sample 地址： ArchiteComponentsSample</a></p>
+<p><img src="https://img-blog.csdnimg.cn/20210406234353804.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2dkdXR4aWFveHU=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><a href="https://developer.android.com/topic/libraries/architecture/">Architecture Components   </a></p>
+<p>lifecycle 是 2107 年 google 大会推出来的，它属于 architecture compoment 里面的一个组件，它可以干什么用呢？ 简单得来说，它可以用来检查 Activity 的生命周期，而不必强依赖  Activity。</p>
+<hr>
+<h2 id="为什么要引进-lifecycle"><a href="#为什么要引进-lifecycle" class="headerlink" title="为什么要引进 lifecycle"></a>为什么要引进 lifecycle</h2><p>举一下我们最常用的 MVP 例子，没引进 lifecycle 之前，我们需要在 Activity 或者 Fragment 销毁的时候，即 onDestroy 的时候手动调用 onDestroy 方法，这里会带来一些问题，每一次在 Activity 或者 Fragment 销毁的烧开后都要调用 presenter.destory() 方法，这样的代码枯燥，毫无意义。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyPresenter</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyPresenter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">create</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//do something</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//do something</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> MyPresenter presenter;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(...)</span> </span>&#123;</span><br><span class="line">        presenter= <span class="keyword">new</span> MyPresenter ();</span><br><span class="line">        presenter.create();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onDestroy();</span><br><span class="line">        presenter.destory();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当然我们也可以定义一些 IBasePresenter 的接口，在 BaseActivity 的时候调用 IBasePresenter 的 onDestroy 方法，这样也确实能做到。只不过稍微繁琐一点。</p>
+<p>那如果是别的类的呢，比如 MediaCompoment，在 Activity 的时候，我们需要销毁一些资源，按照传统的方法，我们还是需要在 Activity onDestroy 的时候手动调用 onDestroy 方法。那有没有更好的方法呢?当然是有的，lifecycle 就可以解决这个问题。接下来，我们先来看一下 Lifycycle 的基本使用。</p>
+<hr>
+<h2 id="Lifycycle-的基本使用"><a href="#Lifycycle-的基本使用" class="headerlink" title="Lifycycle 的基本使用"></a>Lifycycle 的基本使用</h2><ol>
+<li>引入相关的依赖包</li>
+</ol>
+<p>Lifecycle 已经是稳定版，它包含在 support library 26.1.0 及之后的依赖包中，如果我们的项目基于这些依赖包，那么不需要额外的引用。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// ViewModel and LiveData</span></span><br><span class="line">implementation <span class="string">&quot;android.arch.lifecycle:extensions:1.1.0&quot;</span></span><br><span class="line"><span class="comment">// alternatively, just ViewModel</span></span><br><span class="line">implementation <span class="string">&quot;android.arch.lifecycle:viewmodel:1.1.0&quot;</span></span><br><span class="line"><span class="comment">// alternatively, just LiveData</span></span><br><span class="line">implementation <span class="string">&quot;android.arch.lifecycle:livedata:1.1.0&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>support library在26.1.0 之前，lifecycle 并没有集成进去，需要我们引入另外的包。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">implementation <span class="string">&quot;android.arch.lifecycle:extensions:1.0.0-alpha4&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>使用</li>
+</ol>
+<p>这里同样分为几种情况</p>
+<ol>
+<li>support library 26.1.0  之后，且继承 FragmentActivity，那么我们直接调用  getLifecycle().addObserver 方法即可，当 Activity 的生命周期变化的时候，将会回调 onStateChanged 的方法，状态分别是一一对应的</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    private <span class="keyword">static</span> final <span class="built_in">String</span> TAG = <span class="string">&quot;MainActivity&quot;</span>;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected <span class="keyword">void</span> <span class="function"><span class="title">onCreate</span>(<span class="params">Bundle savedInstanceState</span>)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">   </span><br><span class="line">        getLifecycle().addObserver(<span class="keyword">new</span> <span class="function"><span class="title">GenericLifecycleObserver</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line"></span><br><span class="line">            @Override</span><br><span class="line">            public <span class="keyword">void</span> <span class="function"><span class="title">onStateChanged</span>(<span class="params">LifecycleOwner source, Lifecycle.Event event</span>)</span> &#123;</span><br><span class="line">                Log.d(TAG, <span class="string">&quot;onStateChanged: event =&quot;</span> + event);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li> support library 26.1.0 之后，不是继承 FragmentActivity，只是简单地继承 Actiivty</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">SimpleLifecycleActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> <span class="title">implements</span> <span class="title">LifecycleOwner</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    private <span class="keyword">static</span> final <span class="built_in">String</span> TAG = <span class="string">&quot;SimpleLifecycleActivity&quot;</span>;</span><br><span class="line">    private LifecycleRegistry mLifecycleRegistry;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected <span class="keyword">void</span> <span class="function"><span class="title">onCreate</span>(<span class="params">Bundle savedInstanceState</span>)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_simple_lifecycle);</span><br><span class="line">        mLifecycleRegistry = <span class="keyword">new</span> LifecycleRegistry(<span class="built_in">this</span>);</span><br><span class="line">        mLifecycleRegistry.markState(Lifecycle.State.CREATED);</span><br><span class="line">        getLifecycle().addObserver(<span class="keyword">new</span> <span class="function"><span class="title">GenericLifecycleObserver</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line"></span><br><span class="line">            @Override</span><br><span class="line">            public <span class="keyword">void</span> <span class="function"><span class="title">onStateChanged</span>(<span class="params">LifecycleOwner source, Lifecycle.Event event</span>)</span> &#123;</span><br><span class="line">                Log.d(TAG, <span class="string">&quot;onStateChanged: event =&quot;</span> + event);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected <span class="keyword">void</span> <span class="function"><span class="title">onStart</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.onStart();</span><br><span class="line">        mLifecycleRegistry.markState(Lifecycle.State.STARTED);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @NonNull</span><br><span class="line">    @Override</span><br><span class="line">    public Lifecycle <span class="function"><span class="title">getLifecycle</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> mLifecycleRegistry;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li> support library 26.1.0  之前</li>
+</ol>
+<p>（现在的 support library 基本都在 26.1.0 之后了，这个可以忽略）</p>
+<p>第一步：实现 LifecycleOwner 接口，并返回响应的  Lifecycle</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">public interface LifecycleOwner &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Returns the Lifecycle of the provider.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return </span>The lifecycle of the provider.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    @NonNull</span><br><span class="line">    Lifecycle getLifecycle();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第二步：在 Activity 生命周期变化的时候，调用  mLifecycleRegistry.handleLifecycleEvent 方法，分发相应的生命周期。</p>
+<p>第三步：调用 Lifecycle 的 addObserver 方法添加相应的 Observer。</p>
+<p>代码如下</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> <span class="keyword">implements</span> <span class="title">LifecycleOwner</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> LifecycleRegistry mRegistry;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">&quot;MainActivity&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        mRegistry = <span class="keyword">new</span> LifecycleRegistry(<span class="keyword">this</span>);</span><br><span class="line">        mRegistry.markState(Lifecycle.State.CREATED);</span><br><span class="line">        getLifecycle().addObserver(<span class="keyword">new</span> GenericLifecycleObserver() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStateChanged</span><span class="params">(LifecycleOwner source, Lifecycle.Event event)</span> </span>&#123;</span><br><span class="line">                Log.d(TAG, <span class="string">&quot;onStateChanged:event =&quot;</span> + event);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> Object <span class="title">getReceiver</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onStart</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onStart();</span><br><span class="line">        mRegistry.markState(Lifecycle.State.STARTED);</span><br><span class="line">        mRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onResume</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onResume();</span><br><span class="line">        mRegistry.markState(Lifecycle.State.RESUMED);</span><br><span class="line">        mRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onPause</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onPause();</span><br><span class="line">        mRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onStop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onStop();</span><br><span class="line">        mRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onDestroy();</span><br><span class="line">        mRegistry.markState(Lifecycle.State.DESTROYED);</span><br><span class="line">        mRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Lifecycle <span class="title">getLifecycle</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mRegistry;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>我们回过头来看一下我们上面提出的问题？</p>
+<p>MediaCompoment 在 Activity ondestroy 的时候，我们需要销毁一些资源，用传统的方法，我们需要在 Activity onDestroy 的时候手动调用 onDestroy 方法。这样会存在一个问题，调用者必须知道比较清楚得知道 MediaCompoment 的设计，否则可能会忘记调用 onDestroy 的方法。</p>
+<p>那有没有一种方法， 当 Activity 生命周期变化的时候，MediaCompoment 自身能够检测到 Activity 的 生命周期变化，从而做相应的处理。</p>
+<p>答案当然是有的，使用 lifycycle。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">MediaCompoment</span> </span>&#123;</span><br><span class="line">    private <span class="keyword">static</span> final <span class="built_in">String</span> TAG = <span class="string">&quot;MediaCompoment&quot;</span>;</span><br><span class="line"></span><br><span class="line">    private final LifecycleOwner mLifecycleOwner;</span><br><span class="line"></span><br><span class="line">    public <span class="function"><span class="title">MediaCompoment</span>(<span class="params">LifecycleOwner lifecycleOwner</span>)</span> &#123;</span><br><span class="line">        mLifecycleOwner = lifecycleOwner;</span><br><span class="line">        mLifecycleOwner.getLifecycle().addObserver(<span class="keyword">new</span> <span class="function"><span class="title">GenericLifecycleObserver</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public <span class="keyword">void</span> <span class="function"><span class="title">onStateChanged</span>(<span class="params">LifecycleOwner source, final Lifecycle.Event event</span>)</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (event == Lifecycle.Event.ON_CREATE) &#123;</span><br><span class="line">                    onCreate();</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (event == Lifecycle.Event.ON_START) &#123;</span><br><span class="line">                    onStart();</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (event == Lifecycle.Event.ON_RESUME) &#123;</span><br><span class="line">                    onResume();</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (event == Lifecycle.Event.ON_PAUSE) &#123;</span><br><span class="line">                    onPause();</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (event == Lifecycle.Event.ON_STOP) &#123;</span><br><span class="line">                    onStop();</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (event == Lifecycle.Event.ON_DESTROY) &#123;</span><br><span class="line">                    onDestroy();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public <span class="keyword">void</span> <span class="function"><span class="title">onCreate</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        Log.d(TAG, <span class="string">&quot;onCreate:&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public <span class="keyword">void</span> <span class="function"><span class="title">onStart</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        Log.d(TAG, <span class="string">&quot;onStart:&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public <span class="keyword">void</span> <span class="function"><span class="title">onResume</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        Log.d(TAG, <span class="string">&quot;onResume:&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public <span class="keyword">void</span> <span class="function"><span class="title">onPause</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        Log.d(TAG, <span class="string">&quot;onPause:&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public <span class="keyword">void</span> <span class="function"><span class="title">onStop</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        Log.d(TAG, <span class="string">&quot;onStop:&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public <span class="keyword">void</span> <span class="function"><span class="title">onDestroy</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        Log.d(TAG, <span class="string">&quot;onDestroy:&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>小结：</p>
+<ol>
+<li>lifycycle 其实是用观察者模式实现的，当 Activity 生命周期变化的时候，通知相应的 Observers 即观察者。</li>
+<li>使用 lifecycle，我们可以将释放资源的动作内聚在自身，减少与调用者之间的耦合。</li>
+</ol>
+<p>下一篇博客：<a href="https://blog.csdn.net/gdutxiaoxu/article/details/86660760">Android LiveData 使用详解</a></p>
+<h2 id="推荐阅读"><a href="#推荐阅读" class="headerlink" title="推荐阅读"></a>推荐阅读</h2><p><a href="https://mp.weixin.qq.com/s/xWYe-uxgXTPuitYcLgXYNg">Android 启动优化（一） - 有向无环图</a></p>
+<p><a href="https://mp.weixin.qq.com/s/ShfxD_Z7M_NuWYNodn-vqA">Android 启动优化（二） - 拓扑排序的原理以及解题思路</a></p>
+<p><a href="https://mp.weixin.qq.com/s/YRUpf9jKEwIHV0A4FqltXg">Android 启动优化（三）- AnchorTask 开源了</a></p>
+<p><a href="https://mp.weixin.qq.com/s/6RKco9JTm6ZrFyw99k9Rlg">Android 启动优化（四）- AnchorTask 是怎么实现的</a></p>
+<p><a href="https://mp.weixin.qq.com/s/0MsJa0ZepWkPUs-ymnVb-w">Android 启动优化（五）- AnchorTask 1.0.0 版本正式发布了</a></p>
+<p><a href="https://mp.weixin.qq.com/s/7_dQd2wGZYKWf9kHNlv2fg">Android 启动优化（六）- 深入理解布局优化</a></p>
+<p>这几篇文章从 0 到 1，讲解 DAG 有向无环图是怎么实现的，以及在 Android 启动优化的应用。</p>
+<p><strong>推荐理由：现在挺多文章一谈到启动优化，动不动就聊拓扑结构，这篇文章从数据结构到算法、到设计都给大家说清楚了，开源项目也有非常强的借鉴意义。</strong></p>
+<p><img src="https://img-blog.csdnimg.cn/20210414231709248.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2dkdXR4aWFveHU=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+]]></content>
+      <tags>
+        <tag>Android lifecycle</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>16年，平凡而又收获的一年</title>
     <url>/2016/12/31/16%E5%B9%B4%EF%BC%8C%E5%B9%B3%E5%87%A1%E8%80%8C%E5%8F%88%E6%94%B6%E8%8E%B7%E7%9A%84%E4%B8%80%E5%B9%B4/</url>
     <content><![CDATA[<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53958513" target="_blank" rel="external">文章首发地址CSDN:</a></p>
@@ -655,168 +1081,219 @@
     <url>/2016/12/11/Git-%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%95%99%E7%A8%8B%E5%8F%8A%E5%AE%9E%E4%BE%8B%E6%95%99%E7%A8%8B/</url>
     <content><![CDATA[<p><strong>前言：前几天在写博客  手把手教你用Hexo + github 搭建自己博客的时候，经常需要用到一些git操作，截了好多图，于是就想干脆整理成一系列的git 教程，总结如下</strong></p>
 <ul>
-<li><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53573286" target="_blank" rel="external">Git下载及配置环境变量</a></li>
-<li><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53573339" target="_blank" rel="external">Git 命令行教程及实例教程</a></li>
-<li><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53573399" target="_blank" rel="external">Git ssh 配置及使用</a></li>
-<li><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53573426" target="_blank" rel="external"> git ssh 配置多个账户</a></li>
+<li><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53573286">Git下载及配置环境变量</a></li>
+<li><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53573339">Git 命令行教程及实例教程</a></li>
+<li><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53573399">Git ssh 配置及使用</a></li>
+<li><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53573426"> git ssh 配置多个账户</a></li>
 </ul>
 <hr>
 <p>本篇博客主要讲解以下问题：</p>
 <ul>
 <li>Git 常用命令<ul>
 <li>创建新仓库</li>
-<li>检出仓库</li>
-<li>添加与提交</li>
-<li>推送改动</li>
-<li>分支</li>
-<li>更新与合并</li>
-<li>标签</li>
-<li>替换本地改动</li>
+<li> 检出仓库</li>
+<li> 添加与提交</li>
+<li> 推送改动</li>
+<li> 分支</li>
+<li> 更新与合并</li>
+<li> 标签</li>
+<li> 替换本地改动</li>
 </ul>
 </li>
 <li>Git实例教程</li>
 <li>操作小技巧</li>
 </ul>
 <h2 id="Git-常用命令常用命令"><a href="#Git-常用命令常用命令" class="headerlink" title="Git 常用命令常用命令"></a><strong>Git 常用命令常用命令</strong></h2><h3 id="创建新仓库"><a href="#创建新仓库" class="headerlink" title="创建新仓库"></a>创建新仓库</h3><p>创建新文件夹，打开，然后执行 </p>
-<figure class="highlight java"><table><tr><td class="code"><pre><div class="line">git init</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
+
 <p>以创建新的 git 仓库。</p>
 <h3 id="检出仓库"><a href="#检出仓库" class="headerlink" title="检出仓库"></a>检出仓库</h3><p>执行如下命令以创建一个本地仓库的克隆版本：</p>
-<figure class="highlight vbscript"><table><tr><td class="code"><pre><div class="line">git clone /path/<span class="keyword">to</span>/repository</div></pre></td></tr></table></figure>
+<figure class="highlight vbscript"><table><tr><td class="code"><pre><span class="line">git clone /path/<span class="keyword">to</span>/repository </span><br></pre></td></tr></table></figure>
+
+
 <p>如果是远端服务器上的仓库，你的命令会是这个样子：</p>
-<figure class="highlight elixir"><table><tr><td class="code"><pre><div class="line">git clone username<span class="variable">@host</span><span class="symbol">:/path/to/repository</span></div></pre></td></tr></table></figure>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line">git clone username<span class="variable">@host</span><span class="symbol">:/path/to/repository</span></span><br></pre></td></tr></table></figure>
+
 <p>工作流<br>你的本地仓库由 git 维护的三棵“树”组成。第一个是你的 工作目录，它持有实际文件；第二个是 缓存区（Index），它像个缓存区域，临时保存你的改动；最后是 HEAD，指向你最近一次提交后的结果。</p>
-<p><img src="http://ww2.sinaimg.cn/large/9fe4afa0gw1famnvghkwrj20p008wgmd.jpg" alt=""></p>
+<p><img src="http://ww2.sinaimg.cn/large/9fe4afa0gw1famnvghkwrj20p008wgmd.jpg"></p>
 <h3 id="添加与提交"><a href="#添加与提交" class="headerlink" title="添加与提交"></a>添加与提交</h3><p>你可以计划改动（把它们添加到缓存区），使用如下命令：</p>
-<figure class="highlight dockerfile"><table><tr><td class="code"><pre><div class="line">git <span class="keyword">add</span> &lt;filename&gt;</div><div class="line">git <span class="keyword">add</span> *</div><div class="line"></div><div class="line"><span class="comment"># 添加所有文件</span></div><div class="line">git  <span class="keyword">add</span> .</div></pre></td></tr></table></figure>
+<figure class="highlight dockerfile"><table><tr><td class="code"><pre><span class="line">git <span class="keyword">add</span><span class="bash"> &lt;filename&gt;</span></span><br><span class="line">git <span class="keyword">add</span><span class="bash"> *</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加所有文件</span></span><br><span class="line">git  <span class="keyword">add</span><span class="bash"> .</span></span><br></pre></td></tr></table></figure>
+
+
 <p>这是 git 基本工作流程的第一步；使用如下命令以实际提交改动：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><div class="line">git <span class="keyword">commit</span> -m <span class="string">"代码提交信息"</span></div></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">git <span class="keyword">commit</span> <span class="operator">-</span>m &quot;代码提交信息&quot;</span><br></pre></td></tr></table></figure>
+
+
 <p>现在，你的改动已经提交到了 HEAD，但是还没到你的远端仓库。</p>
 <h3 id="推送改动"><a href="#推送改动" class="headerlink" title="推送改动"></a>推送改动</h3><p>你的改动现在已经在本地仓库的 HEAD 中了。执行如下命令以将这些改动提交到远端仓库：</p>
-<figure class="highlight gradle"><table><tr><td class="code"><pre><div class="line">git <span class="keyword">push</span> origin master</div></pre></td></tr></table></figure>
+<figure class="highlight gradle"><table><tr><td class="code"><pre><span class="line">git <span class="keyword">push</span> origin master</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
 <p>可以把 master 换成你想要推送的任何分支。 </p>
 <p>如果你还没有克隆现有仓库，并欲将你的仓库连接到某个远程服务器，你可以使用如下命令添加：</p>
-<figure class="highlight vbscript-html"><table><tr><td class="code"><pre><div class="line"># 注意 server必须是存在的仓库</div><div class="line">git remote add origin &lt;server&gt;</div><div class="line">git remote add origin https://github.com/gdutxiaoxu/test2.git</div></pre></td></tr></table></figure>
+<figure class="highlight vbscript-html"><table><tr><td class="code"><pre><span class="line"><span class="xml"># 注意 server必须是存在的仓库</span></span><br><span class="line"><span class="xml">git remote add origin <span class="tag">&lt;<span class="name">server</span>&gt;</span></span></span><br><span class="line"><span class="xml">git remote add origin https://github.com/gdutxiaoxu/test2.git</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
 <p>该命令是移除本地缓存已有的remote信息</p>
-<figure class="highlight vim"><table><tr><td class="code"><pre><div class="line">git remote <span class="built_in">remove</span> origin</div></pre></td></tr></table></figure>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">git remote <span class="built_in">remove</span> origin </span><br></pre></td></tr></table></figure>
+
+
 <p>如此你就能够将你的改动推送到所添加的服务器上去了。</p>
 <h3 id="分支"><a href="#分支" class="headerlink" title="分支"></a>分支</h3><p>分支是用来将特性开发绝缘开来的。在你创建仓库的时候，master 是“默认的”。在其他分支上进行开发，完成后再将它们合并到主分支上。</p>
 <p>创建一个叫做“feature_x”的分支，并切换过去：</p>
-<figure class="highlight stylus"><table><tr><td class="code"><pre><div class="line">git checkout -<span class="selector-tag">b</span> feature_x</div></pre></td></tr></table></figure>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">git checkout -<span class="selector-tag">b</span> feature_x</span><br></pre></td></tr></table></figure>
+
+
 <p>切换回主分支：</p>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><div class="line"><span class="attribute">git</span> checkout master</div></pre></td></tr></table></figure>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">git</span> checkout master</span><br></pre></td></tr></table></figure>
+
 <p>切换回分支：</p>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><div class="line"><span class="attribute">git</span> checkout &lt;branch&gt;</div><div class="line">git checkout  feature_x</div></pre></td></tr></table></figure>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">git</span> checkout &lt;branch&gt;</span><br><span class="line">git checkout  feature_x</span><br></pre></td></tr></table></figure>
+
+
 <p>再把新建的分支删掉：</p>
-<figure class="highlight stata"><table><tr><td class="code"><pre><div class="line">git branch -<span class="keyword">d</span> feature_x</div></pre></td></tr></table></figure>
+<figure class="highlight stata"><table><tr><td class="code"><pre><span class="line">git branch -<span class="keyword">d</span> feature_x</span><br></pre></td></tr></table></figure>
+
+
 <p>除非你将分支推送到远端仓库，不然该分支就是 不为他人所见的：</p>
-<figure class="highlight vbscript-html"><table><tr><td class="code"><pre><div class="line">git push origin &lt;branch&gt;</div><div class="line">git push origin  feature_x</div></pre></td></tr></table></figure>
+<figure class="highlight vbscript-html"><table><tr><td class="code"><pre><span class="line"><span class="xml">git push origin <span class="tag">&lt;<span class="name">branch</span>&gt;</span></span></span><br><span class="line"><span class="xml">git push origin  feature_x</span></span><br></pre></td></tr></table></figure>
+
+
 <h3 id="更新与合并"><a href="#更新与合并" class="headerlink" title="更新与合并"></a>更新与合并</h3><p>要更新你的本地仓库至最新改动，执行：</p>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><div class="line"><span class="attribute">git</span> pull</div></pre></td></tr></table></figure>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">git</span> pull</span><br></pre></td></tr></table></figure>
+
+
 <p>以在你的工作目录中 获取（fetch） 并 合并（merge） 远端的改动。<br>要合并其他分支到你的当前分支（例如 master），执行：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><div class="line">git <span class="keyword">merge</span> &lt;branch&gt;</div><div class="line">git <span class="keyword">merge</span> feature_x</div></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">git <span class="keyword">merge</span> <span class="operator">&lt;</span>branch<span class="operator">&gt;</span></span><br><span class="line">git <span class="keyword">merge</span> feature_x</span><br></pre></td></tr></table></figure>
+
+
 <p>两种情况下，git 都会尝试去自动合并改动。不幸的是，自动合并并非次次都能成功，并可能导致 冲突（conflicts）。 这时候就需要你修改这些文件来人肉合并这些 冲突（conflicts） 了。改完之后，你需要执行如下命令以将它们标记为合并成功：</p>
-<figure class="highlight vbscript-html"><table><tr><td class="code"><pre><div class="line">git add &lt;filename&gt;</div></pre></td></tr></table></figure>
+<figure class="highlight vbscript-html"><table><tr><td class="code"><pre><span class="line"><span class="xml">git add <span class="tag">&lt;<span class="name">filename</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+
 <p>在合并改动之前，也可以使用如下命令查看：</p>
-<figure class="highlight vbscript-html"><table><tr><td class="code"><pre><div class="line">git diff &lt;source_branch&gt; &lt;target_branch&gt;</div></pre></td></tr></table></figure>
+<figure class="highlight vbscript-html"><table><tr><td class="code"><pre><span class="line"><span class="xml">git diff <span class="tag">&lt;<span class="name">source_branch</span>&gt;</span> <span class="tag">&lt;<span class="name">target_branch</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
 <h3 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h3><p>在软件发布时创建标签，是被推荐的。这是个旧有概念，在 SVN 中也有。可以执行如下命令以创建一个叫做 1.0.0 的标签：</p>
-<figure class="highlight vim"><table><tr><td class="code"><pre><div class="line">git <span class="keyword">tag</span> <span class="number">1.0</span>.<span class="number">0</span> <span class="number">1</span>b2e1d63ff</div></pre></td></tr></table></figure>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">git <span class="keyword">tag</span> <span class="number">1.0</span>.<span class="number">0</span> <span class="number">1</span>b2e1d63ff</span><br></pre></td></tr></table></figure>
+
+
 <p>1b2e1d63ff 是你想要标记的提交 ID 的前 10 位字符。使用如下命令获取提交 ID：</p>
-<figure class="highlight mel"><table><tr><td class="code"><pre><div class="line">git <span class="keyword">log</span></div></pre></td></tr></table></figure>
+<figure class="highlight mel"><table><tr><td class="code"><pre><span class="line">git <span class="keyword">log</span></span><br></pre></td></tr></table></figure>
+
+
 <p>你也可以用该提交 ID 的少一些的前几位，只要它是唯一的。</p>
 <h3 id="替换本地改动"><a href="#替换本地改动" class="headerlink" title="替换本地改动"></a>替换本地改动</h3><p>假如你做错事（自然，这是不可能的），你可以使用如下命令替换掉本地改动：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><div class="line">git checkout <span class="comment">-- &lt;filename&gt;</span></div></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">git checkout <span class="comment">-- &lt;filename&gt;</span></span><br></pre></td></tr></table></figure>
+
+
 <p>此命令会使用 HEAD 中的最新内容替换掉你的工作目录中的文件。已添加到缓存区的改动，以及新文件，都不受影响。</p>
 <p>假如你想要丢弃你所有的本地改动与提交，可以到服务器上获取最新的版本并将你本地主分支指向到它：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><div class="line">git fetch origin</div><div class="line">git <span class="keyword">reset</span> <span class="comment">--hard origin/master</span></div></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">git <span class="keyword">fetch</span> origin</span><br><span class="line">git reset <span class="comment">--hard origin/master</span></span><br></pre></td></tr></table></figure>
+
+
 <h2 id="有用的贴士"><a href="#有用的贴士" class="headerlink" title="有用的贴士"></a>有用的贴士</h2><p>内建的图形化 git：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><div class="line">gitk</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">gitk</span><br></pre></td></tr></table></figure>
+
+
 <p>彩色的 git 输出：</p>
-<figure class="highlight"><table><tr><td class="code"><pre><div class="line">git config color.ui true</div></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">git config color.ui true</span><br></pre></td></tr></table></figure>
+
+
 <p>显示历史记录时，只显示一行注释信息：</p>
-<figure class="highlight stylus"><table><tr><td class="code"><pre><div class="line">git config format<span class="selector-class">.pretty</span> oneline</div></pre></td></tr></table></figure>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">git config format<span class="selector-class">.pretty</span> oneline</span><br></pre></td></tr></table></figure>
+
+
 <p>交互地添加文件至缓存区：</p>
-<figure class="highlight matlab"><table><tr><td class="code"><pre><div class="line">git add -<span class="built_in">i</span></div></pre></td></tr></table></figure>
+<figure class="highlight matlab"><table><tr><td class="code"><pre><span class="line">git add -<span class="built_in">i</span></span><br></pre></td></tr></table></figure>
 <p>到此 git常用的命令已经 讲解完毕，下面开始讲解Git  实例教程</p>
 <hr>
 <h2 id="Git实例教程"><a href="#Git实例教程" class="headerlink" title="Git实例教程"></a><strong>Git实例教程</strong></h2><p>大概分为以下两步</p>
 <ul>
-<li>github账号的注册与Repo的创建</li>
+<li> github账号的注册与Repo的创建</li>
 <li>实例教程</li>
 </ul>
 <h3 id="github账号的注册与Repo的创建"><a href="#github账号的注册与Repo的创建" class="headerlink" title="github账号的注册与Repo的创建"></a>github账号的注册与Repo的创建</h3><ol>
 <li>Github注册</li>
 </ol>
-<p>打开<a href="https://github.com/，在下图的框中，分别输入自己的用户名，邮箱，密码。" target="_blank" rel="external">https://github.com/，在下图的框中，分别输入自己的用户名，邮箱，密码。</a></p>
-<p><img src="http://ww4.sinaimg.cn/large/9fe4afa0gw1faljxemku5j20bo0as0tv.jpg" alt=""></p>
+<p>打开<a href="https://github.com/%EF%BC%8C%E5%9C%A8%E4%B8%8B%E5%9B%BE%E7%9A%84%E6%A1%86%E4%B8%AD%EF%BC%8C%E5%88%86%E5%88%AB%E8%BE%93%E5%85%A5%E8%87%AA%E5%B7%B1%E7%9A%84%E7%94%A8%E6%88%B7%E5%90%8D%EF%BC%8C%E9%82%AE%E7%AE%B1%EF%BC%8C%E5%AF%86%E7%A0%81%E3%80%82">https://github.com/，在下图的框中，分别输入自己的用户名，邮箱，密码。</a></p>
+<p><img src="http://ww4.sinaimg.cn/large/9fe4afa0gw1faljxemku5j20bo0as0tv.jpg"></p>
 <p>然后前往自己刚才填写的邮箱，点开Github发送给你的注册确认信，确认注册，结束注册流程。</p>
 <p>一定要确认注册，否则无法使用gh-pages！</p>
-<ol>
+<ol start="2">
 <li>创建代码库</li>
 </ol>
 <p>登陆之后，点击页面右上角的加号，选择New repository：</p>
-<p><img src="http://ww2.sinaimg.cn/large/9fe4afa0gw1faljww56v8j20ci0a975c.jpg" alt=""></p>
+<p><img src="http://ww2.sinaimg.cn/large/9fe4afa0gw1faljww56v8j20ci0a975c.jpg"></p>
 <p>新建代码库</p>
 <p>进入代码库创建页面：</p>
-<p><img src="http://ww2.sinaimg.cn/large/9fe4afa0gw1famqd6t7bzj20my0gfdjm.jpg" alt=""></p>
-<p>到此我们就创建好了repo，地址 为：<a href="https://github.com/gdutxiaoxu/test.git" target="_blank" rel="external">https://github.com/gdutxiaoxu/test.git</a></p>
+<p><img src="http://ww2.sinaimg.cn/large/9fe4afa0gw1famqd6t7bzj20my0gfdjm.jpg"></p>
+<p>到此我们就创建好了repo，地址 为：<a href="https://github.com/gdutxiaoxu/test.git">https://github.com/gdutxiaoxu/test.git</a></p>
 <h3 id="实例教程"><a href="#实例教程" class="headerlink" title="实例教程"></a>实例教程</h3><p>这里我们把仓库建在 G://test  目录下</p>
 <ol>
-<li>首先打开命令行，进入G 盘，输入以下命令</li>
+<li> 首先打开命令行，进入G 盘，输入以下命令</li>
 </ol>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><div class="line"><span class="comment"># 在 test目录下创建 README.md 文件</span></div><div class="line"> echo <span class="string">"# test"</span> <span class="meta">&gt;&gt; </span>README.md</div></pre></td></tr></table></figure>
-<ol>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 在 test目录下创建 README.md 文件</span></span><br><span class="line"> echo <span class="string">&quot;# test&quot;</span> &gt;&gt; README.md</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
 <li>接着初始化仓库</li>
 </ol>
-<figure class="highlight swift"><table><tr><td class="code"><pre><div class="line">git <span class="keyword">init</span></div></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line">git <span class="keyword">init</span></span><br></pre></td></tr></table></figure>
 <p>  可以看到如下图片的效果</p>
-<p><img src="http://ww1.sinaimg.cn/large/9fe4afa0jw1famryzlcksj20bt04a74b.jpg" alt=""></p>
-<ol>
+<p><img src="http://ww1.sinaimg.cn/large/9fe4afa0jw1famryzlcksj20bt04a74b.jpg"></p>
+<ol start="3">
 <li><p>将 README.md 文件添加到版本控制</p>
-<figure class="highlight dockerfile"><table><tr><td class="code"><pre><div class="line">git <span class="keyword">add</span> README.md</div></pre></td></tr></table></figure>
-</li>
+<figure class="highlight dockerfile"><table><tr><td class="code"><pre><span class="line">git <span class="keyword">add</span><span class="bash"> README.md</span></span><br></pre></td></tr></table></figure></li>
 <li><p>提交文件到本地缓存，并添加说明</p>
 </li>
 </ol>
-<figure class="highlight sql"><table><tr><td class="code"><pre><div class="line">git <span class="keyword">commit</span> -m <span class="string">"first commit"</span></div></pre></td></tr></table></figure>
-<p><img src="http://ww4.sinaimg.cn/large/9fe4afa0jw1fams0l7v6jj20by04nwel.jpg" alt=""></p>
-<ol>
-<li>将本地仓库与远程仓库 <a href="https://github.com/gdutxiaoxu/test.git" target="_blank" rel="external">https://github.com/gdutxiaoxu/test.git</a> 联系起来</li>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">git <span class="keyword">commit</span> <span class="operator">-</span>m &quot;first commit&quot;</span><br></pre></td></tr></table></figure>
+
+
+<p><img src="http://ww4.sinaimg.cn/large/9fe4afa0jw1fams0l7v6jj20by04nwel.jpg"></p>
+<ol start="5">
+<li>将本地仓库与远程仓库 <a href="https://github.com/gdutxiaoxu/test.git">https://github.com/gdutxiaoxu/test.git</a> 联系起来</li>
 </ol>
-<figure class="highlight vim"><table><tr><td class="code"><pre><div class="line">git remote <span class="built_in">add</span> origin http<span class="variable">s:</span>//github.<span class="keyword">com</span>/gdutxiaoxu/test.git</div></pre></td></tr></table></figure>
-<ol>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">git remote <span class="built_in">add</span> origin http<span class="variable">s:</span>//github.<span class="keyword">com</span>/gdutxiaoxu/test.git</span><br></pre></td></tr></table></figure>
+
+
+<ol start="6">
 <li>将本地仓库缓存的文件提交到远程仓库中</li>
 </ol>
-<figure class="highlight gradle"><table><tr><td class="code"><pre><div class="line">git <span class="keyword">push</span> -u origin master</div></pre></td></tr></table></figure>
+<figure class="highlight gradle"><table><tr><td class="code"><pre><span class="line">git <span class="keyword">push</span> -u origin master</span><br></pre></td></tr></table></figure>
+
 <p>如果你没有配置ssh ，那么在这里需要输入你的github 账户的用户名和密码</p>
-<p><img src="http://ww1.sinaimg.cn/large/9fe4afa0jw1famqv57c2cj20cd02k74d.jpg" alt=""></p>
+<p><img src="http://ww1.sinaimg.cn/large/9fe4afa0jw1famqv57c2cj20cd02k74d.jpg"></p>
 <p>正确输入你的用户名和密码后，可以看到</p>
-<p><img src="http://ww2.sinaimg.cn/large/9fe4afa0jw1famqx437x6j20f703kglx.jpg" alt=""></p>
-<p>同时我们登陆我们的github 仓库 ：  <a href="https://github.com/gdutxiaoxu/test.git" target="_blank" rel="external">https://github.com/gdutxiaoxu/test.git</a>  ，可以看到：</p>
-<p><img src="http://ww4.sinaimg.cn/large/9fe4afa0jw1famqxkom1hj20sh09o3zu.jpg" alt=""></p>
+<p><img src="http://ww2.sinaimg.cn/large/9fe4afa0jw1famqx437x6j20f703kglx.jpg"></p>
+<p>同时我们登陆我们的github 仓库 ：  <a href="https://github.com/gdutxiaoxu/test.git">https://github.com/gdutxiaoxu/test.git</a>  ，可以看到：</p>
+<p><img src="http://ww4.sinaimg.cn/large/9fe4afa0jw1famqxkom1hj20sh09o3zu.jpg"></p>
 <p>说明已经提交成功了。</p>
 <h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a>注意事项：</h3><ul>
 <li>如果我们本地已经存在仓库了，那我们只需要执行以下命令就可以将我们本地仓库与远程绑定起来</li>
 </ul>
-<figure class="highlight vim"><table><tr><td class="code"><pre><div class="line">git remote <span class="built_in">add</span> origin http<span class="variable">s:</span>//github.<span class="keyword">com</span>/gdutxiaoxu/test.git</div><div class="line">git push -<span class="keyword">u</span> origin master</div><div class="line"></div><div class="line">git pull  http<span class="variable">s:</span>//github.<span class="keyword">com</span>/gdutxiaoxu/test.git master</div></pre></td></tr></table></figure>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">git remote <span class="built_in">add</span> origin http<span class="variable">s:</span>//github.<span class="keyword">com</span>/gdutxiaoxu/test.git</span><br><span class="line">git push -<span class="keyword">u</span> origin master</span><br><span class="line"></span><br><span class="line">git pull  http<span class="variable">s:</span>//github.<span class="keyword">com</span>/gdutxiaoxu/test.git master</span><br></pre></td></tr></table></figure>
+
 <ul>
 <li>如果本地仓库已经绑定别的远程仓库，我们可以用以下命令将其删除相应的仓库信息</li>
 </ul>
-<figure class="highlight vim"><table><tr><td class="code"><pre><div class="line"># 该命令是移除本地缓存已有的remote信息</div><div class="line">git remote <span class="built_in">remove</span> origin</div></pre></td></tr></table></figure>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line"># 该命令是移除本地缓存已有的remote信息</span><br><span class="line">git remote <span class="built_in">remove</span> origin </span><br></pre></td></tr></table></figure>
+
 <ul>
 <li>如果我们remote repo （即远端仓库已经存在了），那么我们只需要执行以下命令就OK了</li>
 </ul>
-<figure class="highlight stylus"><table><tr><td class="code"><pre><div class="line">git clone https:<span class="comment">//github.com/gdutxiaoxu/test.git  "you path"</span></div></pre></td></tr></table></figure>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">git clone https:<span class="comment">//github.com/gdutxiaoxu/test.git  &quot;you path&quot;</span></span><br></pre></td></tr></table></figure>
+
 <p>比如我们想储存在 G://test 目录下，那么我们可以输入一下命令</p>
-<figure class="highlight stylus"><table><tr><td class="code"><pre><div class="line">git clone https:<span class="comment">//github.com/gdutxiaoxu/test.git  G://test</span></div></pre></td></tr></table></figure>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">git clone https:<span class="comment">//github.com/gdutxiaoxu/test.git  G://test</span></span><br></pre></td></tr></table></figure>
 <p> 效果图如下</p>
-<p>  <img src="http://ww3.sinaimg.cn/large/9fe4afa0gw1famx238wqpj20j504bq3j.jpg" alt=""></p>
+<p>  <img src="http://ww3.sinaimg.cn/large/9fe4afa0gw1famx238wqpj20j504bq3j.jpg"></p>
 <hr>
 <hr>
 <h2 id="操作小技巧"><a href="#操作小技巧" class="headerlink" title="操作小技巧"></a>操作小技巧</h2><p>有时候在cmd 窗口中，你会发现复制，粘贴的快捷键失效了，对我们开发者来说很不方便，拿我们有什么解决方法你？  哈哈，就是开启快速插入模式。</p>
 <p>右键点击，点击cmd  窗口</p>
-<p><img src="http://ww1.sinaimg.cn/mw690/9fe4afa0jw1famvugz6enj211y0lcju0.jpg" alt=""></p>
+<p><img src="http://ww1.sinaimg.cn/mw690/9fe4afa0jw1famvugz6enj211y0lcju0.jpg"></p>
 <p>选择快速插入模式，在Cmd 窗口，按右键，就能实现粘贴了。</p>
-<p><img src="http://ww3.sinaimg.cn/mw690/9fe4afa0jw1famvwicxhuj20c20gpdhr.jpg" alt=""></p>
+<p><img src="http://ww3.sinaimg.cn/mw690/9fe4afa0jw1famvwicxhuj20c20gpdhr.jpg"></p>
 <p>同理，在git bash 窗口也是这样，这样就不在阐述了。</p>
 ]]></content>
       <tags>

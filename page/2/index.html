@@ -162,6 +162,714 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://gdutxiaoxu.gitee.io/2016/12/11/Git-%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%95%99%E7%A8%8B%E5%8F%8A%E5%AE%9E%E4%BE%8B%E6%95%99%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="徐公">
+      <meta itemprop="description" content="「Android学习+面试指南」助你升职加薪#用于搜索引擎搜索到的描述信息">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员徐公">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2016/12/11/Git-%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%95%99%E7%A8%8B%E5%8F%8A%E5%AE%9E%E4%BE%8B%E6%95%99%E7%A8%8B/" class="post-title-link" itemprop="url">Git 命令行教程及实例教程</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-12-11 16:26:32" itemprop="dateCreated datePublished" datetime="2016-12-11T16:26:32+08:00">2016-12-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-18 09:44:10" itemprop="dateModified" datetime="2021-04-18T09:44:10+08:00">2021-04-18</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong>前言：前几天在写博客  手把手教你用Hexo + github 搭建自己博客的时候，经常需要用到一些git操作，截了好多图，于是就想干脆整理成一系列的git 教程，总结如下</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/gdutxiaoxu/article/details/53573286">Git下载及配置环境变量</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/gdutxiaoxu/article/details/53573339">Git 命令行教程及实例教程</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/gdutxiaoxu/article/details/53573399">Git ssh 配置及使用</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.csdn.net/gdutxiaoxu/article/details/53573426"> git ssh 配置多个账户</a></li>
+</ul>
+<hr>
+<p>本篇博客主要讲解以下问题：</p>
+<ul>
+<li>Git 常用命令<ul>
+<li>创建新仓库</li>
+<li> 检出仓库</li>
+<li> 添加与提交</li>
+<li> 推送改动</li>
+<li> 分支</li>
+<li> 更新与合并</li>
+<li> 标签</li>
+<li> 替换本地改动</li>
+</ul>
+</li>
+<li>Git实例教程</li>
+<li>操作小技巧</li>
+</ul>
+<h2 id="Git-常用命令常用命令"><a href="#Git-常用命令常用命令" class="headerlink" title="Git 常用命令常用命令"></a><strong>Git 常用命令常用命令</strong></h2><h3 id="创建新仓库"><a href="#创建新仓库" class="headerlink" title="创建新仓库"></a>创建新仓库</h3><p>创建新文件夹，打开，然后执行 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
+
+<p>以创建新的 git 仓库。</p>
+<h3 id="检出仓库"><a href="#检出仓库" class="headerlink" title="检出仓库"></a>检出仓库</h3><p>执行如下命令以创建一个本地仓库的克隆版本：</p>
+<figure class="highlight vbscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone /path/<span class="keyword">to</span>/repository </span><br></pre></td></tr></table></figure>
+
+
+<p>如果是远端服务器上的仓库，你的命令会是这个样子：</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone username<span class="variable">@host</span><span class="symbol">:/path/to/repository</span></span><br></pre></td></tr></table></figure>
+
+<p>工作流<br>你的本地仓库由 git 维护的三棵“树”组成。第一个是你的 工作目录，它持有实际文件；第二个是 缓存区（Index），它像个缓存区域，临时保存你的改动；最后是 HEAD，指向你最近一次提交后的结果。</p>
+<p><img src="http://ww2.sinaimg.cn/large/9fe4afa0gw1famnvghkwrj20p008wgmd.jpg"></p>
+<h3 id="添加与提交"><a href="#添加与提交" class="headerlink" title="添加与提交"></a>添加与提交</h3><p>你可以计划改动（把它们添加到缓存区），使用如下命令：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git <span class="keyword">add</span><span class="bash"> &lt;filename&gt;</span></span><br><span class="line">git <span class="keyword">add</span><span class="bash"> *</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加所有文件</span></span><br><span class="line">git  <span class="keyword">add</span><span class="bash"> .</span></span><br></pre></td></tr></table></figure>
+
+
+<p>这是 git 基本工作流程的第一步；使用如下命令以实际提交改动：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="keyword">commit</span> <span class="operator">-</span>m &quot;代码提交信息&quot;</span><br></pre></td></tr></table></figure>
+
+
+<p>现在，你的改动已经提交到了 HEAD，但是还没到你的远端仓库。</p>
+<h3 id="推送改动"><a href="#推送改动" class="headerlink" title="推送改动"></a>推送改动</h3><p>你的改动现在已经在本地仓库的 HEAD 中了。执行如下命令以将这些改动提交到远端仓库：</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git <span class="keyword">push</span> origin master</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>可以把 master 换成你想要推送的任何分支。 </p>
+<p>如果你还没有克隆现有仓库，并欲将你的仓库连接到某个远程服务器，你可以使用如下命令添加：</p>
+<figure class="highlight vbscript-html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml"># 注意 server必须是存在的仓库</span></span><br><span class="line"><span class="xml">git remote add origin <span class="tag">&lt;<span class="name">server</span>&gt;</span></span></span><br><span class="line"><span class="xml">git remote add origin https://github.com/gdutxiaoxu/test2.git</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>该命令是移除本地缓存已有的remote信息</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote <span class="built_in">remove</span> origin </span><br></pre></td></tr></table></figure>
+
+
+<p>如此你就能够将你的改动推送到所添加的服务器上去了。</p>
+<h3 id="分支"><a href="#分支" class="headerlink" title="分支"></a>分支</h3><p>分支是用来将特性开发绝缘开来的。在你创建仓库的时候，master 是“默认的”。在其他分支上进行开发，完成后再将它们合并到主分支上。</p>
+<p>创建一个叫做“feature_x”的分支，并切换过去：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout -<span class="selector-tag">b</span> feature_x</span><br></pre></td></tr></table></figure>
+
+
+<p>切换回主分支：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">git</span> checkout master</span><br></pre></td></tr></table></figure>
+
+<p>切换回分支：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">git</span> checkout &lt;branch&gt;</span><br><span class="line">git checkout  feature_x</span><br></pre></td></tr></table></figure>
+
+
+<p>再把新建的分支删掉：</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -<span class="keyword">d</span> feature_x</span><br></pre></td></tr></table></figure>
+
+
+<p>除非你将分支推送到远端仓库，不然该分支就是 不为他人所见的：</p>
+<figure class="highlight vbscript-html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml">git push origin <span class="tag">&lt;<span class="name">branch</span>&gt;</span></span></span><br><span class="line"><span class="xml">git push origin  feature_x</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="更新与合并"><a href="#更新与合并" class="headerlink" title="更新与合并"></a>更新与合并</h3><p>要更新你的本地仓库至最新改动，执行：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">git</span> pull</span><br></pre></td></tr></table></figure>
+
+
+<p>以在你的工作目录中 获取（fetch） 并 合并（merge） 远端的改动。<br>要合并其他分支到你的当前分支（例如 master），执行：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git <span class="keyword">merge</span> <span class="operator">&lt;</span>branch<span class="operator">&gt;</span></span><br><span class="line">git <span class="keyword">merge</span> feature_x</span><br></pre></td></tr></table></figure>
+
+
+<p>两种情况下，git 都会尝试去自动合并改动。不幸的是，自动合并并非次次都能成功，并可能导致 冲突（conflicts）。 这时候就需要你修改这些文件来人肉合并这些 冲突（conflicts） 了。改完之后，你需要执行如下命令以将它们标记为合并成功：</p>
+<figure class="highlight vbscript-html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml">git add <span class="tag">&lt;<span class="name">filename</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+
+<p>在合并改动之前，也可以使用如下命令查看：</p>
+<figure class="highlight vbscript-html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml">git diff <span class="tag">&lt;<span class="name">source_branch</span>&gt;</span> <span class="tag">&lt;<span class="name">target_branch</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+<h3 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h3><p>在软件发布时创建标签，是被推荐的。这是个旧有概念，在 SVN 中也有。可以执行如下命令以创建一个叫做 1.0.0 的标签：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="keyword">tag</span> <span class="number">1.0</span>.<span class="number">0</span> <span class="number">1</span>b2e1d63ff</span><br></pre></td></tr></table></figure>
+
+
+<p>1b2e1d63ff 是你想要标记的提交 ID 的前 10 位字符。使用如下命令获取提交 ID：</p>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="keyword">log</span></span><br></pre></td></tr></table></figure>
+
+
+<p>你也可以用该提交 ID 的少一些的前几位，只要它是唯一的。</p>
+<h3 id="替换本地改动"><a href="#替换本地改动" class="headerlink" title="替换本地改动"></a>替换本地改动</h3><p>假如你做错事（自然，这是不可能的），你可以使用如下命令替换掉本地改动：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout <span class="comment">-- &lt;filename&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<p>此命令会使用 HEAD 中的最新内容替换掉你的工作目录中的文件。已添加到缓存区的改动，以及新文件，都不受影响。</p>
+<p>假如你想要丢弃你所有的本地改动与提交，可以到服务器上获取最新的版本并将你本地主分支指向到它：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git <span class="keyword">fetch</span> origin</span><br><span class="line">git reset <span class="comment">--hard origin/master</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="有用的贴士"><a href="#有用的贴士" class="headerlink" title="有用的贴士"></a>有用的贴士</h2><p>内建的图形化 git：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gitk</span><br></pre></td></tr></table></figure>
+
+
+<p>彩色的 git 输出：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config color.ui true</span><br></pre></td></tr></table></figure>
+
+
+<p>显示历史记录时，只显示一行注释信息：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config format<span class="selector-class">.pretty</span> oneline</span><br></pre></td></tr></table></figure>
+
+
+<p>交互地添加文件至缓存区：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git add -<span class="built_in">i</span></span><br></pre></td></tr></table></figure>
+<p>到此 git常用的命令已经 讲解完毕，下面开始讲解Git  实例教程</p>
+<hr>
+<h2 id="Git实例教程"><a href="#Git实例教程" class="headerlink" title="Git实例教程"></a><strong>Git实例教程</strong></h2><p>大概分为以下两步</p>
+<ul>
+<li> github账号的注册与Repo的创建</li>
+<li>实例教程</li>
+</ul>
+<h3 id="github账号的注册与Repo的创建"><a href="#github账号的注册与Repo的创建" class="headerlink" title="github账号的注册与Repo的创建"></a>github账号的注册与Repo的创建</h3><ol>
+<li>Github注册</li>
+</ol>
+<p>打开<a target="_blank" rel="noopener" href="https://github.com/%EF%BC%8C%E5%9C%A8%E4%B8%8B%E5%9B%BE%E7%9A%84%E6%A1%86%E4%B8%AD%EF%BC%8C%E5%88%86%E5%88%AB%E8%BE%93%E5%85%A5%E8%87%AA%E5%B7%B1%E7%9A%84%E7%94%A8%E6%88%B7%E5%90%8D%EF%BC%8C%E9%82%AE%E7%AE%B1%EF%BC%8C%E5%AF%86%E7%A0%81%E3%80%82">https://github.com/，在下图的框中，分别输入自己的用户名，邮箱，密码。</a></p>
+<p><img src="http://ww4.sinaimg.cn/large/9fe4afa0gw1faljxemku5j20bo0as0tv.jpg"></p>
+<p>然后前往自己刚才填写的邮箱，点开Github发送给你的注册确认信，确认注册，结束注册流程。</p>
+<p>一定要确认注册，否则无法使用gh-pages！</p>
+<ol start="2">
+<li>创建代码库</li>
+</ol>
+<p>登陆之后，点击页面右上角的加号，选择New repository：</p>
+<p><img src="http://ww2.sinaimg.cn/large/9fe4afa0gw1faljww56v8j20ci0a975c.jpg"></p>
+<p>新建代码库</p>
+<p>进入代码库创建页面：</p>
+<p><img src="http://ww2.sinaimg.cn/large/9fe4afa0gw1famqd6t7bzj20my0gfdjm.jpg"></p>
+<p>到此我们就创建好了repo，地址 为：<a target="_blank" rel="noopener" href="https://github.com/gdutxiaoxu/test.git">https://github.com/gdutxiaoxu/test.git</a></p>
+<h3 id="实例教程"><a href="#实例教程" class="headerlink" title="实例教程"></a>实例教程</h3><p>这里我们把仓库建在 G://test  目录下</p>
+<ol>
+<li> 首先打开命令行，进入G 盘，输入以下命令</li>
+</ol>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在 test目录下创建 README.md 文件</span></span><br><span class="line"> echo <span class="string">&quot;# test&quot;</span> &gt;&gt; README.md</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>接着初始化仓库</li>
+</ol>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="keyword">init</span></span><br></pre></td></tr></table></figure>
+<p>  可以看到如下图片的效果</p>
+<p><img src="http://ww1.sinaimg.cn/large/9fe4afa0jw1famryzlcksj20bt04a74b.jpg"></p>
+<ol start="3">
+<li><p>将 README.md 文件添加到版本控制</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="keyword">add</span><span class="bash"> README.md</span></span><br></pre></td></tr></table></figure></li>
+<li><p>提交文件到本地缓存，并添加说明</p>
+</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="keyword">commit</span> <span class="operator">-</span>m &quot;first commit&quot;</span><br></pre></td></tr></table></figure>
+
+
+<p><img src="http://ww4.sinaimg.cn/large/9fe4afa0jw1fams0l7v6jj20by04nwel.jpg"></p>
+<ol start="5">
+<li>将本地仓库与远程仓库 <a target="_blank" rel="noopener" href="https://github.com/gdutxiaoxu/test.git">https://github.com/gdutxiaoxu/test.git</a> 联系起来</li>
+</ol>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote <span class="built_in">add</span> origin http<span class="variable">s:</span>//github.<span class="keyword">com</span>/gdutxiaoxu/test.git</span><br></pre></td></tr></table></figure>
+
+
+<ol start="6">
+<li>将本地仓库缓存的文件提交到远程仓库中</li>
+</ol>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="keyword">push</span> -u origin master</span><br></pre></td></tr></table></figure>
+
+<p>如果你没有配置ssh ，那么在这里需要输入你的github 账户的用户名和密码</p>
+<p><img src="http://ww1.sinaimg.cn/large/9fe4afa0jw1famqv57c2cj20cd02k74d.jpg"></p>
+<p>正确输入你的用户名和密码后，可以看到</p>
+<p><img src="http://ww2.sinaimg.cn/large/9fe4afa0jw1famqx437x6j20f703kglx.jpg"></p>
+<p>同时我们登陆我们的github 仓库 ：  <a target="_blank" rel="noopener" href="https://github.com/gdutxiaoxu/test.git">https://github.com/gdutxiaoxu/test.git</a>  ，可以看到：</p>
+<p><img src="http://ww4.sinaimg.cn/large/9fe4afa0jw1famqxkom1hj20sh09o3zu.jpg"></p>
+<p>说明已经提交成功了。</p>
+<h3 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a>注意事项：</h3><ul>
+<li>如果我们本地已经存在仓库了，那我们只需要执行以下命令就可以将我们本地仓库与远程绑定起来</li>
+</ul>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git remote <span class="built_in">add</span> origin http<span class="variable">s:</span>//github.<span class="keyword">com</span>/gdutxiaoxu/test.git</span><br><span class="line">git push -<span class="keyword">u</span> origin master</span><br><span class="line"></span><br><span class="line">git pull  http<span class="variable">s:</span>//github.<span class="keyword">com</span>/gdutxiaoxu/test.git master</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>如果本地仓库已经绑定别的远程仓库，我们可以用以下命令将其删除相应的仓库信息</li>
+</ul>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 该命令是移除本地缓存已有的remote信息</span><br><span class="line">git remote <span class="built_in">remove</span> origin </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>如果我们remote repo （即远端仓库已经存在了），那么我们只需要执行以下命令就OK了</li>
+</ul>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https:<span class="comment">//github.com/gdutxiaoxu/test.git  &quot;you path&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>比如我们想储存在 G://test 目录下，那么我们可以输入一下命令</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https:<span class="comment">//github.com/gdutxiaoxu/test.git  G://test</span></span><br></pre></td></tr></table></figure>
+<p> 效果图如下</p>
+<p>  <img src="http://ww3.sinaimg.cn/large/9fe4afa0gw1famx238wqpj20j504bq3j.jpg"></p>
+<hr>
+<hr>
+<h2 id="操作小技巧"><a href="#操作小技巧" class="headerlink" title="操作小技巧"></a>操作小技巧</h2><p>有时候在cmd 窗口中，你会发现复制，粘贴的快捷键失效了，对我们开发者来说很不方便，拿我们有什么解决方法你？  哈哈，就是开启快速插入模式。</p>
+<p>右键点击，点击cmd  窗口</p>
+<p><img src="http://ww1.sinaimg.cn/mw690/9fe4afa0jw1famvugz6enj211y0lcju0.jpg"></p>
+<p>选择快速插入模式，在Cmd 窗口，按右键，就能实现粘贴了。</p>
+<p><img src="http://ww3.sinaimg.cn/mw690/9fe4afa0jw1famvwicxhuj20c20gpdhr.jpg"></p>
+<p>同理，在git bash 窗口也是这样，这样就不在阐述了。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://gdutxiaoxu.gitee.io/2016/12/11/Git%E4%B8%8B%E8%BD%BD%E5%8F%8A%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="徐公">
+      <meta itemprop="description" content="「Android学习+面试指南」助你升职加薪#用于搜索引擎搜索到的描述信息">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员徐公">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2016/12/11/Git%E4%B8%8B%E8%BD%BD%E5%8F%8A%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/" class="post-title-link" itemprop="url">Git下载及配置环境变量</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2016-12-11 16:19:33 / 修改时间：22:10:50" itemprop="dateCreated datePublished" datetime="2016-12-11T16:19:33+08:00">2016-12-11</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong>前言：前几天在写博客  <a href="http://blog.csdn.net/gdutxiaoxu/article/details/53576018" target="_blank" rel="external">手把手教你用Hexo + github 搭建自己博客</a><br>的时候，经常需要用到一些git操作，截了好多图，于是就想干脆整理成一系列的git 教程，总结如下</strong></p>
+<ul>
+<li><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53573286" target="_blank" rel="external">Git下载及配置环境变量</a></li>
+<li><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53573339" target="_blank" rel="external">Git 命令行教程及实例教程</a></li>
+<li><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53573399" target="_blank" rel="external">Git ssh 配置及使用</a></li>
+<li><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53573426" target="_blank" rel="external"> git ssh 配置多个账户</a></li>
+</ul>
+<hr>
+<p>下载Git安装文件：</p>
+<p><a href="https://git-scm.com/downloads" target="_blank" rel="external">GIt官网下载地址：</a></p>
+<p><a href="https://github-cloud.s3.amazonaws.com/releases/23216272/84b33b96-87f5-11e5-8f91-32080286239e.exe?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAISTNZFOVBIJMK3TQ%2F20161210%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20161210T033734Z&amp;X-Amz-Expires=300&amp;X-Amz-Signature=912c155bbe0fe970ca7b948f5f0d5e8c68c712b7fb8006062f53c8638c62c7b6&amp;X-Amz-SignedHeaders=host&amp;actor_id=14971673&amp;response-content-disposition=attachment%3B%20filename%3DGit-2.6.3-64-bit.exe&amp;response-content-type=application%2Foctet-stream" target="_blank" rel="external">Git-2.6.3-64-bit.exe</a></p>
+<p>然后就进入了Git的安装界面，如图：</p>
+<p><img src="http://ww2.sinaimg.cn/large/9fe4afa0gw1fampzoik7ej20e70b1q5o.jpg" alt=""></p>
+<p>Git安装界面</p>
+<p><img src="http://ww1.sinaimg.cn/large/9fe4afa0gw1faljmdsfd9j20dv0atq4u.jpg" alt=""></p>
+<p>和Node.js一样，大部分设置都只需要保持默认，但是出于我们操作方便考虑，建议PATH选项按照下图选择：</p>
+<p>Git PATH设置</p>
+<p><img src="http://ww4.sinaimg.cn/large/9fe4afa0gw1faljmop0mbj20dz0atwhi.jpg" alt=""></p>
+<p>这是对上图的解释，不需要了解请直接跳过 Git的默认设置下，出于安全考虑，只有在Git Bash中才能进行Git的相关操作。按照上图进行的选择，将会使得Git安装程序在系统PATH中加入Git的相关路径，使得你可以在CMD界面下调用Git，不用打开Git Bash了。<br>一样的，我们来检查一下Git是不是安装正确了，打开命令行，输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git --version</div></pre></td></tr></table></figure>
+<p>如果结果如下图所示，则说明安装正确，可以进行下一步了，如果不正确，则需要回头检查自己的安装过程。</p>
+<p><img src="http://ww2.sinaimg.cn/large/9fe4afa0gw1faljp87tpkj20it0cbdgo.jpg" alt=""></p>
+<p><img src="http://ww1.sinaimg.cn/large/9fe4afa0gw1faljm42qvnj20dz0atwh2.jpg" alt=""></p>
+<p>Git安装界面</p>
+<p><img src="http://ww1.sinaimg.cn/large/9fe4afa0gw1faljmdsfd9j20dv0atq4u.jpg" alt=""></p>
+<p>大部分设置都只需要保持默认，但是出于我们操作方便考虑，建议PATH选项按照下图选择：</p>
+<p>Git PATH设置</p>
+<p><img src="http://ww4.sinaimg.cn/large/9fe4afa0gw1faljmop0mbj20dz0atwhi.jpg" alt=""></p>
+<p>这是对上图的解释，不需要了解请直接跳过 Git的默认设置下，出于安全考虑，只有在Git Bash中才能进行Git的相关操作。按照上图进行的选择，将会使得Git安装程序在系统PATH中加入Git的相关路径，使得你可以在CMD界面下调用Git，不用打开Git Bash了。<br>一样的，我们来检查一下Git是不是安装正确了，打开命令行，输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git --version</div></pre></td></tr></table></figure>
+<p>如果结果如下图所示，则说明安装正确，可以进行下一步了，如果不正确，则需要回头检查自己的安装过程。</p>
+<p><img src="http://ww2.sinaimg.cn/large/9fe4afa0gw1faljp87tpkj20it0cbdgo.jpg" alt=""></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://gdutxiaoxu.gitee.io/2016/12/08/Android-%E5%90%AF%E5%8A%A8%E7%B3%BB%E7%BB%9F%E7%9B%B8%E6%9C%BA%EF%BC%8C%E7%9B%B8%E5%86%8C%EF%BC%8C%E8%A3%81%E5%89%AA%E5%9B%BE%E7%89%87%E5%8F%8A6-0%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="徐公">
+      <meta itemprop="description" content="「Android学习+面试指南」助你升职加薪#用于搜索引擎搜索到的描述信息">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员徐公">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2016/12/08/Android-%E5%90%AF%E5%8A%A8%E7%B3%BB%E7%BB%9F%E7%9B%B8%E6%9C%BA%EF%BC%8C%E7%9B%B8%E5%86%8C%EF%BC%8C%E8%A3%81%E5%89%AA%E5%9B%BE%E7%89%87%E5%8F%8A6-0%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/" class="post-title-link" itemprop="url">Android 启动系统相机，相册，裁剪图片及6.0权限管理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-12-08 14:10:13" itemprop="dateCreated datePublished" datetime="2016-12-08T14:10:13+08:00">2016-12-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2016-12-24 10:56:33" itemprop="dateModified" datetime="2016-12-24T10:56:33+08:00">2016-12-24</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>在日常开发中，我们经常需要用到上传图片的 功能，这个时候通常有两种做法，第一种，从相机获取，第二种，从相册获取。今天这篇博客主要讲解利用系统的Intent怎样获取？</p>
+<p>主要内容如下</p>
+<ul>
+<li>怎样通过相机获取我们的图片</li>
+<li>怎样启动相册获取我们想要的图片</li>
+<li>在Android 6.0中的动态权限处理】</li>
+<li>调用系统Intent和自定义相册的优缺点对比</li>
+</ul>
+<h2 id="怎样通过相机获取我们的图片"><a href="#怎样通过相机获取我们的图片" class="headerlink" title="怎样通过相机获取我们的图片"></a>怎样通过相机获取我们的图片</h2><p>总共有两种方式，</p>
+<h3 id="第一种方式："><a href="#第一种方式：" class="headerlink" title="第一种方式："></a>第一种方式：</h3><p>第一步，通过 MediaStore.ACTION_IMAGE_CAPTURE 启动我们的相机</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Intent pIntent = <span class="keyword">new</span> Intent(MediaStore.ACTION_IMAGE_CAPTURE);<span class="comment">//调用摄像头action</span></div><div class="line">startActivityForResult(pIntent, INTENT_CODE_IMAGE_CAPTURE1);<span class="comment">//requestcode</span></div></pre></td></tr></table></figure>
+<p>第二步，在onActivityResult进行处理，，核心代码如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onActivityResult</span><span class="params">(<span class="keyword">int</span> requestCode, <span class="keyword">int</span> resultCode, Intent data)</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onActivityResult(requestCode, resultCode, data);</div><div class="line">    <span class="keyword">switch</span> (requestCode) &#123;</div><div class="line">        <span class="keyword">case</span> INTENT_CODE_IMAGE_CAPTURE1:</div><div class="line">            <span class="keyword">if</span> (resultCode == RESULT_OK) &#123;</div><div class="line">                Bundle pBundle = data.getExtras(); <span class="comment">//从intent对象中获取数据，</span></div><div class="line"></div><div class="line">                <span class="keyword">if</span> (pBundle != <span class="keyword">null</span>) &#123;</div><div class="line">                    Bitmap pBitmap = (Bitmap) pBundle.get(<span class="string">"data"</span>);</div><div class="line">                    <span class="keyword">if</span> (pBitmap != <span class="keyword">null</span>) &#123;</div><div class="line">                        mIv.setImageBitmap(pBitmap);</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="第二种-方式"><a href="#第二种-方式" class="headerlink" title="第二种 方式"></a>第二种 方式</h3><p>第一步，通过 MediaStore.ACTION_IMAGE_CAPTURE 启动相机，并指定 MediaStore.EXTRA_OUTPUT ，intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mFile)); 传入我们的URI，这样，最终返回的信息会存储在我们的mFile中。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startCameraWithHighBitmap</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="comment">//确定存储拍照得到的图片文件路径</span></div><div class="line">    <span class="keyword">if</span> (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) &#123;</div><div class="line">        mFile = <span class="keyword">new</span> File(Environment.getExternalStorageDirectory(),</div><div class="line">                getName());</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        Toast.makeText(<span class="keyword">this</span>, <span class="string">"请插入sd卡"</span>, Toast.LENGTH_SHORT).show();</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        mFile.createNewFile();</div><div class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    Intent intent = <span class="keyword">new</span> Intent();</div><div class="line">    intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);</div><div class="line">    <span class="comment">//加载Uri型的文件路径</span></div><div class="line">    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mFile));</div><div class="line">    <span class="comment">//向onActivityResult发送intent，requestCode为INTENT_CODE_IMAGE_CAPTURE2</span></div><div class="line">    startActivityForResult(intent, INTENT_CODE_IMAGE_CAPTURE2);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>第二步：在onActivityResult进行处理，并对图片进行相应的压缩，防止在大图片的情况下发生OOM</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">case</span> INTENT_CODE_IMAGE_CAPTURE2:</div><div class="line">    <span class="keyword">if</span> (resultCode == RESULT_OK) &#123;</div><div class="line">        Bitmap bitmap = ImageZip.decodeSampledBitmapFromFile(mFile.getAbsolutePath(),</div><div class="line">                mWidth, mHeight);</div><div class="line">        mIv.setImageBitmap(bitmap);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">break</span>;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Bitmap <span class="title">decodeSampledBitmapFromFile</span><span class="params">(String pathName, <span class="keyword">int</span> reqWidth, <span class="keyword">int</span> reqHeight)</span> </span>&#123;</div><div class="line">        <span class="keyword">final</span> BitmapFactory.Options options = <span class="keyword">new</span> BitmapFactory.Options();</div><div class="line">        options.inJustDecodeBounds = <span class="keyword">true</span>;</div><div class="line">        BitmapFactory.decodeFile(pathName, options);</div><div class="line">        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);</div><div class="line">        options.inJustDecodeBounds = <span class="keyword">false</span>;</div><div class="line">        Bitmap src = BitmapFactory.decodeFile(pathName, options);</div><div class="line"><span class="comment">//        return createScaleBitmap(src, reqWidth, reqHeight, options.inSampleSize);</span></div><div class="line">        <span class="keyword">return</span> src;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    </div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">calculateInSampleSize</span><span class="params">(BitmapFactory.Options options,</span></span></div><div class="line">                                         <span class="keyword">int</span> reqWidth, <span class="keyword">int</span> reqHeight) &#123;</div><div class="line">    <span class="comment">// 源图片的高度和宽度</span></div><div class="line">    <span class="keyword">final</span> <span class="keyword">int</span> height = options.outHeight;</div><div class="line">    <span class="keyword">final</span> <span class="keyword">int</span> width = options.outWidth;</div><div class="line">    <span class="keyword">int</span> inSampleSize = <span class="number">1</span>;</div><div class="line">    <span class="keyword">if</span> (height &gt; reqHeight || width &gt; reqWidth) &#123;</div><div class="line">        <span class="keyword">final</span> <span class="keyword">int</span> halfHeight = height / <span class="number">2</span>;</div><div class="line">        <span class="keyword">final</span> <span class="keyword">int</span> halfWidth = width / <span class="number">2</span>;</div><div class="line">        <span class="comment">// Calculate the largest inSampleSize value that is a power of 2 and keeps both</span></div><div class="line">        <span class="comment">// height and width larger than the requested height and width.</span></div><div class="line">        <span class="keyword">while</span> ((halfHeight / inSampleSize) &gt; reqHeight &amp;&amp; (halfWidth / inSampleSize) &gt; reqWidth) &#123;</div><div class="line">            inSampleSize *= <span class="number">2</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> inSampleSize;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="两种方法的区别"><a href="#两种方法的区别" class="headerlink" title="两种方法的区别"></a>两种方法的区别</h3><p>第一种方法获取的bitmap是被缩放的bitmap，第二种方法获取的bitmap是完整的bitmap，实际使用中根据需求情况决定使用哪一种方法。</p>
+<p><a href="https://developer.android.com/reference/android/provider/MediaStore.html#ACTION_IMAGE_CAPTURE" target="_blank" rel="external">官网参考地址</a></p>
+<hr>
+<h2 id="怎样启动相册获取我们想要的图片"><a href="#怎样启动相册获取我们想要的图片" class="headerlink" title="怎样启动相册获取我们想要的图片"></a>怎样启动相册获取我们想要的图片</h2><p>第一步，通过 Intent.ACTION_GET_CONTENT 这个Intent，并设置相应的type，启动相册。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Intent i = <span class="keyword">new</span> Intent(Intent.ACTION_GET_CONTENT, <span class="keyword">null</span>);</div><div class="line">i.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, <span class="string">"image/*"</span>);</div><div class="line">startActivityForResult(i, INTENT_CODE_IMAGE_GALLERY1);</div></pre></td></tr></table></figure>
+<p> 第二步，在onActivityResult中对返回的uri数据进行处理</p>
+<ul>
+<li>需要注意的是：这里我们需要注意是不是MIUI系统，如果不是MIUI系统，我们只需要进行一下处理，就OK了</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setPhotoForNormalSystem</span><span class="params">(Intent data)</span> </span>&#123;</div><div class="line">    String filePath = getRealPathFromURI(data.getData());</div><div class="line">    Bitmap bitmap = ImageZip.decodeSampledBitmapFromFile(filePath, mWidth, mHeight);</div><div class="line">    mIv.setImageBitmap(bitmap);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 解析Intent.getdata()得到的uri为String型的filePath</div><div class="line"> *</div><div class="line"> * <span class="doctag">@param</span> contentUri</div><div class="line"> * <span class="doctag">@return</span></div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getRealPathFromURI</span><span class="params">(Uri contentUri)</span> </span>&#123;</div><div class="line">    String[] proj = &#123;MediaStore.Audio.Media.DATA&#125;;</div><div class="line">    Cursor cursor = managedQuery(contentUri, proj, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</div><div class="line">    <span class="keyword">int</span> column_index = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);</div><div class="line">    cursor.moveToFirst();</div><div class="line">    <span class="keyword">return</span> cursor.getString(column_index);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>如果是MIUI系统，我们需要进行一下处理</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">private void setPhotoForMiuiSystem(Intent data) &#123;</div><div class="line">    Uri localUri = data.getData();</div><div class="line">    String scheme = localUri.getScheme();</div><div class="line">    String imagePath = &quot;&quot;;</div><div class="line">    if (&quot;content&quot;.equals(scheme)) &#123;</div><div class="line">        String[] filePathColumns = &#123;MediaStore.Images.Media.DATA&#125;;</div><div class="line">        Cursor c = getContentResolver().query(localUri, filePathColumns, null, null, null);</div><div class="line">        c.moveToFirst();</div><div class="line">        int columnIndex = c.getColumnIndex(filePathColumns[0]);</div><div class="line">        imagePath = c.getString(columnIndex);</div><div class="line">        c.close();</div><div class="line">    &#125; else if (&quot;file&quot;.equals(scheme)) &#123;//小米4选择云相册中的图片是根据此方法获得路径</div><div class="line">        imagePath = localUri.getPath();</div><div class="line">    &#125;</div><div class="line">    Bitmap bitmap = ImageZip.decodeSampledBitmapFromFile(imagePath, mWidth, mHeight);</div><div class="line">    mIv.setImageBitmap(bitmap);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在代码中的体现如下，即判断是否是MIUI系统，对于不同的系统采用不同的方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onActivityResult</span><span class="params">(<span class="keyword">int</span> requestCode, <span class="keyword">int</span> resultCode, Intent data)</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onActivityResult(requestCode, resultCode, data);</div><div class="line">    <span class="keyword">if</span> (resultCode != RESULT_OK) &#123;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">switch</span> (requestCode) &#123;</div><div class="line">        <span class="keyword">case</span> INTENT_CODE_IMAGE_GALLERY1:</div><div class="line">            <span class="keyword">if</span> (SystemUtils.isMIUI()) &#123;</div><div class="line">                setPhotoForMiuiSystem(data);</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                setPhotoForNormalSystem(data);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<hr>
+<h2 id="Android6-0动态权限管理"><a href="#Android6-0动态权限管理" class="headerlink" title="Android6.0动态权限管理"></a>Android6.0动态权限管理</h2><p>我们知道在Android6.0以上的系统，有一些权限需要动态授予 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">group:android.permission-group.CONTACTS</div><div class="line">  permission:android.permission.WRITE_CONTACTS</div><div class="line">  permission:android.permission.GET_ACCOUNTS</div><div class="line">  permission:android.permission.READ_CONTACTS</div><div class="line"></div><div class="line">group:android.permission-group.PHONE</div><div class="line">  permission:android.permission.READ_CALL_LOG</div><div class="line">  permission:android.permission.READ_PHONE_STATE</div><div class="line">  permission:android.permission.CALL_PHONE</div><div class="line">  permission:android.permission.WRITE_CALL_LOG</div><div class="line">  permission:android.permission.USE_SIP</div><div class="line">  permission:android.permission.PROCESS_OUTGOING_CALLS</div><div class="line">  permission:com.android.voicemail.permission.ADD_VOICEMAIL</div><div class="line"></div><div class="line">group:android.permission-group.CALENDAR</div><div class="line">  permission:android.permission.READ_CALENDAR</div><div class="line">  permission:android.permission.WRITE_CALENDAR</div><div class="line"></div><div class="line">group:android.permission-group.CAMERA</div><div class="line">  permission:android.permission.CAMERA</div><div class="line"></div><div class="line">group:android.permission-group.SENSORS</div><div class="line">  permission:android.permission.BODY_SENSORS</div><div class="line"></div><div class="line">group:android.permission-group.LOCATION</div><div class="line">  permission:android.permission.ACCESS_FINE_LOCATION</div><div class="line">  permission:android.permission.ACCESS_COARSE_LOCATION</div><div class="line"></div><div class="line">group:android.permission-group.STORAGE</div><div class="line">  permission:android.permission.READ_EXTERNAL_STORAGE</div><div class="line">  permission:android.permission.WRITE_EXTERNAL_STORAGE</div><div class="line"></div><div class="line">group:android.permission-group.MICROPHONE</div><div class="line">  permission:android.permission.RECORD_AUDIO</div><div class="line"></div><div class="line">group:android.permission-group.SMS</div><div class="line">  permission:android.permission.READ_SMS</div><div class="line">  permission:android.permission.RECEIVE_WAP_PUSH</div><div class="line">  permission:android.permission.RECEIVE_MMS</div><div class="line">  permission:android.permission.RECEIVE_SMS</div><div class="line">  permission:android.permission.SEND_SMS</div><div class="line">  permission:android.permission.READ_CELL_BROADCASTS</div></pre></td></tr></table></figure>
+<p>我们这里容易 得知读取相机需要的权限有，写sd卡权限，读取camera权限，这两个权限都需要动态授予。</p>
+<h3 id="这里我们以检查是否授予camera权限为例子讲解"><a href="#这里我们以检查是否授予camera权限为例子讲解" class="headerlink" title="这里我们以检查是否授予camera权限为例子讲解"></a>这里我们以检查是否授予camera权限为例子讲解</h3><p>第一步，在启动相机的时候检查时候已经授予camera权限，没有的话 ，请求camera权限</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">if (ContextCompat.checkSelfPermission(this, permission)</div><div class="line">        != PackageManager.PERMISSION_GRANTED) &#123;//还没有授予权限</div><div class="line">    if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) &#123;</div><div class="line">        Toast.makeText(this, &quot;您已禁止该权限，需要重新开启。&quot;, Toast.LENGTH_SHORT).show();</div><div class="line">    &#125; else &#123;</div><div class="line">        ActivityCompat.requestPermissions(this, new String[]&#123;permission&#125;,</div><div class="line">                request_camera2);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;else&#123;// 已经授予权限</div><div class="line">    startCameraWithHighBitmap();</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">private void startCameraWithHighBitmap() &#123;</div><div class="line">    //确定存储拍照得到的图片文件路径</div><div class="line">    if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) &#123;</div><div class="line">        mFile = new File(Environment.getExternalStorageDirectory(),</div><div class="line">                getName());</div><div class="line">    &#125; else &#123;</div><div class="line">        Toast.makeText(this, &quot;请插入sd卡&quot;, Toast.LENGTH_SHORT).show();</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    try &#123;</div><div class="line">        mFile.createNewFile();</div><div class="line">    &#125; catch (IOException e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    Intent intent = new Intent();</div><div class="line">    intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);</div><div class="line">    //加载Uri型的文件路径</div><div class="line">    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mFile));</div><div class="line">    //向onActivityResult发送intent，requestCode为INTENT_CODE_IMAGE_CAPTURE2</div><div class="line">    startActivityForResult(intent, INTENT_CODE_IMAGE_CAPTURE2);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>第二步:重写onRequestPermissionsResult方法，判断是否授权成功，成功的话启动相机，核心代码如下。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,</div><div class="line">                                       @NonNull int[] grantResults) &#123;</div><div class="line">    super.onRequestPermissionsResult(requestCode, permissions, grantResults);</div><div class="line">    switch (requestCode) &#123;</div><div class="line">       </div><div class="line"></div><div class="line">        case request_camera2:</div><div class="line">            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) &#123;</div><div class="line">                startCameraWithHighBitmap();</div><div class="line">            &#125; else &#123;</div><div class="line">                // Permission Denied</div><div class="line">                Toast.makeText(this, &quot;Permission Denied&quot;, Toast</div><div class="line">                        .LENGTH_SHORT).show();</div><div class="line">            &#125;</div><div class="line">            break;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>至于检查sd卡写权限的，这里不再阐述，有兴趣的话，可以下载源码看一下。</p>
+<p>关于Android6.0动态获取权限的，可以参考这一篇博客<a href="http://gudong.name/%E6%8A%80%E6%9C%AF/2015/11/10/android_m_permission.html" target="_blank" rel="external">在Android 6.0 设备上动态获取权限</a></p>
+<hr>
+<h2 id="调用系统Intent和自定义相册的优缺点对比"><a href="#调用系统Intent和自定义相册的优缺点对比" class="headerlink" title="调用系统Intent和自定义相册的优缺点对比"></a>调用系统Intent和自定义相册的优缺点对比</h2><h3 id="调用系统Intent启动相册"><a href="#调用系统Intent启动相册" class="headerlink" title="调用系统Intent启动相册"></a>调用系统Intent启动相册</h3><p>优点： 代码简洁</p>
+<p>缺点：对于不同的手机厂商，room往往被修改了，有时候调用系统的Intent，会有一些一项不到的bug， 不能实现多张图片的选择</p>
+<h3 id="自定义相册"><a href="#自定义相册" class="headerlink" title="自定义相册"></a>自定义相册</h3><p>优点： 实现的样式可以自己定制，可以实现多张图片的选择等</p>
+<p>缺点： 代码量稍微多一些</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a><strong>总结</strong></h3><p>综上所述，对于本地相册的功能，本人还是强烈推荐自己实现，因为采用系统的，灵活性差，更重要的是，经常会有一些 莫名其妙的bug</p>
+<p>这里给大家推荐两种实现方式，一个是鸿洋大神以前写的，一个是GitHub的开源库。</p>
+<p><a href="http://blog.csdn.net/lmj623565791/article/details/39943731" target="_blank" rel="external">Android 超高仿微信图片选择器 图片该这么加载</a></p>
+<p>Android仿微信图片上传，可以选择多张图片，缩放预览，拍照上传等</p>
+<p><a href="https://github.com/zfdang/android-multiple-images-selector" target="_blank" rel="external">android-multiple-images-selector</a></p>
+<hr>
+<h2 id="裁剪图片"><a href="#裁剪图片" class="headerlink" title="裁剪图片"></a>裁剪图片</h2><p>关于裁剪图片的Intent，网上的大多数做法是</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Intent <span class="title">cropPic</span><span class="params">(Uri imageUri)</span> </span>&#123;</div><div class="line"></div><div class="line">    Intent intent = <span class="keyword">new</span> Intent(<span class="string">"com.android.camera.action.CROP"</span>);</div><div class="line"></div><div class="line">    intent.putExtra(<span class="string">"crop"</span>, <span class="string">"true"</span>);</div><div class="line"></div><div class="line">    <span class="comment">// 设置x,y的比例，截图方框就按照这个比例来截 若设置为0,0，或者不设置 则自由比例截图</span></div><div class="line">    intent.putExtra(<span class="string">"aspectX"</span>, <span class="number">2</span>);</div><div class="line">    intent.putExtra(<span class="string">"aspectY"</span>, <span class="number">1</span>);</div><div class="line"></div><div class="line">    <span class="comment">// 裁剪区的宽和高 其实就是裁剪后的显示区域 若裁剪的比例不是显示的比例，</span></div><div class="line">    <span class="comment">// 则自动压缩图片填满显示区域。若设置为0,0 就不显示。若不设置，则按原始大小显示</span></div><div class="line">    intent.putExtra(<span class="string">"outputX"</span>, <span class="number">200</span>);</div><div class="line">    intent.putExtra(<span class="string">"outputY"</span>, <span class="number">100</span>);</div><div class="line"></div><div class="line">    <span class="comment">// 不知道有啥用。。可能会保存一个比例值 需要相关文档啊</span></div><div class="line">    intent.putExtra(<span class="string">"scale"</span>, <span class="keyword">true</span>);</div><div class="line"></div><div class="line">    <span class="comment">// true的话直接返回bitmap，可能会很占内存 不建议</span></div><div class="line">    intent.putExtra(<span class="string">"return-data"</span>, <span class="keyword">false</span>);</div><div class="line">    <span class="comment">// 上面设为false的时候将MediaStore.EXTRA_OUTPUT即"output"关联一个Uri</span></div><div class="line">    intent.putExtra(<span class="string">"output"</span>, imageUri);</div><div class="line">    <span class="comment">// 看参数即可知道是输出格式</span></div><div class="line">    intent.putExtra(<span class="string">"outputFormat"</span>, Bitmap.CompressFormat.JPEG.toString());</div><div class="line">    <span class="comment">// 面部识别 这里用不上</span></div><div class="line">    intent.putExtra(<span class="string">"noFaceDetection"</span>, <span class="keyword">false</span>);</div><div class="line"></div><div class="line"></div><div class="line">    <span class="keyword">return</span> intent;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>当你运行代码的时候，部分设备会报错，大致的意思是：com.android.camera.action.CROP 的Activity  not found</p>
+<p>解决方法，我们可以捕获一下异常，防止发生崩溃，并弹出吐司提醒用户不支持裁剪功能。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">try</span>&#123;</div><div class="line">    Intent intent = IntentUtils.cropPic(Uri.fromFile(mF));</div><div class="line">    startActivityForResult(intent,req_crop);</div><div class="line">&#125;<span class="keyword">catch</span>(ActivityNotFoundException a)&#123;</div><div class="line">    String errorMessage = <span class="string">"Your device doesn't support the crop action!"</span>;</div><div class="line">    Toast toast = Toast.makeText(<span class="keyword">this</span>, errorMessage, Toast.LENGTH_SHORT);</div><div class="line">    toast.show();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>当然，github上面有两个比较好的开源库</p>
+<p><a href="https://github.com/jdamcd/android-crop" target="_blank" rel="external">android-crop</a></p>
+<p><a href="https://github.com/edmodo/cropper" target="_blank" rel="external">cropper</a></p>
+<hr>
+<p><strong><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53411790" target="_blank" rel="external">文章首发地址CSDN：</a><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53411790" target="_blank" rel="external">http://blog.csdn.net/gdutxiaoxu/article/details/53411790</a></strong></p>
+<p><strong><a href="http://download.csdn.net/detail/gdutxiaoxu/9698246" target="_blank" rel="external">源码下载地址：</a><a href="http://download.csdn.net/detail/gdutxiaoxu/9698246" target="_blank" rel="external">http://download.csdn.net/detail/gdutxiaoxu/9698246</a></strong></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://gdutxiaoxu.gitee.io/2016/12/08/Retrofit%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B%EF%BC%88%E4%B8%80%EF%BC%89-Retrofit%E5%85%A5%E9%97%A8%E8%AF%A6%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="徐公">
+      <meta itemprop="description" content="「Android学习+面试指南」助你升职加薪#用于搜索引擎搜索到的描述信息">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员徐公">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2016/12/08/Retrofit%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B%EF%BC%88%E4%B8%80%EF%BC%89-Retrofit%E5%85%A5%E9%97%A8%E8%AF%A6%E8%A7%A3/" class="post-title-link" itemprop="url"> Retrofit使用教程（一）- Retrofit入门详解</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2016-12-08 14:04:56 / 修改时间：20:03:24" itemprop="dateCreated datePublished" datetime="2016-12-08T14:04:56+08:00">2016-12-08</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Retrofit使用教程（一）-Retrofit入门详解"><a href="#Retrofit使用教程（一）-Retrofit入门详解" class="headerlink" title="Retrofit使用教程（一）- Retrofit入门详解"></a>Retrofit使用教程（一）- Retrofit入门详解</h1><hr>
+<p><strong><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52745491" target="_blank" rel="external">转载请注明博客地址：</a><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52745491" target="_blank" rel="external">http://blog.csdn.net/gdutxiaoxu/article/details/52745491</a></strong></p>
+<p><strong><a href="https://github.com/gdutxiaoxu/RetrofitDemo.git" target="_blank" rel="external">源码下载地址：</a><a href="https://github.com/gdutxiaoxu/RetrofitDemo.git" target="_blank" rel="external">https://github.com/gdutxiaoxu/RetrofitDemo.git</a></strong></p>
+<p><strong>本人已经好久没有更新 博客了，这次更新博客打算写一下retrofit的使用教程系列的 博客，写作思路大概如下</strong></p>
+<ul>
+<li>先从retrofit的基本使用讲起;</li>
+<li>接着将retrofit结合RxJava的使用;</li>
+<li>接着讲Retrofit的封装使用，（包括错误统一处理）;</li>
+<li>有时间和能力的话会尝试研究一下retrofit的 源码.</li>
+</ul>
+<h2 id="本篇博客主要讲解以下问题"><a href="#本篇博客主要讲解以下问题" class="headerlink" title="本篇博客主要讲解以下问题"></a>本篇博客主要讲解以下问题</h2><ul>
+<li>Retrofit简介</li>
+<li>Retrofit的简单使用例子</li>
+<li>Retrofit的get请求</li>
+<li>Retrofit的put请求（提交表单数据）</li>
+<li>如何为 retrofit添加header</li>
+<li>如何提交json数据</li>
+</ul>
+<h2 id="Retrofit简介"><a href="#Retrofit简介" class="headerlink" title="Retrofit简介"></a>Retrofit简介</h2><p>Retrofit是square开源的网络请求库，底层是使用OKHttp封装的，网络请求速度很快.</p>
+<h3 id="主要有一下几种请求方法"><a href="#主要有一下几种请求方法" class="headerlink" title="主要有一下几种请求方法"></a>主要有一下几种请求方法</h3><table>
+<thead>
+<tr>
+<th>格式</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>@GET</td>
+<td>表示这是一个GET请求</td>
+</tr>
+<tr>
+<td>@POST</td>
+<td>表示这个一个POST请求</td>
+</tr>
+<tr>
+<td>@PUT</td>
+<td>表示这是一个PUT请求</td>
+</tr>
+<tr>
+<td>@DELETE</td>
+<td>表示这是一个DELETE请求</td>
+</tr>
+<tr>
+<td>@HEAD</td>
+<td>表示这是一个HEAD请求</td>
+</tr>
+<tr>
+<td>@OPTIONS</td>
+<td>表示这是一个OPTION请求</td>
+</tr>
+<tr>
+<td>@PATCH</td>
+<td>表示这是一个PAT请求</td>
+</tr>
+</tbody>
+</table>
+<h3 id="各种请求注解的意思"><a href="#各种请求注解的意思" class="headerlink" title="各种请求注解的意思"></a>各种请求注解的意思</h3><table>
+<thead>
+<tr>
+<th>格式</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>@Headers</td>
+<td>添加请求头</td>
+</tr>
+<tr>
+<td>@Path</td>
+<td>替换路径</td>
+</tr>
+<tr>
+<td>@Query</td>
+<td>替代参数值，通常是结合get请求的</td>
+</tr>
+<tr>
+<td>@FormUrlEncoded</td>
+<td>用表单数据提交</td>
+</tr>
+<tr>
+<td>@Field</td>
+<td>替换参数值，是结合post请求的</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Retrofit的简单使用例子"><a href="#Retrofit的简单使用例子" class="headerlink" title="Retrofit的简单使用例子"></a>Retrofit的简单使用例子</h2><p>要使用retrofit请求网络数据，大概可以分为以下几步</p>
+<ul>
+<li>1)添加依赖，这里以AndroidStudio为例：在build.grale添加如下依赖</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"> compile <span class="string">'com.squareup.retrofit2:retrofit:2.1.0'</span></div><div class="line">compile <span class="string">'com.squareup.retrofit2:converter-gson:2.1.0'</span></div></pre></td></tr></table></figure>
+<ul>
+<li>2） 创建Retrofit对象</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Retrofit retrofit = <span class="keyword">new</span> Retrofit.Builder()</div><div class="line">        <span class="comment">//使用自定义的mGsonConverterFactory</span></div><div class="line">        .addConverterFactory(GsonConverterFactory.create())</div><div class="line">        .baseUrl(<span class="string">"http://apis.baidu.com/txapi/"</span>)</div><div class="line">        .build();</div><div class="line">mApi = retrofit.create(APi.class);</div></pre></td></tr></table></figure>
+<ul>
+<li>3）发起网络请求</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">mApi = retrofit.create(APi.class);</div><div class="line">Call&lt;News&gt; news = mApi.getNews(<span class="string">"1"</span>, <span class="string">"10"</span>);</div><div class="line">news.enqueue(<span class="keyword">new</span> Callback&lt;News&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(Call&lt;News&gt; call, Response&lt;News&gt; response)</span> </span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFailure</span><span class="params">(Call&lt;News&gt; call, Throwable t)</span> </span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">APi</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Headers</span>(<span class="string">"apikey:81bf9da930c7f9825a3c3383f1d8d766"</span>)</div><div class="line">    <span class="meta">@GET</span>(<span class="string">"word/word"</span>)</div><div class="line">    <span class="function">Call&lt;News&gt; <span class="title">getNews</span><span class="params">(@Query(<span class="string">"num"</span>)</span> String num,@<span class="title">Query</span><span class="params">(<span class="string">"page"</span>)</span>String page)</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>到此一个简单的使用retrofit的网络请求就完成了。</strong>接下来我们来了解retrofit的各种请求方式。</p>
+<hr>
+<h2 id="Retrofit的get请求"><a href="#Retrofit的get请求" class="headerlink" title="Retrofit的get请求"></a>Retrofit的get请求</h2><p>加入我们想请求这样的网址：<a href="http://apis.baidu.com/txapi/world/world?num=10&amp;page=1，header为&quot;apikey:81bf9da930c7f9825a3c3383f1d8d766&quot;,我们可以这样请求：" target="_blank" rel="external">http://apis.baidu.com/txapi/world/world?num=10&amp;page=1，header为&quot;apikey:81bf9da930c7f9825a3c3383f1d8d766&quot;,我们可以这样请求：</a></p>
+<p>第一步，在interface Api中 增加如下方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">@Headers</span>(<span class="string">"apikey:81bf9da930c7f9825a3c3383f1d8d766"</span>)</div><div class="line"><span class="meta">@GET</span>(<span class="string">"word/word"</span>)</div><div class="line"><span class="function">Call&lt;News&gt; <span class="title">getNews</span><span class="params">(@Query(<span class="string">"num"</span>)</span> String num,@<span class="title">Query</span><span class="params">(<span class="string">"page"</span>)</span>String page)</span>;</div></pre></td></tr></table></figure></p>
+<p>第二部，在代码里面请求<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//创建retrofit对象</span></div><div class="line">Retrofit retrofit = <span class="keyword">new</span> Retrofit.Builder()</div><div class="line">        <span class="comment">//使用自定义的mGsonConverterFactory</span></div><div class="line">        .addConverterFactory(GsonConverterFactory.create())</div><div class="line">        .baseUrl(<span class="string">"http://apis.baidu.com/txapi/"</span>)</div><div class="line">        .build();</div><div class="line"><span class="comment">// 实例化我们的mApi对象</span></div><div class="line">mApi = retrofit.create(APi.class); </div><div class="line"></div><div class="line"><span class="comment">// 调用我们的响应的方法</span></div><div class="line">Call&lt;News&gt; news = mApi.getNews(number, page);</div><div class="line">news.enqueue(<span class="keyword">new</span> Callback&lt;News&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(Call&lt;News&gt; call, Response&lt;News&gt; response)</span> </span>&#123;</div><div class="line">        News body = response.body();</div><div class="line">        Logger.i(<span class="string">"onResponse:   ="</span>+body.toString());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFailure</span><span class="params">(Call&lt;News&gt; call, Throwable t)</span> </span>&#123;</div><div class="line">        Logger.i(<span class="string">"onResponse:   ="</span>+t.getMessage());</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<h3 id="解释说明"><a href="#解释说明" class="headerlink" title="解释说明"></a>解释说明</h3><p>假设BaseUrl是<a href="http://apis.baidu.com/txapi/的前提下" target="_blank" rel="external">http://apis.baidu.com/txapi/的前提下</a></p>
+<ul>
+<li>1）其中 @GET(“word/word”)会追加到baseUrl ：<a href="http://apis.baidu.com/txapi/的后面，即变成：http://apis.baidu.com/txapi/world/world" target="_blank" rel="external">http://apis.baidu.com/txapi/的后面，即变成：http://apis.baidu.com/txapi/world/world</a></li>
+<li>2）@Query(“num”) String num,@Query(“page”)String page；分别对应键值的名称与值。会追加到<a href="http://apis.baidu.com/txapi/world/world的后面，请求网址即变成:http://apis.baidu.com/txapi/world/world?num=10&amp;page=1" target="_blank" rel="external">http://apis.baidu.com/txapi/world/world的后面，请求网址即变成:http://apis.baidu.com/txapi/world/world?num=10&amp;page=1</a></li>
+<li>3）  @Headers(“apikey:81bf9da930c7f9825a3c3383f1d8d766”)是 在基础之上为 其添加响应头</li>
+<li><p>4）如果想继续增加参数，只需要在方法参数追加这样的形式就OK了：<br>,@Query(“page”)String page</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Headers</span>(<span class="string">"apikey:81bf9da930c7f9825a3c3383f1d8d766"</span>)</div><div class="line"><span class="meta">@GET</span>(<span class="string">"word/word"</span>)</div><div class="line"><span class="function">Call&lt;News&gt; <span class="title">getNews</span><span class="params">(@Query(<span class="string">"num"</span>)</span> String num,@<span class="title">Query</span><span class="params">(<span class="string">"page"</span>)</span>String page，@<span class="title">Query</span><span class="params">(<span class="string">"type"</span>)</span> String type)</span>;</div></pre></td></tr></table></figure>
+</li>
+<li><p>5)加入我们想要请求这样的网址<a href="http://apis.baidu.com/txapi/tiyu/tiyu?num=10&amp;page=1，,我们可以这样写" target="_blank" rel="external">http://apis.baidu.com/txapi/tiyu/tiyu?num=10&amp;page=1，,我们可以这样写</a></p>
+</li>
+</ul>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"> <span class="meta">@Headers</span>(&#123;<span class="string">"apikey:81bf9da930c7f9825a3c3383f1d8d766"</span> ,<span class="string">"Content-Type:application/json"</span>&#125;)</div><div class="line"><span class="meta">@GET</span>(<span class="string">"&#123;type&#125;/&#123;type&#125;"</span>)</div><div class="line"><span class="function">Call&lt;News&gt; <span class="title">tiYu</span><span class="params">(@Path(<span class="string">"type"</span>)</span> String type, @<span class="title">Query</span><span class="params">(<span class="string">"num"</span>)</span> String num,@<span class="title">Query</span><span class="params">(<span class="string">"page"</span>)</span>String page)</span>;</div><div class="line">String type=<span class="string">"tiyu"</span>;</div><div class="line">Call&lt;News&gt; news = api.tiYu(type,number, page);</div></pre></td></tr></table></figure>
+<hr>
+<h2 id="retrofit的post请求"><a href="#retrofit的post请求" class="headerlink" title="retrofit的post请求"></a>retrofit的post请求</h2><p>假如我们想要 请求这样的网址<a href="http://apis.baidu.com/txapi/world/world?以post的" target="_blank" rel="external">http://apis.baidu.com/txapi/world/world?以post的</a> 方式提交这样的 数据：num=10&amp;page=1，我们可以写成 如下的 样子，注意post的时候必须使用@Field这种形式的注解，而不是使用@Query这种形式的注解，其他的 与get请求一样，这样只给出核心代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@FormUrlEncoded</span></div><div class="line"><span class="meta">@Headers</span>(&#123;<span class="string">"apikey:81bf9da930c7f9825a3c3383f1d8d766"</span> ,<span class="string">"Content-Type:application/json"</span>&#125;)</div><div class="line"><span class="meta">@POST</span>(<span class="string">"world/world"</span>)</div><div class="line"><span class="function">Call&lt;News&gt; <span class="title">postNews</span><span class="params">(@Field(<span class="string">"num"</span>)</span> String num, @<span class="title">Field</span><span class="params">(<span class="string">"page"</span>)</span>String page)</span>;</div></pre></td></tr></table></figure>
+<h2 id="如何为retrofit添加请求头head"><a href="#如何为retrofit添加请求头head" class="headerlink" title="如何为retrofit添加请求头head"></a>如何为retrofit添加请求头head</h2><p>总共有以下几种方式</p>
+<h3 id="第一种方法"><a href="#第一种方法" class="headerlink" title="第一种方法"></a>第一种方法</h3><p>在OKHttpClient interceptors里面进行处理，这样添加的headKey不会覆盖掉 前面的 headKey</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">okHttpClient.interceptors().add(<span class="keyword">new</span> Interceptor() &#123;  </div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Response <span class="title">intercept</span><span class="params">(Interceptor.Chain chain)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">        Request original = chain.request();</div><div class="line"></div><div class="line">        <span class="comment">// Request customization: add request headers</span></div><div class="line">        Request.Builder requestBuilder = original.newBuilder()</div><div class="line">                    .addHeader(<span class="string">"header-key"</span>, <span class="string">"value1"</span>)</div><div class="line">                    .addHeader(<span class="string">"header-key"</span>, <span class="string">"value2"</span>);</div><div class="line"></div><div class="line">        Request request = requestBuilder.build();</div><div class="line">        <span class="keyword">return</span> chain.proceed(request);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h3 id="第二种方法"><a href="#第二种方法" class="headerlink" title="第二种方法"></a>第二种方法</h3><p>同样在在OKHttpClient interceptors里面进行处理，这样添加的headKey会覆盖掉 前面的 headKey<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">okHttpClient.interceptors().add(<span class="keyword">new</span> Interceptor() &#123;  </div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Response <span class="title">intercept</span><span class="params">(Interceptor.Chain chain)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">        Request original = chain.request();</div><div class="line"></div><div class="line">        <span class="comment">// Request customization: add request headers</span></div><div class="line">        Request.Builder requestBuilder = original.newBuilder()</div><div class="line">                .header(<span class="string">"headerkey"</span>, <span class="string">"header-value"</span>); <span class="comment">// &lt;-- this is the important line</span></div><div class="line"></div><div class="line">        Request request = requestBuilder.build();</div><div class="line">        <span class="keyword">return</span> chain.proceed(request);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<h3 id="第三种方法"><a href="#第三种方法" class="headerlink" title="第三种方法"></a>第三种方法</h3><p>利用 retrofit自带的注解，比如我们想要添加这样的请求头：”apikey:81bf9da930c7f9825a3c3383f1d8d766” ,”Content-Type:application/json”；则可以写成如下的 样式</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Headers</span>(&#123;<span class="string">"apikey:81bf9da930c7f9825a3c3383f1d8d766"</span> ,<span class="string">"Content-Type:application/json"</span>&#125;)</div><div class="line"><span class="meta">@GET</span>(<span class="string">"world/world"</span>)</div><div class="line"><span class="function">Call&lt;News&gt; <span class="title">getNews</span><span class="params">(@Query(<span class="string">"num"</span>)</span> String num,@<span class="title">Query</span><span class="params">(<span class="string">"page"</span>)</span>String page)</span>;</div></pre></td></tr></table></figure>
+<hr>
+<h2 id="通过post提交json数据"><a href="#通过post提交json数据" class="headerlink" title="通过post提交json数据"></a>通过post提交json数据</h2><p>Post 提交JSON数据</p>
+<p>有时提交的数据量比较大时，用键值对的方式提交参数不太方便，Retrofit可以通过@Body注释，直接传递一个对象给请求主体，Retrofit通过JSON转化器，把对象映射成JSON数据。</p>
+<p>假设我们需要提交的数据为<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="string">"id"</span>: <span class="number">1</span>,</div><div class="line">    <span class="string">"text"</span>: <span class="string">"my task title"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<ul>
+<li><p>接口定义：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TaskService</span> </span>&#123;  </div><div class="line">    <span class="meta">@Headers</span>(&#123;<span class="string">"Content-Type: application/json"</span>,<span class="string">"Accept:  application/json"</span>&#125;)</div><div class="line">    <span class="meta">@POST</span>(<span class="string">"/tasks"</span>)</div><div class="line">    <span class="function">Call&lt;Task&gt; <span class="title">createTask</span><span class="params">(@Body Task task)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>传递实体需要有Model：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Task</span> </span>&#123;  </div><div class="line">    <span class="keyword">private</span> <span class="keyword">long</span> id;</div><div class="line">    <span class="keyword">private</span> String text;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Task</span><span class="params">()</span> </span>&#123;&#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Task</span><span class="params">(<span class="keyword">long</span> id, String text)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.id = id;</div><div class="line">        <span class="keyword">this</span>.text = text;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>客户端调用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Task task = <span class="keyword">new</span> Task(<span class="number">1</span>, <span class="string">"my task title"</span>);  </div><div class="line">Call&lt;Task&gt; call = taskService.createTask(task);  </div><div class="line">call.enqueue(<span class="keyword">new</span> Callback&lt;Task&gt;() &#123;&#125;);</div></pre></td></tr></table></figure>
+</li>
+<li><p>这样，服务端得到的是JOSN数据：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="string">"id"</span>: <span class="number">1</span>,</div><div class="line">    <span class="string">"text"</span>: <span class="string">"my task title"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>到此，这篇博客为止</p>
+<h2 id="题外话："><a href="#题外话：" class="headerlink" title="题外话："></a>题外话：</h2><p>其实retrofit在5月份实习的时候就接触了，之前为什么不写 博客了，因为网上的 使用教程很多，觉得没有必要。到后面学习的时候，发现retrofit的使用时 比较灵活的，并且使用方法也是相对较多的，于是，就写了retrofit这系列的使用博客。</p>
+<p><strong><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52745491" target="_blank" rel="external">转载请注明博客地址：</a><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52745491" target="_blank" rel="external">http://blog.csdn.net/gdutxiaoxu/article/details/52745491</a></strong></p>
+<p><strong><a href="https://github.com/gdutxiaoxu/RetrofitDemo.git" target="_blank" rel="external">源码下载地址：</a><a href="https://github.com/gdutxiaoxu/RetrofitDemo.git" target="_blank" rel="external">https://github.com/gdutxiaoxu/RetrofitDemo.git</a></strong></p>
+<p><strong><a href="http://square.github.io/retrofit/" target="_blank" rel="external">参考官网地址</a><a href="http://square.github.io/retrofit/" target="_blank" rel="external">http://square.github.io/retrofit/</a></strong></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://gdutxiaoxu.gitee.io/2016/12/08/%E5%B8%B8%E7%94%A8%E7%9A%84%E8%87%AA%E5%AE%9A%E4%B9%89View%E4%BE%8B%E5%AD%90%E4%B8%80-FlowLayout/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -870,14 +1578,14 @@ childMaxHeightOfThisLine = childUsedHeight;
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-count">18</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

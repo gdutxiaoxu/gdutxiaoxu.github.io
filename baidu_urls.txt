@@ -1,4 +1,8 @@
 https://gdutxiaoxu.gitee.io/2021/04/17/%E9%BB%91%E9%A9%AC-Android-52-%E6%9C%9F%E5%AD%A6%E4%B9%A0%E8%A7%86%E9%A2%91%EF%BC%8C%E4%B8%8D%E5%8A%A0%E5%AF%86%E7%9A%84%EF%BC%8C%E5%85%8D%E8%B4%B9%E5%88%86%E4%BA%AB%E7%BB%99%E5%A4%A7%E5%AE%B6/
+https://gdutxiaoxu.gitee.io/2019/01/14/Android%20livedata%20%E6%BA%90%E7%A0%81%E8%A7%A3%E5%89%96/
+https://gdutxiaoxu.gitee.io/2019/01/13/Android%20LiveData%20%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/
+https://gdutxiaoxu.gitee.io/2019/01/12/Android%20lifecyle%20%E6%BA%90%E7%A0%81%E8%A7%A3%E5%89%96/
+https://gdutxiaoxu.gitee.io/2019/01/11/Android%20lifecycle%20%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/
 https://gdutxiaoxu.gitee.io/2016/12/31/16%E5%B9%B4%EF%BC%8C%E5%B9%B3%E5%87%A1%E8%80%8C%E5%8F%88%E6%94%B6%E8%8E%B7%E7%9A%84%E4%B8%80%E5%B9%B4/
 https://gdutxiaoxu.gitee.io/2016/12/12/%E4%BD%A0%E7%9C%9F%E7%9A%84%E4%BA%86%E8%A7%A3View%E7%9A%84%E5%9D%90%E6%A0%87%E5%90%97%EF%BC%9F/
 https://gdutxiaoxu.gitee.io/2016/12/11/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E7%94%A8Hexo-Github-%E6%90%AD%E5%BB%BA%E5%B1%9E%E4%BA%8E%E8%87%AA%E5%B7%B1%E7%9A%84%E5%8D%9A%E5%AE%A2/
