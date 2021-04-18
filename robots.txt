@@ -11,5 +11,5 @@ Disallow: /fonts/
 Disallow: /vendors/
 Disallow: /fancybox/
 
-Sitemap: https://gdutxiaoxu.github.io/sitemap.xml
-Sitemap: https://gdutxiaoxu.github.io/baidusitemap.xml
+Sitemap: https://gdutxiaoxu.gitee.io/sitemap.xml
+Sitemap: https://gdutxiaoxu.gitee.io/baidusitemap.xml
