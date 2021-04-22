@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
+Allow: /baidu_verify_GCRSIy60IY.html
 Allow: /archives/
 Allow: /categories/
 Allow: /tags/ 
