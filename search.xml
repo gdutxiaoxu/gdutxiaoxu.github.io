@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title>Android 启动优化（七） - JetPack App Startup 使用及源码浅析</title>
-    <url>/Android-%E5%90%AF%E5%8A%A8%E4%BC%98%E5%8C%96%EF%BC%88%E4%B8%83%EF%BC%89-JetPack-App-Startup-%E4%BD%BF%E7%94%A8%E5%8F%8A%E6%BA%90%E7%A0%81%E6%B5%85%E6%9E%90.html</url>
+    <url>/2021/04/18/Android-%E5%90%AF%E5%8A%A8%E4%BC%98%E5%8C%96%EF%BC%88%E4%B8%83%EF%BC%89-JetPack-App-Startup-%E4%BD%BF%E7%94%A8%E5%8F%8A%E6%BA%90%E7%A0%81%E6%B5%85%E6%9E%90/</url>
     <content><![CDATA[<blockquote>
 <p>本文收录于 <a href="https://github.com/gdutxiaoxu/AndroidGuide">https://github.com/gdutxiaoxu/AndroidGuide</a> 「Android学习+面试指南」一份涵盖大部分 Android 程序员所需要掌握的核心知识。准备 Android 面试，首选 AndroidGuide！<strong>微信公众号：程序员徐公</strong></p>
 </blockquote>
@@ -130,7 +130,7 @@
   </entry>
   <entry>
     <title>2021 Android 如何自学，Android 学习路线分享，一位 5 年中大厂老哥跟你聊聊</title>
-    <url>/2021-Android-%E5%A6%82%E4%BD%95%E8%87%AA%E5%AD%A6%EF%BC%8CAndroid-%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF%E5%88%86%E4%BA%AB%EF%BC%8C%E4%B8%80%E4%BD%8D-5-%E5%B9%B4%E4%B8%AD%E5%A4%A7%E5%8E%82%E8%80%81%E5%93%A5%E8%B7%9F%E4%BD%A0%E8%81%8A%E8%81%8A.html</url>
+    <url>/2021/04/18/2021-Android-%E5%A6%82%E4%BD%95%E8%87%AA%E5%AD%A6%EF%BC%8CAndroid-%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF%E5%88%86%E4%BA%AB%EF%BC%8C%E4%B8%80%E4%BD%8D-5-%E5%B9%B4%E4%B8%AD%E5%A4%A7%E5%8E%82%E8%80%81%E5%93%A5%E8%B7%9F%E4%BD%A0%E8%81%8A%E8%81%8A/</url>
     <content><![CDATA[<p>光阴似箭，日月如梭，时间真的过得飞快。<br>加上实习，从事 Android 开发，差不多有 5 年了，在这里，我分享一下我的经验，在 Android 的学习路上，我是站在巨人的肩膀上成长起来的。</p>
 <p>大概分为三个部分</p>
 <blockquote>
@@ -259,7 +259,7 @@
   </entry>
   <entry>
     <title>黑马 Android 52 期学习视频，不加密的，免费分享给大家</title>
-    <url>/%E9%BB%91%E9%A9%AC-Android-52-%E6%9C%9F%E5%AD%A6%E4%B9%A0%E8%A7%86%E9%A2%91%EF%BC%8C%E4%B8%8D%E5%8A%A0%E5%AF%86%E7%9A%84%EF%BC%8C%E5%85%8D%E8%B4%B9%E5%88%86%E4%BA%AB%E7%BB%99%E5%A4%A7%E5%AE%B6.html</url>
+    <url>/2021/04/17/%E9%BB%91%E9%A9%AC-Android-52-%E6%9C%9F%E5%AD%A6%E4%B9%A0%E8%A7%86%E9%A2%91%EF%BC%8C%E4%B8%8D%E5%8A%A0%E5%AF%86%E7%9A%84%EF%BC%8C%E5%85%8D%E8%B4%B9%E5%88%86%E4%BA%AB%E7%BB%99%E5%A4%A7%E5%AE%B6/</url>
     <content><![CDATA[<h1 id="Android-黑马学习视频"><a href="#Android-黑马学习视频" class="headerlink" title="Android 黑马学习视频"></a>Android 黑马学习视频</h1><p><img src="https://gitee.com/gdutxiaoxu/blog-picture/raw/master/21/02/20210417222937.png"></p>
 <p><img src="https://gitee.com/gdutxiaoxu/blog-picture/raw/master/21/02/20210417223040.png"></p>
 <p>链接:<a href="https://pan.baidu.com/s/123PF5W2t1SgjQ9wpoFW7Rg">https://pan.baidu.com/s/123PF5W2t1SgjQ9wpoFW7Rg</a>   </p>
@@ -271,7 +271,7 @@
   </entry>
   <entry>
     <title>面试官， 怎样实现 Router 框架？</title>
-    <url>/%E9%9D%A2%E8%AF%95%E5%AE%98%EF%BC%8C%E6%80%8E%E6%A0%B7%E5%AE%9E%E7%8E%B0%20Router%20%E6%A1%86%E6%9E%B6%EF%BC%9F.html</url>
+    <url>/2019/07/18/%E9%9D%A2%E8%AF%95%E5%AE%98%EF%BC%8C%E6%80%8E%E6%A0%B7%E5%AE%9E%E7%8E%B0%20Router%20%E6%A1%86%E6%9E%B6%EF%BC%9F/</url>
     <content><![CDATA[<p>Android 开发中，组件化，模块化是一个老生常谈的问题。随着项目复杂性的增长，模块化是一个必然的趋势。除非你能忍受改一下代码，就需要六七分钟的漫长时间。</p>
 <p>模块化，组件化随之带来的另外一个问题是页面的跳转问题，由于代码的隔离，代码之间有时候会无法互相访问。于是，路由（Router）框架诞生了。</p>
 <p>目前用得比较多的有阿里的 ARouter，美团的 WMRouter，ActivityRouter 等。</p>
@@ -426,7 +426,7 @@
   </entry>
   <entry>
     <title>面试官，https 真的安全吗，可以抓包吗，如何防止抓包</title>
-    <url>/%E9%9D%A2%E8%AF%95%E5%AE%98%E7%B3%BB%E5%88%97%20-%20https%20%E7%9C%9F%E7%9A%84%E5%AE%89%E5%85%A8%E5%90%97%EF%BC%8C%E5%8F%AF%E4%BB%A5%E6%8A%93%E5%8C%85%E5%90%97%EF%BC%8C%E5%A6%82%E4%BD%95%E9%98%B2%E6%AD%A2%E6%8A%93%E5%8C%85%E5%90%97.html</url>
+    <url>/2019/05/18/%E9%9D%A2%E8%AF%95%E5%AE%98%E7%B3%BB%E5%88%97%20-%20https%20%E7%9C%9F%E7%9A%84%E5%AE%89%E5%85%A8%E5%90%97%EF%BC%8C%E5%8F%AF%E4%BB%A5%E6%8A%93%E5%8C%85%E5%90%97%EF%BC%8C%E5%A6%82%E4%BD%95%E9%98%B2%E6%AD%A2%E6%8A%93%E5%8C%85%E5%90%97/</url>
     <content><![CDATA[<p>@[toc]<br> <strong>往期文章</strong></p>
 <p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/97885526">Android 面试必备 - http 与 https 协议</a></p>
 <p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/97618598">Android 面试必备 - 计算机网络基本知识（TCP，UDP，Http，https）</a></p>
@@ -565,7 +565,7 @@
   </entry>
   <entry>
     <title>面试官，你真的了解 http 吗</title>
-    <url>/%E9%9D%A2%E8%AF%95%E5%AE%98%E7%B3%BB%E5%88%97-%20%E4%BD%A0%E7%9C%9F%E7%9A%84%E4%BA%86%E8%A7%A3%20http%20%E5%90%97.html</url>
+    <url>/2019/05/12/%E9%9D%A2%E8%AF%95%E5%AE%98%E7%B3%BB%E5%88%97-%20%E4%BD%A0%E7%9C%9F%E7%9A%84%E4%BA%86%E8%A7%A3%20http%20%E5%90%97/</url>
     <content><![CDATA[<p>@[toc]</p>
 <blockquote>
 <p> 我的 CSDN 博客:<a href="https://blog.csdn.net/gdutxiaoxu">https://blog.csdn.net/gdutxiaoxu</a> <br><br> 我的掘金：<a href="https://juejin.im/user/58aa8508570c35006bbd9e03">https://juejin.im/user/58aa8508570c35006bbd9e03</a>  <br><br> github: <a href="https://github.com/gdutxiaoxu/">https://github.com/gdutxiaoxu/</a>  <br><br> 微信公众号：徐公码字(stormjun94)  <br><br> 知乎：<a href="https://www.zhihu.com/people/xujun94">https://www.zhihu.com/people/xujun94</a>  <br></p>
@@ -771,7 +771,7 @@
   </entry>
   <entry>
     <title>Android LiveData 源码分析</title>
-    <url>/Android%20livedata%20%E6%BA%90%E7%A0%81%E8%A7%A3%E5%89%96.html</url>
+    <url>/2019/01/14/Android%20livedata%20%E6%BA%90%E7%A0%81%E8%A7%A3%E5%89%96/</url>
     <content><![CDATA[<h2 id="说在前面"><a href="#说在前面" class="headerlink" title="说在前面"></a>说在前面</h2><p>本次推出 Android  Architecture Components 系列文章，目前写好了四篇，主要是关于 lifecycle，livedata 的使用和源码分析，其余的 Navigation， Paging library，Room，WorkMannager 等春节结束之后会更新，欢迎关注我的公众号，有更新的话会第一时间会在公众号上面通知。</p>
 <p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/86660746">Android lifecycle 使用详解</a></p>
 <p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/86660760">Android LiveData 使用详解</a></p>
@@ -863,7 +863,7 @@
   </entry>
   <entry>
     <title>Android LiveData 使用详解</title>
-    <url>/Android%20LiveData%20%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3.html</url>
+    <url>/2019/01/13/Android%20LiveData%20%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/</url>
     <content><![CDATA[<h2 id="说在前面"><a href="#说在前面" class="headerlink" title="说在前面"></a>说在前面</h2><p>本次推出 Android  Architecture Components 系列文章，目前写好了四篇，主要是关于 lifecycle，livedata 的使用和源码分析，其余的 Navigation， Paging library，Room，WorkMannager 等春节结束之后会更新，欢迎关注我的公众号，有更新的话会第一时间会在公众号上面通知。</p>
 <p>目录大概如下</p>
 <blockquote>
@@ -993,7 +993,7 @@
   </entry>
   <entry>
     <title>Android lifecyle 源码解剖</title>
-    <url>/Android%20lifecyle%20%E6%BA%90%E7%A0%81%E8%A7%A3%E5%89%96.html</url>
+    <url>/2019/01/12/Android%20lifecyle%20%E6%BA%90%E7%A0%81%E8%A7%A3%E5%89%96/</url>
     <content><![CDATA[<h2 id="说在前面"><a href="#说在前面" class="headerlink" title="说在前面"></a>说在前面</h2><p>本次推出 Android  Architecture Components 系列文章，目前写好了四篇，主要是关于 lifecycle，livedata 的使用和源码分析，其余的 Navigation， Paging library，Room，WorkMannager 等春节结束之后会更新，欢迎关注我的公众号，有更新的话会第一时间会在公众号上面通知。</p>
 <p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/86660746">Android lifecycle 使用详解</a></p>
 <p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/86660760">Android LiveData 使用详解</a></p>
@@ -1116,7 +1116,7 @@
   </entry>
   <entry>
     <title>Android lifecycle 使用详解</title>
-    <url>/Android%20lifecycle%20%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3.html</url>
+    <url>/2019/01/11/Android%20lifecycle%20%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/</url>
     <content><![CDATA[<h2 id="说在前面"><a href="#说在前面" class="headerlink" title="说在前面"></a>说在前面</h2><p>本次推出 Android  Architecture Components 系列文章，目前写好了四篇，主要是关于 lifecycle，livedata 的使用和源码分析，其余的 Navigation， Paging library，Room，WorkMannager 等春节结束之后会更新，欢迎关注我的公众号，有更新的话会第一时间会在公众号上面通知。</p>
 <p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/86660746">Android lifecycle 使用详解</a></p>
 <p><a href="https://blog.csdn.net/gdutxiaoxu/article/details/86660760">Android LiveData 使用详解</a></p>
@@ -1197,7 +1197,7 @@
   </entry>
   <entry>
     <title>Android Hook 机制之简单实战</title>
-    <url>/Android%20Hook%20%E6%9C%BA%E5%88%B6%E4%B9%8B%E7%AE%80%E5%8D%95%E5%AE%9E%E6%88%98.html</url>
+    <url>/2018/05/12/Android%20Hook%20%E6%9C%BA%E5%88%B6%E4%B9%8B%E7%AE%80%E5%8D%95%E5%AE%9E%E6%88%98/</url>
     <content><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><h3 id="什么是-Hook"><a href="#什么是-Hook" class="headerlink" title="什么是 Hook"></a>什么是 Hook</h3><p><strong>Hook 又叫“钩子”</strong>，它可以在事件传送的过程中截获并监控事件的传输，将自身的代码与系统方法进行融入。</p>
 <p>这样当这些方法被调用时，也就可以执行我们自己的代码，这也是面向切面编程的思想（AOP）。</p>
 <h3 id="Hook-分类"><a href="#Hook-分类" class="headerlink" title="Hook 分类"></a>Hook 分类</h3><p>1.根据Android开发模式，Native模式（C/C++）和Java模式（Java）区分，在Android平台上 </p>
@@ -1360,7 +1360,7 @@
   </entry>
   <entry>
     <title>16年，平凡而又收获的一年</title>
-    <url>/16%E5%B9%B4%EF%BC%8C%E5%B9%B3%E5%87%A1%E8%80%8C%E5%8F%88%E6%94%B6%E8%8E%B7%E7%9A%84%E4%B8%80%E5%B9%B4.html</url>
+    <url>/2016/12/31/16%E5%B9%B4%EF%BC%8C%E5%B9%B3%E5%87%A1%E8%80%8C%E5%8F%88%E6%94%B6%E8%8E%B7%E7%9A%84%E4%B8%80%E5%B9%B4/</url>
     <content><![CDATA[<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53958513">文章首发地址CSDN:</a></p>
 <p>岁月如水，时间飞逝，转眼间，已经到了年尾，即将引来新的一年，我要赶紧抓住16年的尾巴，写篇文章记录一下我16年的点点滴滴。篇章大概如下，学习&amp;工作室篇，实习篇，盛夏六月， 博客篇，秋招篇，情感篇，展望未来。</p>
 <h2 id="学习-amp-工作室篇"><a href="#学习-amp-工作室篇" class="headerlink" title="学习&amp;工作室篇"></a><strong>学习&amp;工作室篇</strong></h2><p><img src="http://ww3.sinaimg.cn/mw690/9fe4afa0jw1fbabc2n6myj206g064aa3.jpg"></p>
@@ -1405,7 +1405,7 @@
   </entry>
   <entry>
     <title>你真的了解View的坐标吗？</title>
-    <url>/%E4%BD%A0%E7%9C%9F%E7%9A%84%E4%BA%86%E8%A7%A3View%E7%9A%84%E5%9D%90%E6%A0%87%E5%90%97%EF%BC%9F.html</url>
+    <url>/2016/12/12/%E4%BD%A0%E7%9C%9F%E7%9A%84%E4%BA%86%E8%A7%A3View%E7%9A%84%E5%9D%90%E6%A0%87%E5%90%97%EF%BC%9F/</url>
     <content><![CDATA[<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53700020">文章首发CSDN地址 :</a></p>
 <h2 id="闲聊"><a href="#闲聊" class="headerlink" title="闲聊"></a>闲聊</h2><p>View，对我们来说在熟悉不过了，从接触Android开始，我们就一直在接触View，界面当中到处都是 View，比如我们经常用到的TextView，Button，LinearLayout等等，但是我们真的了解View吗？尤其是View的坐标。mLeft,mRight,mY,mX,mTranslationY,mScoollY,相对于屏幕的坐标等等这些概念你真的清楚了吗？如果真的清楚了，那你没有必要读这篇博客，如果你还是有一些模糊，建议花上几分钟的时间读一下。</p>
 <p>为什么要写这一篇博客呢？</p>
@@ -1493,7 +1493,7 @@
   </entry>
   <entry>
     <title>手把手教你用Hexo+Github 搭建属于自己的博客</title>
-    <url>/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E7%94%A8Hexo-Github-%E6%90%AD%E5%BB%BA%E5%B1%9E%E4%BA%8E%E8%87%AA%E5%B7%B1%E7%9A%84%E5%8D%9A%E5%AE%A2.html</url>
+    <url>/2016/12/11/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E7%94%A8Hexo-Github-%E6%90%AD%E5%BB%BA%E5%B1%9E%E4%BA%8E%E8%87%AA%E5%B7%B1%E7%9A%84%E5%8D%9A%E5%AE%A2/</url>
     <content><![CDATA[<h2 id="闲聊"><a href="#闲聊" class="headerlink" title="闲聊"></a>闲聊</h2><p>在大三的时候，一直就想搭建属于自己的一个博客，但由于各种原因，最终都不了了之，恰好最近比较有空，于是就自己参照网上的教程，搭建了属于自己的博客。</p>
 <p>至于为什么要搭建自己的博客了？</p>
 <p>哈哈，大概是为了装逼吧，同时自己搭建博客的话，样式的选择也比较自由，可以自己选择，不需要受限于各大平台。</p>
@@ -1912,7 +1912,7 @@
   </entry>
   <entry>
     <title>git ssh 配置多个账户</title>
-    <url>/git-ssh-%E9%85%8D%E7%BD%AE%E5%A4%9A%E4%B8%AA%E8%B4%A6%E6%88%B7.html</url>
+    <url>/2016/12/11/git-ssh-%E9%85%8D%E7%BD%AE%E5%A4%9A%E4%B8%AA%E8%B4%A6%E6%88%B7/</url>
     <content><![CDATA[<p><strong>前言：前几天在写博客  <a href="http://blog.csdn.net/gdutxiaoxu/article/details/53576018">手把手教你用Hexo + github 搭建自己博客</a><br>的时候，经常需要用到一些git操作，截了好多图，于是就想干脆整理成一系列的git 教程，总结如下</strong></p>
 <ul>
 <li><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53573286">Git下载及配置环境变量</a></li>
@@ -1998,7 +1998,7 @@
   </entry>
   <entry>
     <title>Git ssh 配置及使用</title>
-    <url>/Git-ssh-%E9%85%8D%E7%BD%AE%E5%8F%8A%E4%BD%BF%E7%94%A8.html</url>
+    <url>/2016/12/11/Git-ssh-%E9%85%8D%E7%BD%AE%E5%8F%8A%E4%BD%BF%E7%94%A8/</url>
     <content><![CDATA[<p><strong>前言：前几天在写博客  <a href="http://blog.csdn.net/gdutxiaoxu/article/details/53576018">手把手教你用Hexo + github 搭建自己博客</a><br>的时候，经常需要用到一些git操作，截了好多图，于是就想干脆整理成一系列的git 教程，总结如下</strong></p>
 <ul>
 <li><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53573286">Git下载及配置环境变量</a></li>
@@ -2084,7 +2084,7 @@
   </entry>
   <entry>
     <title>Git 命令行教程及实例教程</title>
-    <url>/Git-%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%95%99%E7%A8%8B%E5%8F%8A%E5%AE%9E%E4%BE%8B%E6%95%99%E7%A8%8B.html</url>
+    <url>/2016/12/11/Git-%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%95%99%E7%A8%8B%E5%8F%8A%E5%AE%9E%E4%BE%8B%E6%95%99%E7%A8%8B/</url>
     <content><![CDATA[<p><strong>前言：前几天在写博客  手把手教你用Hexo + github 搭建自己博客的时候，经常需要用到一些git操作，截了好多图，于是就想干脆整理成一系列的git 教程，总结如下</strong></p>
 <ul>
 <li><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53573286">Git下载及配置环境变量</a></li>
@@ -2308,7 +2308,7 @@
   </entry>
   <entry>
     <title>Git下载及配置环境变量</title>
-    <url>/Git%E4%B8%8B%E8%BD%BD%E5%8F%8A%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F.html</url>
+    <url>/2016/12/11/Git%E4%B8%8B%E8%BD%BD%E5%8F%8A%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/</url>
     <content><![CDATA[<p><strong>前言：前几天在写博客  <a href="http://blog.csdn.net/gdutxiaoxu/article/details/53576018">手把手教你用Hexo + github 搭建自己博客</a><br>的时候，经常需要用到一些git操作，截了好多图，于是就想干脆整理成一系列的git 教程，总结如下</strong></p>
 <ul>
 <li><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53573286">Git下载及配置环境变量</a></li>
@@ -2350,7 +2350,7 @@
   </entry>
   <entry>
     <title>Android 启动系统相机，相册，裁剪图片及6.0权限管理</title>
-    <url>/Android-%E5%90%AF%E5%8A%A8%E7%B3%BB%E7%BB%9F%E7%9B%B8%E6%9C%BA%EF%BC%8C%E7%9B%B8%E5%86%8C%EF%BC%8C%E8%A3%81%E5%89%AA%E5%9B%BE%E7%89%87%E5%8F%8A6-0%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86.html</url>
+    <url>/2016/12/08/Android-%E5%90%AF%E5%8A%A8%E7%B3%BB%E7%BB%9F%E7%9B%B8%E6%9C%BA%EF%BC%8C%E7%9B%B8%E5%86%8C%EF%BC%8C%E8%A3%81%E5%89%AA%E5%9B%BE%E7%89%87%E5%8F%8A6-0%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/</url>
     <content><![CDATA[<p>在日常开发中，我们经常需要用到上传图片的 功能，这个时候通常有两种做法，第一种，从相机获取，第二种，从相册获取。今天这篇博客主要讲解利用系统的Intent怎样获取？</p>
 <p>主要内容如下</p>
 <ul>
@@ -2442,7 +2442,7 @@
   </entry>
   <entry>
     <title> Retrofit使用教程（一）- Retrofit入门详解</title>
-    <url>/Retrofit%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B%EF%BC%88%E4%B8%80%EF%BC%89-Retrofit%E5%85%A5%E9%97%A8%E8%AF%A6%E8%A7%A3.html</url>
+    <url>/2016/12/08/Retrofit%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B%EF%BC%88%E4%B8%80%EF%BC%89-Retrofit%E5%85%A5%E9%97%A8%E8%AF%A6%E8%A7%A3/</url>
     <content><![CDATA[<h1 id="Retrofit使用教程（一）-Retrofit入门详解"><a href="#Retrofit使用教程（一）-Retrofit入门详解" class="headerlink" title="Retrofit使用教程（一）- Retrofit入门详解"></a>Retrofit使用教程（一）- Retrofit入门详解</h1><hr>
 <p><strong><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52745491">转载请注明博客地址：</a><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52745491">http://blog.csdn.net/gdutxiaoxu/article/details/52745491</a></strong></p>
 <p><strong><a href="https://github.com/gdutxiaoxu/RetrofitDemo.git">源码下载地址：</a><a href="https://github.com/gdutxiaoxu/RetrofitDemo.git">https://github.com/gdutxiaoxu/RetrofitDemo.git</a></strong></p>
@@ -2622,7 +2622,7 @@
   </entry>
   <entry>
     <title>常用的自定义View例子一(FlowLayout)</title>
-    <url>/%E5%B8%B8%E7%94%A8%E7%9A%84%E8%87%AA%E5%AE%9A%E4%B9%89View%E4%BE%8B%E5%AD%90%E4%B8%80-FlowLayout.html</url>
+    <url>/2016/12/08/%E5%B8%B8%E7%94%A8%E7%9A%84%E8%87%AA%E5%AE%9A%E4%B9%89View%E4%BE%8B%E5%AD%90%E4%B8%80-FlowLayout/</url>
     <content><![CDATA[<p>﻿</p>
 <h1 id="常用的自定义View例子一（-FlowLayout）"><a href="#常用的自定义View例子一（-FlowLayout）" class="headerlink" title="常用的自定义View例子一（ FlowLayout）"></a>常用的自定义View例子一（ FlowLayout）</h1><p><strong>在Android开发中，我们经常会遇到流布式的布局，经常会用来一些标签的显示，比如qq中个人便签，搜索框下方提示的词语，这些是指都是流布式的布局，今天我就我们日常开放中遇到的流布式布局坐一些总结</strong></p>
 <p><strong><a href="http://blog.csdn.net/gdutxiaoxu/article/details/51765428">转载请注明博客地址：</a><a href="http://blog.csdn.net/gdutxiaoxu/article/details/51765428">http://blog.csdn.net/gdutxiaoxu/article/details/51765428</a></strong></p>
@@ -2695,7 +2695,7 @@
   </entry>
   <entry>
     <title>360面试心得（Android)</title>
-    <url>/360%E9%9D%A2%E8%AF%95%E5%BF%83%E5%BE%97%EF%BC%88Android.html</url>
+    <url>/2016/12/08/360%E9%9D%A2%E8%AF%95%E5%BF%83%E5%BE%97%EF%BC%88Android/</url>
     <content><![CDATA[<h1 id="360面试心得（Android）"><a href="#360面试心得（Android）" class="headerlink" title="360面试心得（Android）"></a>360面试心得（Android）</h1><hr>
 <p>这次360面试，总共面试了两轮，都是视频面试。</p>
 <p>时间:2016-08-23</p>
@@ -2782,7 +2782,7 @@
   </entry>
   <entry>
     <title>自定义Behavior —— 仿知乎，FloatActionButton隐藏与展示</title>
-    <url>/%E8%87%AA%E5%AE%9A%E4%B9%89Behavior-%E2%80%94%E2%80%94-%E4%BB%BF%E7%9F%A5%E4%B9%8E%EF%BC%8CFloatActionButton%E9%9A%90%E8%97%8F%E4%B8%8E%E5%B1%95%E7%A4%BA.html</url>
+    <url>/2016/12/08/%E8%87%AA%E5%AE%9A%E4%B9%89Behavior-%E2%80%94%E2%80%94-%E4%BB%BF%E7%9F%A5%E4%B9%8E%EF%BC%8CFloatActionButton%E9%9A%90%E8%97%8F%E4%B8%8E%E5%B1%95%E7%A4%BA/</url>
     <content><![CDATA[<p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52858598">使用CoordinatorLayout打造各种炫酷的效果</a></p>
 <p><a href="http://blog.csdn.net/gdutxiaoxu/article/details/53453958">自定义Behavior —— 仿知乎，FloatActionButton隐藏与展示</a></p>
 <p>前段时间写了一篇博客<a href="http://blog.csdn.net/gdutxiaoxu/article/details/52858598">使用CoordinatorLayout打造各种炫酷的效果</a>,主要介绍了APPBarLayout和CollapsingToolbarLayout的基本用法，AppBarLayout主要用来实现在滚动的时候ToolBar的 隐藏于展示，CollapsingToolbarLayout主要用来实现parallax和pin等效果。如果你对CoordinatorLayout还不了解的话，请先阅读这篇文章。</p>
@@ -2929,7 +2929,7 @@
   </entry>
   <entry>
     <title>使用CoordinatorLayout打造各种炫酷的效果</title>
-    <url>/%E4%BD%BF%E7%94%A8CoordinatorLayout%E6%89%93%E9%80%A0%E5%90%84%E7%A7%8D%E7%82%AB%E9%85%B7%E7%9A%84%E6%95%88%E6%9E%9C.html</url>
+    <url>/2016/12/08/%E4%BD%BF%E7%94%A8CoordinatorLayout%E6%89%93%E9%80%A0%E5%90%84%E7%A7%8D%E7%82%AB%E9%85%B7%E7%9A%84%E6%95%88%E6%9E%9C/</url>
     <content><![CDATA[<h1 id="使用CoordinatorLayout打造各种炫酷的效果"><a href="#使用CoordinatorLayout打造各种炫酷的效果" class="headerlink" title="使用CoordinatorLayout打造各种炫酷的效果"></a><strong>使用CoordinatorLayout打造各种炫酷的效果</strong></h1><p><strong><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52858598">文章首发地址CSDN：</a><a href="http://blog.csdn.net/gdutxiaoxu/article/details/52858598">http://blog.csdn.net/gdutxiaoxu/article/details/52858598</a></strong></p>
 <h2 id="CoordinatorLayout简介"><a href="#CoordinatorLayout简介" class="headerlink" title="CoordinatorLayout简介"></a>CoordinatorLayout简介</h2><p>CoordinatorLayout是在 Google IO/15 大会发布的，遵循Material 风格，包含在 support Library中，结合AppbarLayout, CollapsingToolbarLayout等 可 产生各种炫酷的效果</p>
 <h2 id="CoordinatorLayout简介通常用来-干什么"><a href="#CoordinatorLayout简介通常用来-干什么" class="headerlink" title="CoordinatorLayout简介通常用来 干什么"></a>CoordinatorLayout简介通常用来 干什么</h2><p><a href="https://developer.android.com/reference/android/support/design/widget/CoordinatorLayout.html">Google官方地址</a></p>
