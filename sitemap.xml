@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://gdutxiaoxu.github.io/2021/04/24/%E5%AD%97%E8%8A%82%E8%B7%B3%E5%8A%A8%E6%8A%96%E9%9F%B3Android-%E6%A0%A1%E6%8B%9B%E9%9D%A2%E7%BB%8F%EF%BC%8C%E5%B7%B2%E6%8B%BF-offer/</loc>
+    
+    <lastmod>2021-04-23</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://gdutxiaoxu.github.io/2021/04/17/%E9%BB%91%E9%A9%AC-Android-52-%E6%9C%9F%E5%AD%A6%E4%B9%A0%E8%A7%86%E9%A2%91%EF%BC%8C%E4%B8%8D%E5%8A%A0%E5%AF%86%E7%9A%84%EF%BC%8C%E5%85%8D%E8%B4%B9%E5%88%86%E4%BA%AB%E7%BB%99%E5%A4%A7%E5%AE%B6/</loc>
     
     <lastmod>2021-04-23</lastmod>
@@ -240,7 +247,7 @@
   </url>
   
   <url>
-    <loc>https://gdutxiaoxu.github.io/2016/12/08/360%E9%9D%A2%E8%AF%95%E5%BF%83%E5%BE%97%EF%BC%88Android/</loc>
+    <loc>https://gdutxiaoxu.github.io/2016/12/08/%E8%87%AA%E5%AE%9A%E4%B9%89Behavior-%E2%80%94%E2%80%94-%E4%BB%BF%E7%9F%A5%E4%B9%8E%EF%BC%8CFloatActionButton%E9%9A%90%E8%97%8F%E4%B8%8E%E5%B1%95%E7%A4%BA/</loc>
     
     <lastmod>2016-12-08</lastmod>
     
@@ -261,7 +268,7 @@
   </url>
   
   <url>
-    <loc>https://gdutxiaoxu.github.io/2016/12/08/%E8%87%AA%E5%AE%9A%E4%B9%89Behavior-%E2%80%94%E2%80%94-%E4%BB%BF%E7%9F%A5%E4%B9%8E%EF%BC%8CFloatActionButton%E9%9A%90%E8%97%8F%E4%B8%8E%E5%B1%95%E7%A4%BA/</loc>
+    <loc>https://gdutxiaoxu.github.io/2016/12/08/360%E9%9D%A2%E8%AF%95%E5%BF%83%E5%BE%97%EF%BC%88Android/</loc>
     
     <lastmod>2016-12-08</lastmod>
     
@@ -388,6 +395,20 @@
     <priority>0.6</priority>
   </url>
   
+  <url>
+    <loc>https://gdutxiaoxu.github.io/tags/%E9%9D%A2%E7%BB%8F/</loc>
+    <lastmod>2021-04-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
 
+  
+  <url>
+    <loc>https://gdutxiaoxu.github.io/categories/%E9%9D%A2%E7%BB%8F/</loc>
+    <lastmod>2021-04-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
   
 </urlset>
